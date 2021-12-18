@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <title>Board</title>
+  <!-- Favicon-->
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+  <!-- Font Awesome icons (free version)-->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" 
+  integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+  <!-- Google fonts-->
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+  <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet"
+    type="text/css" />
+
+  <!-- Core theme CSS (includes Bootstrap)-->
+  <link href="/css/styles.css" rel="stylesheet">
+
+  <!-- Bootstrap core JS-->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Core theme JS-->
+  <script src="/js/scripts.js"></script>
+  <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+
+  <!--jsTree-->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jstree-bootstrap-theme@1.0.1/dist/themes/proton/style.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+</head>
+
+<!--<body id="page-top">-->
+
+<!--상단바-->
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap py-1 shadow justify-content-start">
+  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 text-light" href="/">company name</a>
+  <button class="navbar-toggler d-md-none ms-auto collapsed" type="button" data-bs-toggle="collapse"
+    data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <form class="d-flex w-100" role="form" action="/search/" method="GET" id="searchForm">
+    <div style="width: 100%;" >
+      <input class="form-control searchArea" type="text" placeholder="Search" aria-label="Search" name=key 
+      id="searchInput" autocomplete="off">
+      <ul class="dropdown-menu searchArea" style="display: none;" id="searchResult"></ul>
+    </div>
+    <input type="text" name="bid" hidden="hidden" value="<%=bid%>">
+    <div class="navbar-nav">
+      <div class="nav-item text-nowrap">
+        <button class="btn nav-link px-3 text-light btn-outline-secondary" type="submit">Search</button>
+      </div>
+    </div>
+  </form>
+  <!--로그인 상태창 - 세션 정보에 따라 처리 - 글쓰기 버튼도 같이 처리-->
+  <!--로그인o -->
+  <% if(session) {%>
+    <div class="text-nowrap ms-auto" id="loginStatus">
+      <ul class="mb-0 ps-0" style="list-style: none;">
+        <li class="nav-item mx-0 mx-lg-1 dropdown">
+          <a class="btn font-weight-bold btn-outline-secondary text-white rounded" id="logOutDropdown" role="button"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            <%= session.user %>님
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end bg-secondary" aria-labelledby="logOutDropdown">
+            <% if(session.authority === 2) {%>
+            <li class="dropdown-item"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/setting?order=UID">관리</a></li>
+            <%} else { %>
+              <li class="dropdown-item"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/user/withdrawal">회원 탈퇴</a></li>
+            <% } %>
+            <li class="dropdown-item"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/user/changePW">비밀번호 변경</a></li>
+            <li class="dropdown-item"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/user/logout">로그아웃</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  <%} else {%>
+    <div class="text-nowrap ms-auto" id="loginStatus">
+      <ul class="mb-0 ps-0" style="list-style: none;">
+        <li class="nav-item mx-0 mx-lg-1 dropdown">
+          <a class="btn font-weight-bold btn-outline-secondary text-white rounded" id="logOutDropdown" href="/user/login"
+            aria-expanded="false">
+            로그인
+          </a>
+        </li>
+      </ul>
+    </div>
+  <% } %>
+</header>
+
+  <div class="container-fluid" id="description">
+    <div class="row">
+      <!-- 게시판 side bar-->
+      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+        <div class="sidebar-sticky">
+          <ul class="nav flex-column">
+            <!--여기엔 계층형 카테고리-->
+            <li class="d-flex justify-content-center py-2" style="border-bottom:#D0CDCD solid 0.07rem;">
+              <a class="text-dark fs-4" href="/"> 메뉴얼</a>
+            </li>
+            <div id="jstreeSidebar"></div> 
+
+              <script>
+                $('#jstreeSidebar').jstree({ 
+                  'plugins' :["wholerow"],
+                  'core' : {
+                    'data' : <%-JSON.stringify(sidebar)%>,
+                    'themes' : {
+                        'name' : 'proton',
+                        'responsive' : true
+                    }
+                  }
+                });
+                $('#jstreeSidebar').on('select_node.jstree', function(event, data) {                 
+                  const id = data.instance.get_node(data.selected).id;
+                  const page = 1;
+                  const href = 'board/' + id + '/' + page;
+                  window.location.href = `../../${href}`;             
+                });  
+                
+                $('#jstreeSidebar').on('loaded.jstree', function() {
+                  const nodes = $('#jstreeSidebar').jstree()._model.data;
+                  let id;
+
+                  for(let index in nodes) {
+                    if(nodes[index].id !== '#' && nodes[index].data.level === '0') {
+                        id = nodes[index].id;
+                        $('#jstreeSidebar').jstree(true).toggle_node(id);
+                    }
+                    
+                  }
+                });
+                
+              </script>
+            <br>
+          </ul>
+        </div>
+      </nav>
+
+    <main class="col-md-9 col-lg-10 px-md-4" id="mainSection">
+      <button type="button" id="sidebarToggle" class="btn btn-sm btn-white ps-0" style="margin-left: 0;">
+        <i class="fas fa-bars fa-2x text-muted"></i>
+      </button>
+      <div
+        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h6 class="h6 text-muted"> <%=path%></h6>
+        <div class="btn-toolbar mb-2 mb-md-0">
+          <div class="btn-group me-2">
+            <!--로그인 상태에 따른 글쓰기 버튼 -->
+            <!--로그인o -->
+            <% if(session) {%>
+              <button type="button" class="btn btn-sm btn-outline-secondary"><a href="/create">
+                  글쓰기</a></button>
+              <%}%>
+                <!--로그인 x 버튼 없음-->
+          </div>
+        </div>
+      </div>
+
+      <!--sidebar toggle-->
+      <script>
+        const toggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebarMenu');
+        const mainSection = document.getElementById('mainSection');       
+
+        let currentSidebarWidth = sidebar.clientWidth;
+        mainSection.style.marginLeft = currentSidebarWidth + 'px';
+        if(window.innerWidth < 768){
+            toggle.style.display = 'none';
+        }
+
+        window.addEventListener('resize', function() {
+          if(sidebar.style.width !== '0px'){
+            currentSidebarWidth = sidebar.clientWidth;
+            mainSection.style.marginLeft = currentSidebarWidth + 'px';
+          }
+          if(window.innerWidth < 768){
+            toggle.style.display = 'none';
+          }
+          else{
+            toggle.style.display = 'inline';
+          }
+        });
+
+        toggle.addEventListener('click', function() {
+            if(sidebar.style.width === '0px'){
+                if(window.innerWidth < 992) {
+                    sidebar.style.width = '25%';
+                    mainSection.style.marginLeft = currentSidebarWidth + 'px';
+                }
+                else {
+                    sidebar.style.width = '16.66666667%';
+                    mainSection.style.marginLeft = currentSidebarWidth + 'px';
+                }
+            }
+            else {
+                sidebar.style.width = '0';
+                mainSection.style.marginLeft = '0';
+            }
+        });  
+    </script>
+
+      <!--게시판 글목록 테이블-->
+      <section>
+        <table class="table table-hover">
+          <thead class="table-secondary text-white">
+            <tr>
+              <td></td>
+              <td>제목</td>
+              <td>작성자</td>
+              <td>조회수</td>
+              <td>작성일</td>
+            </tr>
+          </thead>
+          <tbody>
+            <% if(!empty) { for(i=(page * num) - num; i < (page * num); i++) { if(i> len) {
+              i++;
+              } else {
+              let data = list[i]; %>
+              <tr>
+                <td>
+                  <%= data.POSTID %>
+                </td>
+                <td><a href=<%=`/read/${data.POSTID}` %>>
+                    <% if(data.TITLE.length> 40) {
+                      let TITLE = data.TITLE.substring(0,40) + " . . . . . "; %>
+                      <%=TITLE%>
+                        <% } else { %>
+                          <%= data.TITLE; %>
+                            <% } %>
+                  </a></td>
+                <td>
+                  <%= data.CREATER %>
+                </td>
+                <td>
+                  <%= data.VIEWS %>
+                </td>
+                <td>
+                  <% const now = new Date();
+                  const year = now.getFullYear();
+                  let month = now.getMonth() + 1;
+                  let date = now.getDate();
+                  
+                  if(month < 10) month = "0" + month;
+                  if(date < 10) date = "0" + date;
+                  const today = `${year}-${month}-${date}`;
+                  if(data.ADDTIME.substring(0, 10) === today) data.ADDTIME = data.ADDTIME.substring(11);
+                  else data.ADDTIME = data.ADDTIME.substring(0, 10); %>
+                    <%= data.ADDTIME %>
+                </td>
+              </tr>
+              <% } } } else { %>
+                <tr>
+                  <td colspan="5" class="text-center text-muted">등록된 게시물이 없습니다</td>
+                  <!-- <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td> -->
+                </tr>
+                <% } %>
+          </tbody>
+        </table>
+        <br />
+
+        <!--글목록 페이지 넘기기 아이콘-->
+        <nav aria-label="Page navigation">
+          <ul class="pagination d-felx justify-content-center">
+            <li class="page-item">
+              <a class="page-link" href="/board/<%=bid%>/1" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <% for(j=0; j < (len+1) / num; j++) { %>
+              <li class="page-item"><a class="page-link" href="/board/<%=bid%>/<%=j+1%>">
+                  <%=j+1%>
+                </a></li>
+              <% } %>
+              <li class="page-item">
+                <a class="page-link" href="/board/<%=bid%>/<%=Math.ceil((len + 1)/num)%>" aria-label="Next">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+          </ul>
+        </nav>
+      </section>
+    </main>
+  </div>
+
+</div>
+<script>
+  const search = document.getElementById('searchInput');
+  const result = document.getElementById('searchResult');
+  const searchForm = document.getElementById('searchForm');
+  const page = document.querySelector('html');
+  let targetNum = 0;
+
+  search.addEventListener('keyup' , (e) => {
+      if(e.key === 'ArrowDown') {
+        if(targetNum >= 10) {
+          targetNum = 0;
+        }
+        for(let i = 0; i < result.children.length; i++) {
+          if(i === targetNum) {
+            result.children[targetNum].classList.add('selected');
+            search.value = result.children[targetNum].innerText;
+          }
+          else {
+            result.children[i].classList.remove('selected');
+          }
+        }
+        targetNum++;
+      }
+      else if(e.key === 'ArrowUp') {
+        if(targetNum > 1) {
+          targetNum--;
+        }
+        else {
+          targetNum = 10;
+        }
+        for(let i = 0; i < result.children.length; i++) {
+          if(i === targetNum - 1) {
+            result.children[targetNum-1].classList.add('selected');
+            search.value = result.children[targetNum-1].innerText;
+          }
+          else {
+            result.children[i].classList.remove('selected');
+          }
+        }
+      }
+      else {
+        let data = `keyword=${search.value}`;
+
+        return fetch(`/search/auto?${data}`)
+        .then(res => res.json())
+        .then(result => {
+            console.log(result);
+
+            createResult(result);
+            addClickEvent();
+            toggleUI();
+        })
+        .catch(err => {
+            alert('검색에 실패했습니다');
+            console.log('error', err);
+        })
+      }
+  });
+
+  page.addEventListener('click', (e) => {
+    if(!e.target.classList.contains('searchArea')) {
+      result.style.display = 'none';
+      while(result.hasChildNodes()) {
+        result.removeChild(result.firstElementChild);
+      }
+    }
+  });
+
+
+  function createResult(data) {
+    if(result.children.length < 10) {
+        appendResult(data);
+    }
+    else {
+        while(result.hasChildNodes()) {
+          result.removeChild(result.firstElementChild);
+        }
+        targetNum = 0;
+         appendResult(data)
+    }
+  }
+
+  function appendResult(data) {
+    for(let i = 0; i < data.title.length; i++) {
+      const li = document.createElement('li');
+      li.classList.add('dropdown-item', 'searchArea');
+      li.innerText = data.title[i];
+      result.appendChild(li);           
+    }
+  }
+
+  function addClickEvent() {
+    for(let li of result.children) {
+      li.addEventListener('click', () => {
+        search.value = li.innerText;
+        searchForm.submit();
+      })
+    }
+  }
+
+  function toggleUI() {
+    if(search.value.length === 0) {
+      result.style.display = 'none';
+      while(result.hasChildNodes()) {
+        result.removeChild(result.firstElementChild);
+      }
+    }
+    else {
+      result.style.width = `${result.parentElement.offsetWidth}px`;
+      result.style.display = 'block';
+    }
+  }
+</script>
+
+<!--Multi Window Plugin Script-->
+<script src="/js/plugin.js" charset="UTF-8"></script>
+<script>
+  (function() {
+    const w = window;
+    if(w.MultiWindow) {
+      return (window.console.log)('Multi Window script included already');
+    }
+
+    let style = function() {
+      style.pushArgs(arguments);
+    }
+
+    style.arg = [];
+    style.pushArgs = function(args) {
+      style.arg.push(args);
+    }
+
+    w.buttonCustom = style;
+
+    function init() {
+      info.name = "YOUR_WEB_NAME" //fill your web page name
+
+      if(!info.name) {
+        info.name = "web name";
+      }
+    }
+
+    function load() {
+      if(w.multiWindowInitialized) {
+        return;
+      }
+      init();
+      w.multiWindowInitialized = true;
+    }
+    if(document.readyState === 'complete') {
+      load();
+    }
+    else if (window.attachEvent) {
+      window.attachEvent('onload', load);
+    }
+    else {
+      window.addEventListener('DOMContentLoaded', load, false);
+    }
+  })();
+
+  //  buttonCustom('setColor', {
+//     'color' : '#f3de0b'
+//   });
+</script>
+</body>
+
+</html>

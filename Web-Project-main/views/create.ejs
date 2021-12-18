@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>edit</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Font Awesome icons (free version)-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" 
+    integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet"
+        type="text/css" />
+
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="/css/styles.css" rel="stylesheet">
+
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="/js/scripts.js"></script>
+    <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+
+    <!--summernote를 위한 jQuery, css, js, summernote import-->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet"> -->
+    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+
+    <!--jsTree-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jstree-bootstrap-theme@1.0.1/dist/themes/proton/style.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+</head>
+
+<body>
+    <!--상단바-->
+    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap py-1 shadow justify-content-start">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 text-light" href="/main">company name</a>
+        <button class="navbar-toggler d-md-none ms-auto collapsed" type="button" data-bs-toggle="collapse"
+            data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <form class="d-flex w-100" role="form" action="/search/" method="GET" id="searchForm">
+            <div style="width: 100%;" >
+                <input class="form-control searchArea" type="text" placeholder="Search" aria-label="Search" name=key 
+                id="searchInput" autocomplete="off">
+                <ul class="dropdown-menu searchArea" style="display: none;" id="searchResult"></ul>
+            </div>
+            <div class="navbar-nav">
+                <div class="nav-item text-nowrap">
+                    <button class="btn nav-link px-3 text-light btn-outline-secondary" type="submit">Search</a>
+                </div>
+            </div>
+        </form>
+        <!--로그인 상태창 - 세션 정보에 따라 처리 -->
+        <!--로그인o -->
+        <% if(session.user) {%>
+            <div class="text-nowrap ms-auto" id="loginStatus">
+                <ul class="mb-0 ps-0" style="list-style: none;">
+                    <li class="nav-item mx-0 mx-lg-1 dropdown">
+                        <a class="btn font-weight-bold btn-outline-secondary text-white rounded" id="logOutDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <%= session.user %>님
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end bg-secondary" aria-labelledby="logOutDropdown">
+                            <% if(session.authority === 2) {%>
+                            <li class="dropdown-item"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/setting?order=UID">관리</a></li>
+                            <%} else { %>
+                                <li class="dropdown-item"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/user/withdrawal">회원 탈퇴</a></li>
+                            <% } %>
+                            <li class="dropdown-item"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/user/changePW">비밀번호 변경</a></li>
+                            <li class="dropdown-item"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/user/logout">로그아웃</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <%}%>
+    </header>
+
+    <div class="container-fluid" id="description">
+        <div class="row">
+            <!-- 게시판 보드-->
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                <div class="sidebar-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <!--계층형 카테고리-->
+                        <li class="d-flex justify-content-center py-2" style="border-bottom:#D0CDCD solid 0.07rem;">
+                          <a class="text-dark fs-4" href="/"> 메뉴얼</a>
+                        </li>
+                        <div id="jstreeSidebar"></div> 
+          
+                        <script>
+                          $('#jstreeSidebar').jstree({ 
+                            'plugins' :["wholerow"],
+                            'core' : {
+                              'data' : <%-JSON.stringify(sidebar)%>,
+                              'themes' : {
+                                  'name' : 'proton',
+                                  'responsive' : true
+                              }
+                            }
+                          });
+                          $('#jstreeSidebar').on('select_node.jstree', function(event, data) {                 
+                            const id = data.instance.get_node(data.selected).id;
+                            const page = 1;
+                            const href = 'board/' + id + '/' + page;
+                            window.location.href = `../../${href}`;             
+                          });  
+                          
+                          $('#jstreeSidebar').on('loaded.jstree', function() {
+                                const nodes = $('#jstreeSidebar').jstree()._model.data;
+                                let id;
+
+                                for(let index in nodes) {
+                                    if(nodes[index].id !== '#' && nodes[index].data.level === '0') {
+                                        id = nodes[index].id;
+                                        $('#jstreeSidebar').jstree(true).toggle_node(id);
+                                    }
+                                }
+                            });                           
+                        </script>
+                        <br>
+                      </ul> 
+                </div>
+            </nav>
+
+            <!--summernote file upload Modal-->
+            <div class="modal"  tabindex="-1" aria-labelledby="exampleModalLabel" id="InsertFiles" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header"> 
+                            <h4 class="modal-title" id="exampleModalLabel">Insert Files</h4> 
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" >
+                            </button>                
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group note-form-group note-group-select form-files">
+                                <form class="clearfix" enctype="multipart/form-data" method="POST" id="fileupload">
+                                    <label for="attach" class="note-form-label">Select from files</label>
+                                    <input id="attach" class="form-control-file note-form-control note-input float-start" type="file" name="attach"  multiple>      
+                                    <button class="btn btn-primary float-end disabled mt-3" id="btnUpload">파일 첨부</button>
+                                </form>                           
+                            </div>             
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <main class="col-md-9 col-lg-10 px-md-4" id="mainSection">
+                <button type="button" id="sidebarToggle" class="btn btn-sm btn-white ps-0" style="margin-left: 0;">
+                    <i class="fas fa-bars fa-2x text-muted"></i>
+                </button>    
+                <div
+                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2"> 글쓰기 </h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <div class="btn-group me-2">
+                            <!--Create-->
+                            <% if(!update) { %>
+                            <form action="/create" method="POST">
+                                <input type="hidden" name="update" value="0">
+                                <button type="submit" class="btn btn-sm btn-outline-secondary" onclick="submitForm()">등록</button>
+                        </div>
+                    </div>
+                </div>
+
+                 <!--게시판 선택, 여기에서 각 분류 선택 및 boardid 전송-->
+                 <section class="d-flex">
+                    <select class="form-select text-uppercase font-weight-bold text-secondary mb-2 me-1" name="categoryLarge" id="chooseLarge">
+                        <option selected>카테고리 1 선택</option>
+                    </select>
+                    <select class="form-select text-uppercase font-weight-bold text-secondary mb-2 me-1"  name="categoryMedium" 
+                        id="chooseMedium" style="visibility: hidden;">
+                    </select>
+                    <select class="form-select text-uppercase font-weight-bold text-secondary mb-2"  name="categorySmall" 
+                        id="chooseSmall" style="visibility: hidden;">
+                    </select>
+
+                    <script>
+                        const large = document.getElementById('chooseLarge');
+                        const medium = document.getElementById('chooseMedium');
+                        const small = document.getElementById('chooseSmall');
+                        const categories =  <%-JSON.stringify(sidebar)%>;
+
+                        function show(category) {
+                            category.style.visibility = 'visible';
+                        }
+
+                        function hide(category) {
+                            category.style.visibility = 'hidden';
+                        }
+
+                        large.addEventListener('change', () => {
+                            hide(medium);
+                            hide(small);
+                            show(medium);
+                            addOption(large, medium, 2);                           
+                        });
+
+                        medium.addEventListener('change', () => {
+                            show(small);
+                            addOption(medium, small, 3);
+                        });
+
+                        //Large category option 추가
+                        for(i = 0; i < categories.length; i++) {
+                            if(categories[i].data.level === '0') { 
+                                const option = document.createElement('option');
+                                option.value = categories[i].id;
+                                option.innerText = categories[i].text
+                                large.appendChild(option);
+                            }                  
+                        }
+
+                        //하위 카테고리 option 추가
+                        function addOption(parentCategory, myCategory, categoryNum) {
+                            while(myCategory.children.length > 0) {
+                                myCategory.removeChild(myCategory.children[0]);
+                            }
+
+                            const defalut = document.createElement('option');
+                            defalut.value = '';
+                            defalut.innerText = `카테고리 ${categoryNum}  선택`;
+                            myCategory.appendChild(defalut);
+
+                            for(i = 0; i < categories.length; i++) {
+                                if(categories[i].parent === parentCategory.value && categories[i].data.level === '1') {
+                                    const option = document.createElement('option');
+                                    option.value = categories[i].id;
+                                    option.innerText = categories[i].text;
+                                    myCategory.appendChild(option);                                 
+                                }
+                                else if(categories[i].parent === parentCategory.value && categories[i].data.level === '2') {
+                                    const option = document.createElement('option');
+                                    option.value = categories[i].id;
+                                    option.innerText = categories[i].text;
+                                    myCategory.appendChild(option);                                 
+                                } 
+                            }
+
+                            if(myCategory[0].length === 1){
+                                hide(myCategory);
+                            }
+                        }                      
+                    </script>
+                </section>
+
+                <!--제목 입력-->
+                <section>
+                    <input class="form-control font-weight-bold text-secondary mb-2" name="title"
+                        type="text" placeholder="제목을 입력해 주세요.">
+                </section>
+
+                <!--summernote 호출-->
+                <section>
+                    <div>
+                        <textarea class="summernote" name="description" id="summernote"></textarea>
+                    </div>
+                    </form>                    
+
+                    <script>
+                        $(document).ready(function () {
+                            const fontList = ['맑은 고딕','굴림','돋움','바탕','궁서','NotoSansKR','Arial','Courier New','Verdana','Tahoma','Times New Roamn'];
+                            $('#summernote').summernote({
+                                width: window,
+                                height: 300,
+                                minHeight: null,
+                                maxHeight: null,
+                                focus: true,
+                                fontNames : fontList,
+                                toolbar: [
+                                    ['style', ['style']],
+                                    ['font', ['bold', 'underline', 'clear']],
+                                    ['fontname', ['fontname', 'fontsize']],
+                                    ['color', ['color']],
+                                    ['para', ['ul', 'ol', 'paragraph']],
+                                    ['table', ['table']],
+                                    ['insert', ['link', 'picture', 'video', 'file']],
+                                    ['view', ['codeview', 'help']]
+                                ],
+                                buttons: {
+                                    file: fileUploadButton
+                                },
+                                callbacks: {
+                                    onImageUpload: function (files) {
+                                        for (let i = files.length - 1; i >= 0; i--) {
+                                            sendimage(files[i], this)
+                                        }
+                                    }
+                                }
+                            })
+                        });
+
+                        
+                    </script>                                       
+                </section>
+                            <% } else { %>
+                            <form action="/create" method="POST" id="summernoteForm">
+                                <input type="hidden" name="update" value="1">
+                                <input type="hidden" name="postid" value="<%=content.POSTID%>">
+                                <input type="hidden" name="bid" value="<%=content.BOARDID%>">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="submitForm()">등록</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <section class="d-flex">
+                    <select class="form-select text-uppercase font-weight-bold text-secondary mb-2 me-1" name="categoryLarge" id="chooseLarge">
+                    </select>
+                    <select class="form-select text-uppercase font-weight-bold text-secondary mb-2 me-1"  name="categoryMedium" 
+                        id="chooseMedium" style="visibility: hidden;">
+                    </select>
+                    <select class="form-select text-uppercase font-weight-bold text-secondary mb-2"  name="categorySmall" 
+                        id="chooseSmall" style="visibility: hidden;">
+                    </select>
+
+                    <script>
+                        const large = document.getElementById('chooseLarge');
+                        const medium = document.getElementById('chooseMedium');
+                        const small = document.getElementById('chooseSmall');
+                        const categories =  <%-JSON.stringify(sidebar)%>;
+                        const categoryInfo = <%-JSON.stringify(postCategory)%>;
+                        console.log(categoryInfo);
+
+                        function show(category) {
+                            category.style.visibility = 'visible';
+                        }
+
+                        function hide(category) {
+                            category.style.visibility = 'hidden';
+                        }
+
+                        large.addEventListener('change', () => {
+                            hide(medium);
+                            hide(small);
+                            show(medium);
+                            addOption(large, medium, 2);                           
+                        });
+
+                        medium.addEventListener('change', () => {
+                            show(small);
+                            addOption(medium, small, 3);
+                        });
+
+                        //Large category option 추가
+                        for(i = 0; i < categories.length; i++) {
+                            if(categories[i].data.level === '0') { 
+                                const option = document.createElement('option');
+                                option.value = categories[i].id;
+                                option.innerText = categories[i].text
+                                large.appendChild(option);
+                            }                  
+                        }
+
+                        //하위 카테고리 option 추가
+                        function addOption(parentCategory, myCategory, categoryNum) {
+                            while(myCategory.children.length > 0) {
+                                myCategory.removeChild(myCategory.children[0]);
+                            }
+
+                            const defalut = document.createElement('option');
+                            defalut.value = '';
+                            defalut.innerText = `카테고리 ${categoryNum}  선택`;
+                            myCategory.appendChild(defalut);
+
+                            for(i = 0; i < categories.length; i++) {
+                                if(categories[i].parent === parentCategory.value && categories[i].data.level === '1') {
+                                    const option = document.createElement('option');
+                                    option.value = categories[i].id;
+                                    option.innerText = categories[i].text;
+                                    myCategory.appendChild(option);                                 
+                                }
+                                else if(categories[i].parent === parentCategory.value && categories[i].data.level === '2') {
+                                    const option = document.createElement('option');
+                                    option.value = categories[i].id;
+                                    option.innerText = categories[i].text;
+                                    myCategory.appendChild(option);                                 
+                                } 
+                            }
+
+                            if(myCategory[0].length === 1){
+                                hide(myCategory);
+                            }
+                        }
+
+                        //get large category info
+                        if(categoryInfo.large !== false) {
+                            displayCategoryInfo(large, categoryInfo.large);
+                            show(medium);
+                            addOption(large, medium, 2);
+                        } 
+
+                        //get medium category info
+                        if(categoryInfo.medium !== false) {
+                            displayCategoryInfo(medium, categoryInfo.medium);
+                            show(small);
+                            addOption(medium, small , 3);
+                        } 
+
+                        //get small category info
+                        if(categoryInfo.small !== false) {
+                            displayCategoryInfo(small, categoryInfo.small)
+                        } 
+                        
+
+                        //get category info
+                        function displayCategoryInfo(category, info) {
+                            for(let i = 0; i <category.children.length; i++) {
+                                if(info === category.children[i].innerText) {
+                                    category.children[i].setAttribute('selected', 'selected');
+                                }
+                            }
+                        }                   
+                    </script>
+                </section>
+            
+                <!--Update-->
+                <section>
+                    <input class="form-control font-weight-bold text-secondary mb-2" name="title" type="text"
+                        placeholder="제목을 입력해 주세요." value="<%=content.TITLE%>">
+                </section>
+
+                <!--summernote 호출-->
+                <section>
+                    <div>
+                        <textarea class="form-control" name="description" id="summernote"></textarea>
+                        <!-- <textarea class="form-control" name="description" id="summernote"><%-content.description%></textarea> -->
+                    </div>
+                    </form>
+
+                    <script>
+                        $(document).ready(function () {
+                            const fontList = ['맑은 고딕','굴림','돋움','바탕','궁서','NotoSansKR','Arial','Courier New','Verdana','Tahoma','Times New Roamn'];
+                            $('#summernote').summernote({
+                                height: 300,
+                                minHeight: null,
+                                maxHeight: null,
+                                focus: true,
+                                fontNames : fontList,
+                                toolbar: [
+                                    ['style', ['style']],
+                                    ['font', ['bold', 'underline', 'clear']],
+                                    ['fontname', ['fontname', 'fontsize']],
+                                    ['color', ['color']],
+                                    ['para', ['ul', 'ol', 'paragraph']],
+                                    ['table', ['table']],
+                                    ['insert', ['link', 'picture', 'video', 'file']],
+                                    ['view', ['codeview', 'help']]
+                                ],
+                                buttons: {
+                                    file: fileUploadButton
+                                },
+                                callbacks: {
+                                    onImageUpload: function (files) {
+                                        for (let i = files.length - 1; i >= 0; i--) {
+                                            sendimage(files[i], this)
+                                        }
+                                    }
+                                }
+                            })
+                            
+                            const contents = <%- JSON.stringify(content) %>;
+                            $('#summernote').summernote('pasteHTML', contents.DESCRIPTION); 
+                            const folder = $('#allFiles');
+                            if(folder.length !== 0) {
+                                $('.countFile').show();
+                                folder.remove();
+                            }                        
+                        })
+                        // function sendFile(file, editor) {
+                        //     const data = new FormData();
+                        //     data.append('file', file);
+                        //     console.log("sendfile in")
+                        //     $.ajax({
+                        //         data: data,
+                        //         type: "POST",
+                        //         url: '/upload/images',
+                        //         cache: false,
+                        //         contentType: false,
+                        //         processData: false,
+                        //         enctype: "multipart/form-data",
+                        //         success: function (response) {
+                        //             $('#summernote').summernote('insertImage', response.url);
+                        //         }
+                        //     })
+                        // }
+                    </script> 
+                </section>
+                            <% } %>
+            </main>
+        </div>
+    </div>
+    <script>
+        const search = document.getElementById('searchInput');
+        const result = document.getElementById('searchResult');
+        const searchForm = document.getElementById('searchForm');
+        const page = document.querySelector('html');
+        let targetNum = 0;
+      
+        search.addEventListener('keyup' , (e) => {
+            if(e.key === 'ArrowDown') {
+              if(targetNum >= 10) {
+                targetNum = 0;
+              }
+              for(let i = 0; i < result.children.length; i++) {
+                if(i === targetNum) {
+                  result.children[targetNum].classList.add('selected');
+                  search.value = result.children[targetNum].innerText;
+                }
+                else {
+                  result.children[i].classList.remove('selected');
+                }
+              }
+              targetNum++;
+            }
+            else if(e.key === 'ArrowUp') {
+              if(targetNum > 1) {
+                targetNum--;
+              }
+              else {
+                targetNum = 10;
+              }
+              for(let i = 0; i < result.children.length; i++) {
+                if(i === targetNum - 1) {
+                  result.children[targetNum-1].classList.add('selected');
+                  search.value = result.children[targetNum-1].innerText;
+                }
+                else {
+                  result.children[i].classList.remove('selected');
+                }
+              }
+            }
+            else {
+              let data = `keyword=${search.value}`;
+      
+              return fetch(`/search/test?${data}`)
+              .then(res => res.json())
+              .then(result => {
+                  console.log(result);
+      
+                  createResult(result);
+                  addClickEvent();
+                  toggleUI();
+              })
+              .catch(err => {
+                  alert('검색에 실패했습니다');
+                  console.log('error', err);
+              })
+            }
+        });
+      
+        page.addEventListener('click', (e) => {
+          if(!e.target.classList.contains('searchArea')) {
+            result.style.display = 'none';
+            while(result.hasChildNodes()) {
+              result.removeChild(result.firstElementChild);
+            }
+          }
+        });
+      
+      
+        function createResult(data) {
+          if(result.children.length < 10) {
+              appendResult(data);
+          }
+          else {
+              while(result.hasChildNodes()) {
+                result.removeChild(result.firstElementChild);
+              }
+              targetNum = 0;
+               appendResult(data)
+          }
+        }
+      
+        function appendResult(data) {
+          for(let i = 0; i < data.title.length; i++) {
+            const li = document.createElement('li');
+            li.classList.add('dropdown-item', 'searchArea');
+            li.innerText = data.title[i];
+            result.appendChild(li);           
+          }
+        }
+      
+        function addClickEvent() {
+          for(let li of result.children) {
+            li.addEventListener('click', () => {
+              search.value = li.innerText;
+              searchForm.submit();
+            })
+          }
+        }
+      
+        function toggleUI() {
+          if(search.value.length === 0) {
+            result.style.display = 'none';
+            while(result.hasChildNodes()) {
+              result.removeChild(result.firstElementChild);
+            }
+          }
+          else {
+            result.style.width = `${result.parentElement.offsetWidth}px`;
+            result.style.display = 'block';
+          }
+        }
+      </script>
+
+ <!--sidebar toggle-->
+ <script>
+    const toggle = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebarMenu');
+    const mainSection = document.getElementById('mainSection');       
+
+    let currentSidebarWidth = sidebar.clientWidth;
+    mainSection.style.marginLeft = currentSidebarWidth + 'px';
+    if(window.innerWidth < 768){
+        toggle.style.display = 'none';
+    }
+
+    window.addEventListener('resize', function() {
+        if(sidebar.style.width !== '0px'){
+            currentSidebarWidth = sidebar.clientWidth;
+            mainSection.style.marginLeft = currentSidebarWidth + 'px';
+        }
+        if(window.innerWidth < 768){
+            toggle.style.display = 'none';
+        }
+        else{
+            toggle.style.display = 'inline';
+        }
+    });
+
+    toggle.addEventListener('click', function() {
+        if(sidebar.style.width === '0px'){
+            if(window.innerWidth < 992) {
+                sidebar.style.width = '25%';
+                mainSection.style.marginLeft = currentSidebarWidth + 'px';
+            }
+            else {
+                sidebar.style.width = '16.66666667%';
+                mainSection.style.marginLeft = currentSidebarWidth + 'px';
+            }
+        }
+        else {
+            sidebar.style.width = '0';
+            mainSection.style.marginLeft = '0';
+        }
+    });  
+</script>
+
+<!--file upload in summernote-->
+<script>                     
+    const fileUploadButton = function (context) {
+        const ui = $.summernote.ui;
+
+        const button = ui.button({
+            contents: '<i class="fas fa-folder-plus"></i>',
+            tooltip: 'Files',
+            container: 'body',
+            click: function() {
+                console.log('file upload open');
+                $('#InsertFiles').modal('show');                                                                         
+            }
+        }); 
+        return button.render();
+    };                         
+    
+    $('#attach').on('change', function() {
+        if($('#attach')[0].value !== ''){
+            $('#btnUpload')[0].classList.remove("disabled");
+        }  
+        else {
+            $('#btnUpload')[0].classList.add("disabled");
+        }                        
+    })
+
+    $('#btnUpload').on('click', function(event) {
+        event.preventDefault();
+
+        const form = $('#fileupload')[0];
+        const data = new FormData(form);
+
+        $('#btnUpload').prop('disabled', true);
+
+        $.ajax({
+            enctype: 'multipart/form-data',
+            url: '/upload/files',
+            processData: false,
+            contentType: false,
+            cache: false,
+            data: data,
+            type: 'POST',
+            success: function(response) {
+                $('#btnUpload').prop('disabled', false);
+                console.log('success');
+                console.log(response);
+
+                //hide modal
+                $('#InsertFiles').modal('hide');
+
+                //display uploade file in summernote
+                for(i = 0; i < $('#attach')[0].files.length; i++){
+                        const uploadedFileName = $('#attach')[0].files[i].name;
+                        const htmlString = `
+                        <div class="uploadedFiles">
+                            <a class="btn countFile" href="${response[i]}" download><input type="text" class="border d-inline-flex p-2 text-muted" 
+                                style="cursor:pointer" size="40" value="&#xf07b; ${uploadedFileName}" readonly>
+                            </a>
+                        </div>
+                        <br>
+                        `;     
+                    $('#summernote').summernote('pasteHTML', htmlString); 
+                }
+            },
+            error: function(e) {
+                $('#btnUpload').prop('disabled', false);
+                console.log('fail');
+            }
+        });
+    }) 
+
+    //summernote form 제출
+    function submitForm() {
+        //첫번째 줄 자동 삽입 br 태그 지우기        
+        const desc = $('.note-editable')[0].children[0];
+        if(desc.firstElementChild !== null && desc.firstElementChild.nodeName === "BR") {
+            console.log('romove br');
+            desc.remove();
+        }
+
+        //3개이상 파일 첨부 시 ui
+        let allFiles = $('.countFile');
+        if(allFiles.length > 3) {
+            let htmlString = `
+            <div class="uploadedFiles dropdown" id="allFiles">
+                <button class="btn btn-white" type="button" id="allFilesBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                    &#xf07b; 첨부파일 모아보기<strong> ${allFiles.length}</strong>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="allFilesBtn" style="min-width: 12em;">`;
+                            
+            for(let i = 0; i < allFiles.length; i++) {
+                htmlString += `
+                <li>
+                    <a class="btn ps-2 text-dark dropdown-item" href="${allFiles[i].href}" download
+                        name="${allFiles[i].firstElementChild.value}">
+                        ${allFiles[i].firstElementChild.value}
+                    </a>
+                </li> `; 
+            }
+            htmlString += `
+                    </ul>
+                </div>`;
+
+            $('.countFile').hide();
+            $('#summernote').summernote('pasteHTML', htmlString);
+        }
+        else {
+            $('#summernote').summernote('insertText', '');
+        }
+    
+        $('#summernoteForm').submit();
+    }
+
+    //이미지 첨부
+    function sendimage(file, editor) {
+        const data = new FormData();
+        data.append('file', file);
+        $.ajax({
+            data: data,
+            type: "POST",
+            url: '/upload/images',
+            cache: false,
+            contentType: false,
+            processData: false,
+            enctype: "multipart/form-data",
+            success: function (response) {
+                $('#summernote').summernote('insertImage', response.url);
+            }
+        })
+    }
+</script>
+
+<!--Multi Window Plugin Script-->
+<script src="/js/plugin.js" charset="UTF-8"></script>
+<script>
+  (function() {
+    const w = window;
+    if(w.MultiWindow) {
+      return (window.console.log)('Multi Window script included already');
+    }
+
+    let style = function() {
+      style.pushArgs(arguments);
+    }
+
+    style.arg = [];
+    style.pushArgs = function(args) {
+      style.arg.push(args);
+    }
+
+    w.buttonCustom = style;
+
+    function init() {
+      info.name = "YOUR_WEB_NAME" //fill your web page name
+
+      if(!info.name) {
+        info.name = "web name";
+      }
+    }
+
+    function load() {
+      if(w.multiWindowInitialized) {
+        return;
+      }
+      init();
+      w.multiWindowInitialized = true;
+    }
+    if(document.readyState === 'complete') {
+      load();
+    }
+    else if (window.attachEvent) {
+      window.attachEvent('onload', load);
+    }
+    else {
+      window.addEventListener('DOMContentLoaded', load, false);
+    }
+  })();
+</script>
+</body>
+
+</html>

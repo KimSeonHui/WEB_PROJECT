@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Admin</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Font Awesome icons (free version)-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" 
+    integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet"
+        type="text/css" />
+
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="/css/styles.css" rel="stylesheet">
+
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="/js/scripts.js"></script>
+    <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+</head>
+<!--상단바-->
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap py-1 shadow justify-content-start">
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 text-light" href="/">company name</a>
+    <button class="navbar-toggler d-md-none ms-auto collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <!--로그인 상태창 - 세션 정보에 따라 처리 - 글쓰기 버튼도 같이 처리-->
+    <!--로그인o -->
+    <% if(session.user) {%>
+        <div class="text-nowrap ms-auto" id="loginStatus">
+            <ul class="mb-0 ps-0" style="list-style: none;">
+                <li class="nav-item mx-0 mx-lg-1 dropdown">
+                    <a class="btn font-weight-bold btn-outline-secondary text-white rounded" id="logOutDropdown"
+                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <%= session.user %>님
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end bg-secondary" aria-labelledby="logOutDropdown">
+                        <% if(session.authority === 2) {%>
+                            <li class="dropdown-item"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/setting">관리</a></li>
+                            <li class="dropdown-item"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/user/changePW">비밀번호 변경</a></li>
+                            <li class="dropdown-item"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/user/logout">로그아웃</a></li>
+                        <%}%>        
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <%}%>
+</header>
+
+<body>
+<div class="container-fluid" id="description">
+    <div class="row">
+        <!-- 게시판 side bar-->
+        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <li class="d-flex justify-content-center py-2" style="border-bottom:#D0CDCD solid 0.07rem;">
+                        <a class="text-dark fs-4" href="/setting?order=UID"> 메뉴얼 관리</a>
+                    </li>
+                    <li class="dropdown-item"><a class="text-dark nav-link" href="/setting/category"><i class="fas fa-list-ul me-2"></i>  카테고리</a></li>
+                    <li class="dropdown-item"><a class="text-dark  nav-link" href="/setting/post?order=category&page=1&filter=no"><i class="far fa-file-alt me-2"></i>   게시글</a></li>
+                    <li class="dropdown-item"><a class="text-dark  nav-link" href="/setting/user"><i class="far fa-user me-2"></i>  회원</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div
+                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h6 class="h6 text-muted">
+                    post
+                </h6>
+            </div>
+            <section>
+                <h5>전체 게시글 조회</h5>
+                <div class="btns d-flex justify-content-start">
+                    <form method="post" id="postModify">
+                    <button class="btn btn-outline-secondary me-2 mb-2 mt-3" type="button" id="openBtn" name="button" value="open" onclick="openPost()" disabled>공개</button>
+                    <button class="btn btn-outline-secondary me-2 mb-2 mt-3" type="button" id="deleteBtn" name="button" value="delete" onclick="deletePost()" disabled>삭제</button>
+                    <a class="btn btn-outline-secondary  me-2 mb-2 mt-3" id="filter" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        필터 <i class="fas fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu text-white bg-secondary" aria-labelledby="filter">
+                        <li class="nav-link dropdown-item"><a class="nav-link py-0 px-0 px-lg-3 rounded text-light" href="/setting/post?order=<%=order%>&page=1&filter=no">적용 안 함</a></li>
+                        <li class="nav-link dropdown-item"><a class="nav-link py-0 px-0 px-lg-3 rounded text-light" href="/setting/post?order=<%=order%>&page=1&filter=0">공개</a></li>
+                        <li class="nav-link dropdown-item"><a class="nav-link py-0 px-0 px-lg-3 rounded text-light" href="/setting/post?order=<%=order%>&page=1&filter=1&">삭제</a></li>
+                    </ul>
+                    <a class="btn btn-outline-secondary mb-2 mt-3" id="filter" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        정렬 <i class="fas fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu text-white bg-secondary" aria-labelledby="filter">
+                        <li class="nav-link dropdown-item"><a class="nav-link py-0 px-0 px-lg-3 rounded text-light" href="/setting/post?order=category&page=1&filter=<%=filter%>">카테고리</a></li>
+                        <li class="nav-link dropdown-item"><a class="nav-link py-0 px-0 px-lg-3 rounded text-light" href="/setting/post?order=TITLE&page=1&filter=<%=filter%>">제목</a></li>
+                        <li class="nav-link dropdown-item"><a class="nav-link py-0 px-0 px-lg-3 rounded text-light" href="/setting/post?order=CREATER&page=1&filter=<%=filter%>">작성자</a></li>
+                        <li class="nav-link dropdown-item"><a class="nav-link py-0 px-0 px-lg-3 rounded text-light" href="/setting/post?order=ADDTIME DESC&page=1&filter=<%=filter%>">최근 순</a></li>
+                        <li class="nav-link dropdown-item"><a class="nav-link py-0 px-0 px-lg-3 rounded text-light" href="/setting/post?order=ADDTIME&page=1&filter=<%=filter%>">오래된 순</a></li>
+                    </ul>
+                </div>
+                <table class="table table-hover">
+                    <thead class="table-secondary text-white">
+                        <tr>
+                            <td><input class="form-check-input ms-4 me-0" type="checkbox" id="all"> </td>
+                            <td>카테고리</td>
+                            <td>제목</td>
+                            <td>작성자</td>
+                            <td>작성일</td>
+                            <td>최종 수정일</td>
+                            <td>상태</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <% if(!empty) { for(i=(page * num) - num; i < (page * num); i++) { if(i> len) {
+                        i++;
+                    } else {
+                        const data = allPostInfo[i]; %>
+                        <tr>
+                           <td><input class="form-check-input ms-4 me-0" type="checkbox" name="check" value="<%=data.POSTID%>" id="<%=data.POSTID%>"></td>
+                            <td class="category"><%=data.category %></td>
+                            <td class="title"><a href=<%=`/read/${data.POSTID}` %>>
+                                <%=data.TITLE %></a></td>
+                            <td><%=data.CREATER %></td>
+                            <% const now = new Date();
+                            const year = now.getFullYear();
+                            let month = now.getMonth() + 1;
+                            let date = now.getDate();
+
+                            if(month < 10) month = "0" + month;
+                            if(date < 10) date = "0" + date;
+                            const today = `${year}-${month}-${date}`;
+                            
+                            if(data.ADDTIME.substring(0, 10) === today) data.ADDTIME = data.ADDTIME.substring(11);
+                            else data.ADDTIME = data.ADDTIME.substring(0, 10);
+                            
+                            if(data.UPDTIME.substring(0, 10) === today) data.UPDTIME = data.UPDTIME.substring(11);
+                            else data.UPDTIME = data.UPDTIME.substring(0, 10); %>
+                            <td><%=data.ADDTIME %></td>
+                            <td><%=data.UPDTIME %></td>
+                            <td><% if(data.ISDELETED === 1) {%>
+                                삭제
+                                <% } else { %> 공개
+                                <% } %></td>
+                        </tr>
+                        <% } } } else { %>
+                            <tr>
+                                <td class="text-muted text-center" colspan="7">해당 결과가 없습니다</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+                </form>
+
+                <nav aria-label="Page navigation">
+                    <ul class="pagination d-felx justify-content-center">
+                      <li class="page-item">
+                        <a class="page-link" href="/setting/post?page=1&order=<%=order%>&filter=<%=filter%>" aria-label="Previous">
+                          <span aria-hidden="true">&laquo;</span>
+                        </a>
+                      </li>
+                      <% for(j=0; j < (len+1) / num; j++) { %>
+                        <li class="page-item"><a class="page-link" href="/setting/post?page=<%=j+1%>&order=<%=order%>&filter=<%=filter%>">
+                            <%=j+1%>
+                          </a></li>
+                        <% } %>
+                          <li class="page-item">
+                            <a class="page-link" href="/setting/post?page=<%=Math.ceil((len + 1)/num)%>&order=<%=order%>&filter=<%=filter%>" aria-label="Next">
+                              <span aria-hidden="true">&raquo;</span>
+                            </a>
+                          </li>
+                    </ul>
+                </nav>  
+
+                <script>
+                    const allCheckbox = document.getElementById('all');
+                    const checkboxes = document.querySelectorAll('input[name=check]');
+                    let checkedBox = null;
+
+                    const openBtn = document.getElementById('openBtn');
+                    const deleteBtn = document.getElementById('deleteBtn');
+
+                    //전체 선택, 전체 해제
+                    allCheckbox.addEventListener('change', () => {
+                        for(let box of checkboxes) {
+                            box.checked = allCheckbox.checked;
+                        }
+                        checkedBox = document.querySelectorAll('input[name=check]:checked');
+                        toggleButton(openBtn, checkedBox);
+                        toggleButton(deleteBtn, checkedBox);             
+                    }) ;
+
+                    //각각 체크박스 선택/해제
+                    for(let box of checkboxes) {
+                        box.addEventListener('change', () => {
+                            checkedBox = document.querySelectorAll('input[name=check]:checked');
+                            if(checkboxes.length !== checkedBox.length) {
+                                allCheckbox.checked = false;
+                            }
+                            else {
+                                allCheckbox.checked = true;
+                            }
+
+                            toggleButton(openBtn, checkedBox);
+                            toggleButton(deleteBtn, checkedBox);
+                        });
+                    }
+
+                    function deletePost() {
+                        const message = "선택한 글을 삭제하시겠습니까?";
+                        const deleteForm = document.getElementById('postModify');
+                        const action = '/setting/post/admin?modify=delete&order=<%=order%>&page=<%=page%>&filter=<%=filter%>';
+
+                        _confirm(message, deleteForm, action);
+                    }
+
+                    function openPost() {
+                        const message = "선택한 글을 공개로 전환하시겠습니까?";
+                        const openForm = document.getElementById('postModify');
+                        const action = '/setting/post/admin?modify=open&order=<%=order%>&page=<%=page%>&filter=<%=filter%>';
+
+                        _confirm(message, openForm, action);
+                    }
+
+                    function toggleButton(btn, checkbox) {
+                        if(checkbox.length !== 0) {
+                            btn.disabled = false;
+                        }
+                        else {
+                            btn.disabled = true;
+                        }
+                    }
+
+                    function _confirm(msg, form, _action) {
+                        if(confirm(msg)) {
+                            form.action = _action;
+                            console.log(form.action);
+                            form.submit();
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                </script>
+            </section>     
+        </main>
+    </div>
+</div>
+</body>
+</html>

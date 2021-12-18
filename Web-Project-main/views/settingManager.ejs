@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Admin</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Font Awesome icons (free version)-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" 
+    integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet"
+        type="text/css" />
+
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="/css/styles.css" rel="stylesheet">
+
+    <!-- Bootstrap core JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Core theme JS-->
+    <script src="/js/scripts.js"></script>
+    <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+</head>
+<!--상단바-->
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap py-1 shadow justify-content-start">
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 text-light" href="/">company name</a>
+    <button class="navbar-toggler d-md-none ms-auto collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <!--로그인 상태창 - 세션 정보에 따라 처리 - 글쓰기 버튼도 같이 처리-->
+    <!--로그인o -->
+    <% if(session.user) {%>
+        <div class="text-nowrap ms-auto" id="loginStatus">
+            <ul class="mb-0 ps-0" style="list-style: none;">
+                <li class="nav-item mx-0 mx-lg-1 dropdown">
+                    <a class="btn font-weight-bold btn-outline-secondary text-white rounded" id="logOutDropdown"
+                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <%= session.user %>님
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end bg-secondary" aria-labelledby="logOutDropdown">
+                        <% if(session.authority === 2) {%>
+                            <li class="dropdown-item"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/setting?order=UID">관리</a></li>
+                            <li class="dropdown-item"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/user/changePW">비밀번호 변경</a></li>
+                            <li class="dropdown-item"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/user/logout">로그아웃</a></li>
+                        <%}%>        
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <%}%>
+</header>
+
+<body>
+<div class="container-fluid" id="description">
+    <div class="row">
+        <!-- 게시판 side bar-->
+        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                    <li class="d-flex justify-content-center py-2" style="border-bottom:#D0CDCD solid 0.07rem;">
+                        <a class="text-dark fs-4" href="/setting?order=UID"> 메뉴얼 관리</a>
+                    </li>
+                    <li class="dropdown-item"><a class="text-dark nav-link" href="/setting/category"><i class="fas fa-list-ul me-2"></i>  카테고리</a></li>
+                    <li class="dropdown-item"><a class="text-dark  nav-link" href="/setting/post?order=category&page=1&filter=no"><i class="far fa-file-alt me-2"></i>   게시글</a></li>
+                    <li class="dropdown-item"><a class="text-dark  nav-link" href="/setting/user"><i class="far fa-user me-2"></i>  회원</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div
+                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h6 class="h6 text-muted">
+                    관리자 페이지
+                </h6>
+            </div>
+            <!--관리자 페이지-->
+            <section class="mb-5">
+                <form class="d-flex w-100" action="/setting/adminSelect" method="post" id="adminSelectForm" onsubmit="return search()">
+                    <label for="select" class="form-label text-nowrap me-2  pt-2">관리자로 추가할 회원 선택</label>
+                    <select class="form-select font-weight-bold text-secondary col-md-3 col-sm-4 me-2" id="select" name="keywordCategory" style="max-width:20%;">
+                        <option selected value="email">이메일</option>
+                        <option value="name">이름</option>
+                    </select>
+                    <input class="form-control" type="text" placeholder="Search" name="key" aria-label="Search">
+                    <button class="btn nav-link px-3 text-dark btn-outline-secondary" type="submit">Search</button>
+                </form>
+            </section>                
+                            
+            <div class="mb-5" id="addManagerDiv" style="display: none;">
+                <form action="" method="post" id="addManagerForm">                              
+                    <button class="btn btn-outline-secondary me-2 mb-2 mt-3" type="button" id="add" name="button" 
+                    value="" onclick="addManager()" disabled>추가</button>
+                    <input class="form-control" type="hidden" id="addedEmail" name="email" value="">
+                </form>
+                <table class="table table-hover" id="addManagerTable">
+                    <thead class="table-secondary text-white">
+                        <tr>
+                            <td><input class="form-check-input ms-4 me-0" type="checkbox" id="searchAll"></td>
+                            <td>UID</td>
+                            <td>이메일</td>
+                            <td>이름</td>
+                            <td>가입일</td>
+                            <td>최근 로그인</td>
+                        </tr>
+                    </thead>
+                    <tbody id="addManagerTbody"></tbody>                                
+                </table>
+            </div>               
+
+            <h5 class="mt-3">전체 관리자 조회</h5>                  
+            <div class="btns d-flex justify-content-start">   
+                <form action="" method="post" id="managerModifyForm">                       
+                    <button class="btn btn-outline-secondary me-2 mb-2 mt-3" type="button" id="delete" name="button" 
+                        value="secession" onclick="deleteManager()" disabled>삭제
+                    </button>
+                    <input class="form-control" type="hidden" id="deletedEmail" name="email" value="">
+                </form>        
+                <a class="btn btn-outline-secondary mb-2 mt-3" id="filter" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    정렬 <i class="fas fa-caret-down"></i>
+                </a>
+                
+                <ul class="dropdown-menu text-white bg-secondary" aria-labelledby="filter">
+                    <li class="nav-link dropdown-item"><a class="nav-link py-0 px-0 px-lg-3 rounded text-light" href="/setting?order=UID">적용 안 함</a></li>
+                    <li class="nav-link dropdown-item"><a class="nav-link py-0 px-0 px-lg-3 rounded text-light" href="/setting?order=EMAIL">이메일</a></li>
+                    <li class="nav-link dropdown-item"><a class="nav-link py-0 px-0 px-lg-3 rounded text-light" href="/setting?order=NAME">이름</a></li>
+                    <li class="nav-link dropdown-item"><a class="nav-link py-0 px-0 px-lg-3 rounded text-light" href="/setting?order=JOINDATE">가입일</a></li>
+                    <li class="nav-link dropdown-item"><a class="nav-link py-0 px-0 px-lg-3 rounded text-light" href="/setting?order=RECENTLOGIN">최근 로그인</a></li>
+                </ul>      
+            </div>
+
+            <table class="table table-hover" id="allManagerTable">
+                <thead class="table-secondary text-white">
+                    <tr>
+                        <td><input class="form-check-input ms-4 me-0" type="checkbox" id="all"></td>
+                        <td>UID</td>
+                        <td>권한</td>
+                        <td>이메일</td>
+                        <td>이름</td>
+                        <td>가입일</td>
+                        <td>최근 로그인</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for(i = 0; i < allUserInfo.length; i++) {
+                        const data = allUserInfo[i]; %>
+                        <tr>
+                            <td><input class="form-check-input ms-4 me-0" type="checkbox" name="check" value="<%=data.UID%>"></td>
+                            <td><%=data.UID %></td>
+                            <td><% if(data.AUTHORITY === 2) { %> 
+                                    관리자
+                                <% } else { %> 
+                                    매니저
+                                <% } %></td>
+                            <td><%=data.EMAIL %></td>
+                            <td>
+                                <li class="nav-item mx-0 mx-lg-1 dropdown"  style="list-style: none;">
+                                    <a class="font-weight-bold text-dark" id="logOutDropdown" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                <%=data.NAME %>
+                            </a><ul class="dropdown-menu dropdown-menu-end bg-light" aria-labelledby="logOutDropdown">
+                                <li class="dropdown-item">
+                                    <a class="nav-link py-0 px-0 px-lg-3 rounded text-dark" href="/setting/user?page=1&name=<%=data.NAME%>">작성 글 보기</a></li>
+                                </ul></li>
+                            </td>
+                            <td><%=data.JOINDATE %></td>
+                            <td><%=data.RECENTLOGIN %></td>
+                        </tr>
+                        <% } %>
+                </tbody>
+            </table>                
+
+            <script>
+                const userAllCheckbox = document.getElementById('all');
+                let userCheckboxes = document.querySelectorAll('input[name=check]');
+                let userCheckedBox = null;
+                const deleteBtn = document.getElementById('delete');
+
+  
+                const searchAllCheckbox = document.getElementById('searchAll');    
+                let searchCheckedBox = null;     
+                const addBtn = document.getElementById('add');      
+
+
+                for(let i = 0; i < userCheckboxes.length; i++) {
+                    const tr = userCheckboxes[i].parentNode.parentNode;
+                    if(tr.children[2].innerText === '관리자') {
+                        userCheckboxes[i].remove();
+                        userCheckboxes = document.querySelectorAll('input[name=check]');
+                    }
+                }
+
+                //전체 관리자 조회 테이블
+                //전체 선택, 전체 해제
+                userAllCheckbox.addEventListener('change', () => {
+                    checkAll( userAllCheckbox, userCheckboxes);    
+                    toggleButton(deleteBtn, document.querySelectorAll('input[name=check]:checked'));           
+                });
+
+                //체크박스 선택됐을 때 이벤트 발생
+                for(let box of userCheckboxes) {
+                    box.addEventListener('change', () => {
+                        userCheckedBox = document.querySelectorAll('input[name=check]:checked');
+                        toggleAllcheckbox(userAllCheckbox, userCheckedBox, userCheckboxes);
+                        toggleButton(deleteBtn, document.querySelectorAll('input[name=check]:checked'));
+                    });
+                }
+                
+
+                //검색 테이블
+                //전체 선택, 전체 해제
+                searchAllCheckbox.addEventListener('change', () => {
+                    checkAll( searchAllCheckbox, document.querySelectorAll('input[name=searchCheck]'));    
+                    toggleButton(addBtn, document.querySelectorAll('input[name=searchCheck]:checked'));               
+                }) 
+
+                //체크박스 선택됐을 때 이벤트 발생
+                function _onchange() {
+                    searchCheckedBox = document.querySelectorAll('input[name=searchCheck]:checked');
+                    toggleAllcheckbox( searchAllCheckbox, searchCheckedBox, document.querySelectorAll('input[name=searchCheck]'));
+                    toggleButton(addBtn, searchCheckedBox);
+                }
+
+
+                function toggleAllcheckbox(allcheckbox, checked, uncheck) {
+                    if(checked.length !== uncheck.length) {
+                        allcheckbox.checked = false;
+                    }
+                    else {
+                        allcheckbox.checked = true;
+                    }
+                }
+
+                function toggleButton(btn, checkbox) {
+                    if(checkbox.length !== 0) {
+                        btn.disabled = false;
+                    }
+                    else {
+                        btn.disabled = true;
+                    }
+                }
+
+                function checkAll(allcheckbox, checkboxes) {
+                    for(let box of checkboxes) {
+                        box.checked =  allcheckbox.checked;
+                    }
+                }
+
+                function _confirm(msg, form, _action) {
+                    if(confirm(msg)) {
+                        form.action = _action;
+                        console.log(form.action);
+                        form.submit();
+                    }
+                    else {
+                        return false;
+                    }
+                }
+            </script> 
+            <script>
+                  function appendRow(data) {
+                    const tbody = document.getElementById('addManagerTbody');
+                    const tr = document.createElement('tr');
+
+                    if(typeof data !== 'string') {
+                        const checkbox = document.createElement('td');
+                        const uid = document.createElement('td');
+                        const email = document.createElement('td');
+                        const name = document.createElement('td');
+                        const joinDate = document.createElement('td');
+                        const recentLogin = document.createElement('td');
+                        uid.innerText = data.UID;
+                        email.innerText = data.EMAIL;
+                        name.innerText = data.NAME;
+                        joinDate.innerText = data.JOINDATE;
+                        recentLogin.innerText = data.RECENTLOGIN;
+
+                        const check = document.createElement('input');
+                        check.classList.add('form-check-input', 'ms-4' , 'me-0');
+                        check.type = 'checkbox';
+                        check.name = 'searchCheck';
+                        check.onchange = _onchange;
+                        checkbox.appendChild(check);
+
+                        tr.appendChild(checkbox);
+                        tr.appendChild(uid);
+                        tr.appendChild(email);
+                        tr.appendChild(name);
+                        tr.appendChild(joinDate);
+                        tr.appendChild(recentLogin);
+                    }
+                    else {
+                        const td = document.createElement('td');
+                        td.classList.add('text-center');
+                        td.colSpan = 6;
+                        td.innerText = data;
+                        tr.appendChild(td);
+                    }                                
+                    tbody.appendChild(tr);
+                }
+
+                function deleteManager() {
+                    const message = "선택한 회원을 관리자에서 삭제하겠습니까?";
+                    const managerForm = document.getElementById('managerModifyForm');
+                    const action = '/setting/removeAdmin';
+                    const emailInput = document.getElementById('deletedEmail');
+                    const row = document.querySelector('#allManagerTable tr');
+                    const checkedBox = document.querySelectorAll('input[name=check]:checked');
+                    const emails = getSelectdEmail(row, checkedBox);
+                    emailInput.value = emails;
+
+                    _confirm(message, managerForm, action);                                        
+                }
+
+                function addManager() {
+                    const message = "선택한 회원을 관리자에 추가하겠습니까?";
+                    const addForm = document.getElementById('addManagerForm');
+                    const action = '/setting/addAdmin';
+                    const emailInput = document.getElementById('addedEmail');
+                    const row = document.querySelector('#addManagerTable tr');
+                    const checkedBox = document.querySelectorAll('input[name=searchCheck]:checked');
+                    const emails = getSelectdEmail(row, checkedBox);
+                    emailInput.value = emails;
+                    
+
+                    _confirm(message, addForm, action);    
+                }
+
+                function getSelectdEmail(tableRow, checkbox) {
+                    let selected = checkbox;
+                    const emails = [];
+                    let index = 0;
+                    
+                    for(let i = 0; i < tableRow.children.length; i++) {
+                        if(tableRow.children[i].innerText === '이메일') {
+                            index = i;
+                        }
+                    }
+
+                    for(let i = 0; i< selected.length; i++){
+                        const selectedTr = selected[i].parentNode.parentNode;
+                        emails.push(selectedTr.children[index].innerText);
+                    }                                    
+                    
+                    return emails;  
+                }
+
+                function search() {
+                    const searchSelect = document.getElementById('select');
+                    const searchInput = document.querySelectorAll('#adminSelectForm input');
+                    let data = {};
+
+                    data[searchSelect.name] = searchSelect.value;
+                    for(let i = 0; i < searchInput.length; i++) {                   
+                        data[searchInput[i].name] = searchInput[i].value; 
+                    }
+
+                    sendAjax(data);
+                    return false;
+                }
+
+                function sendAjax(data) {
+                    return fetch('/setting/adminSelect', {
+                        method : 'POST',
+                        headers :  {'Content-Type' : 'application/json' },
+                        body : JSON.stringify(data),
+                    })
+                    .then(res => res.json())
+                    .then(result => {
+                        const tbody = document.getElementById('addManagerTbody');
+                        while(tbody.hasChildNodes()) {
+                            tbody.removeChild(tbody.firstElementChild);
+                        }
+                        document.getElementById('addManagerDiv').style.display = 'block';
+                        
+                        if(typeof result !== 'boolean') {
+                            for(let i = 0; i < result.length; i++) {
+                                appendRow(result[i]);
+                            }
+                        }
+                        else {
+                            appendRow('검색 결과가 없습니다');
+                        }
+                    })
+                    .catch(err => {
+                        alert('검색에 실패했습니다');
+                        console.log('error ', err);
+                    }) 
+                }
+            </script>             
+        </main>
+    </div>
+</div>
+</body>
+</html>

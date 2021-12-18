@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <title>login</title>
+  <!-- Favicon-->
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+  <!-- Font Awesome icons (free version)-->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" 
+    integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+  <!-- Google fonts-->
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+  <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet"
+    type="text/css" />
+
+  <!-- Core theme CSS (includes Bootstrap)-->
+  <link href="/css/styles.css" rel="stylesheet">
+
+  <!-- Bootstrap core JS-->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Core theme JS-->
+  <script src="/js/scripts.js"></script>
+  <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+
+</head>
+
+<body class="text-center form-signin-body">
+
+  <!--로그인 창 - 유효성 검사 추가-->
+
+  <main class="form-signin border align-items-center">
+    <a href="/"><img class="" src="/static/company_logo.svg" alt="" width="200" height="60"></a>
+    <br><br><br>
+    <form action="/user/changePW" method="POST" class="needs-validation" novalidate>
+      <h1 class="h3 mb-3 fw-normal">비밀번호 변경</h1>
+
+      <div class="form-floating">
+        <input type="password" class="form-control" id="floatingPassword" placeholder="현재 비밀번호" name="currentPW" autofocus required>
+        <label for="floatingPassword">현재 비밀번호</label>
+        <div class="invalid-feedback mb-3">현재 비밀번호를 입력해 주세요</div>
+      </div>
+
+      <div class="form-floating">
+        <input type="password" class="form-control" id="floatingNewPW1" placeholder="새 비밀번호" name="newPW1" required>
+        <label for="floatingNewPW1">새 비밀번호</label>
+        <div class="invalid-feedback mb-3">새 비밀번호를 입력해 주세요</div>
+      </div>
+
+      <div class="form-floating">
+        <input type="password" class="form-control" id="floatingNewPW2"  placeholder="새 비밀번호 확인" name="newPW2" required>
+        <label for="floatingNewPW2">새 비밀번호 확인</label>
+        <div class="invalid-feedback mb-3">새 비밀번호를 한번 더 입력해 주세요</div>
+      </div>
+
+      <button class="w-100 btn btn-lg btn-primary mt-5" id="loginButton" type="submit">저장</button>
+    </form>
+
+    <script>
+      //form data 유효성 확인
+      (function () {
+        'use strict'
+
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        const forms = document.querySelectorAll('.needs-validation')
+
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+          .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+              if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+              }
+
+              form.classList.add('was-validated')
+            }, false)
+          })
+      })()
+    </script>
+  </main>
+</body>
+
+</html>
