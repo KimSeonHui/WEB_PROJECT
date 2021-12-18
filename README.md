@@ -20,4 +20,6 @@
 
 
 **Skill**
-- HTML5, CSS, JavaScript, EJS, Bootstrap5, jQuery, GitLab, Figma
+- Frontend : HTML5, CSS, JavaScript, EJS, Bootstrap5, 
+- DevOps : GitLab
+- Design : Figma
