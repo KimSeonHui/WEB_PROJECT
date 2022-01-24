@@ -5,17 +5,17 @@ import SearchIcon from '@mui/icons-material/Search';
 
 function Navbar() {
     
-    return <Grid container spacing={2} sx={{bgcolor : '#212529', py : '10px', pl : '15px'}}>
-    <Grid item xs={2}>
+    return <Grid container spacing={2} sx={{bgcolor : '#212529', py : '10px'}}>
+    <Grid item sx={{width:'250px'}}>
         <Link 
             href="/" 
             underline='none' 
-            sx={{color : '#fff', fontSize : 'h5.fontSize'}}
+            sx={{color : '#fff', fontSize : 'h5.fontSize', pl : '15px'}}
         >
             Company
         </Link>
     </Grid>
-    <Grid item xs={8}>
+    <Grid item xs={7} sx={{pl: 0}}>
         <Paper 
             component="form"
             action='/search'

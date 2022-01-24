@@ -1,6 +1,7 @@
 import axios from "axios";
 import {useEffect} from "react";
 import Navbar from "./component/Navbar";
+import Sidebar from "./component/Sidebar";
 
 function App() {
   const callApi = async () => {
@@ -17,9 +18,10 @@ function App() {
     callApi();
   }, []);
 
-  return (
-   <Navbar></Navbar>
-  );
+  return <div>
+    <Navbar />
+    <Sidebar />
+  </div>
 }
 
 export default App;
