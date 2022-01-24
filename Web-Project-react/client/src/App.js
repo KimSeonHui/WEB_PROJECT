@@ -1,12 +1,12 @@
-import './App.css';
 import axios from "axios";
 import {useEffect} from "react";
+import Navbar from "./component/Navbar";
 
 function App() {
   const callApi = async () => {
-    axios.get('/api')
+    axios.get('/main')
     .then((res) => {
-      console.log(res.data.test)
+      console.log(res.data.test);
     })
     .catch((err) => {
       console.log(err);
@@ -18,7 +18,7 @@ function App() {
   }, []);
 
   return (
-   <div>test</div>
+   <Navbar></Navbar>
   );
 }
 
