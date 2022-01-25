@@ -10,7 +10,7 @@ function App() {
   const callApi = async () => {
     axios.get('/main')
     .then((res) => {
-      setCategory(res.data.result);
+      setCategory(res.data);
     })
     .catch((err) => {
       console.log(err);

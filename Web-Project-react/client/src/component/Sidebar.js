@@ -3,17 +3,20 @@ import {TreeView, TreeItem } from '@mui/lab';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
-function createCategory(data) {
+const renderTreeItem = (data) => {
     const dataArr = Object.values(data);
     const items = [];
+
     if(data !== {}) {
-        dataArr.map(x => {
-            items.push(<TreeItem nodeId={String(x.CID)} label={x.NAME} key={x.CID}></TreeItem> )
+        dataArr.map(node => {
+            items.push(<TreeItem nodeId={String(node.id)} label={node.name} key={node.id}></TreeItem> )
         });
 
-        return items;
-        }
-  }
+        return items; 
+
+    }     
+}
+
    
 
 function Sidebar({category}) {
@@ -40,12 +43,12 @@ function Sidebar({category}) {
         <Divider />
         <Box sx={{pl : '20px', pt : '15px'}} >
             <TreeView
-                aria-label="file system navigator"
+                aria-label="rich object"
                 defaultCollapseIcon={<ExpandMoreIcon />}
                 defaultExpandIcon={<ChevronRightIcon />}
                 sx={{overflowX : 'hidden'}}
             >
-                {createCategory(category)}
+               {renderTreeItem(category)}
             </TreeView>
         </Box>
     </Box>

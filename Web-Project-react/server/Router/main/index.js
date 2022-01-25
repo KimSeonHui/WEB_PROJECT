@@ -20,8 +20,19 @@ router.get("/", (req, res) => {
             console.log(error);
         }
         else {
-            const categories = result;
-            res.send({result : categories});
+            const categories = [];
+            for(node of result) {
+                console.log(node);
+                const data = {
+                    id : `${node.CID}`,
+                    name : `${node.NAME}`,
+                    parent : node.PID === null ? '#' : node.PID,
+                    level : `${node.LEVEL}`
+                }
+                categories.push(data);
+            }
+            console.log(categories);
+            res.send(categories);           
         }
     })
 });
