@@ -1,13 +1,16 @@
 import axios from "axios";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import Navbar from "./component/Navbar";
 import Sidebar from "./component/Sidebar";
+import Main from "./component/Main";
 
 function App() {
+  const [categories, setCategory] = useState({});
+
   const callApi = async () => {
     axios.get('/main')
     .then((res) => {
-      console.log(res.data.test);
+      setCategory(res.data.result);
     })
     .catch((err) => {
       console.log(err);
@@ -20,7 +23,10 @@ function App() {
 
   return <div>
     <Navbar />
-    <Sidebar />
+    <Sidebar category={categories}/>
+    <Main />
+    
+    
   </div>
 }
 
