@@ -36,13 +36,13 @@ function Navbar() {
             variant='outlined'
             size='large'
             sx={{
-                borderColor: '#2c3e50', 
-                color: '#2c3e50', 
+                borderColor: '#fff', 
+                color: '#fff', 
                 border: 2, 
                 fontSize: 15,
                 '&:hover' : {
-                    borderColor: '#2c3e50',
-                    backgroundColor : '#2c3e50',
+                    borderColor: '#1976d2',
+                    backgroundColor : '#1976d2',
                     color: '#fff'
                 }
              }}
