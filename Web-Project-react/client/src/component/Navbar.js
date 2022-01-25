@@ -10,7 +10,7 @@ function Navbar() {
         <Link 
             href="/" 
             underline='none' 
-            sx={{color : '#fff', fontSize : 'h5.fontSize', pl : '15px'}}
+            sx={{color : '#fff', fontSize : 'h5.fontSize', px : '70px'}}
         >
             Company
         </Link>
