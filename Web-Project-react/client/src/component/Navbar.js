@@ -41,8 +41,8 @@ function Navbar() {
                 border: 2, 
                 fontSize: 15,
                 '&:hover' : {
-                    borderColor: '#1976d2',
-                    backgroundColor : '#1976d2',
+                    borderColor: '#003964',
+                    backgroundColor : '#003964',
                     color: '#fff'
                 }
              }}
