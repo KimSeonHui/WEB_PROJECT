@@ -22,7 +22,6 @@ router.get("/", (req, res) => {
         else {
             const categories = [];
             for(node of result) {
-                console.log(node);
                 const data = {
                     id : `${node.CID}`,
                     name : `${node.NAME}`,

@@ -1,23 +1,26 @@
 import {Box, Link, Divider } from '@mui/material';
 import {TreeView, TreeItem } from '@mui/lab';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
+import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 
-const renderTreeItem = (data) => {
-    const dataArr = Object.values(data);
-    const items = [];
-
-    if(data !== {}) {
-        dataArr.map(node => {
-            items.push(<TreeItem nodeId={String(node.id)} label={node.name} key={node.id}></TreeItem> )
-        });
-
-        return items; 
-
-    }     
+const renderSubTree = (category, node) => {
+    const subTree = [];
+    for(let i = 0; i < category.length; i++) {
+        if(node.id === String(category[i].parent)) {
+            subTree.push(
+            <TreeItem 
+                key={category[i].id} 
+                nodeId={String(category[i].id)} 
+                label={category[i].name}
+                sx={{mt : '4px'}}
+            >
+            </TreeItem>); 
+        }
+    }
+    return subTree;
 }
 
-   
+
 
 function Sidebar({category}) {
     return <Box
@@ -44,11 +47,22 @@ function Sidebar({category}) {
         <Box sx={{pl : '20px', pt : '15px'}} >
             <TreeView
                 aria-label="rich object"
-                defaultCollapseIcon={<ExpandMoreIcon />}
-                defaultExpandIcon={<ChevronRightIcon />}
+                defaultCollapseIcon={<FolderOpenOutlinedIcon />}
+                defaultExpandIcon={<FolderOutlinedIcon />}
                 sx={{overflowX : 'hidden'}}
             >
-               {renderTreeItem(category)}
+               { Object.values(category).map((node) => ( 
+                   node.parent === '#' ? (
+                    <TreeItem 
+                        nodeId={String(node.id)} 
+                        label={node.name} 
+                        key={node.id}
+                        sx={{mt : '8px'}}
+                    >
+                        {node.level < 2  ? renderSubTree(category, node) : null }
+                    </TreeItem>
+                   ) : null
+                )) }
             </TreeView>
         </Box>
     </Box>
