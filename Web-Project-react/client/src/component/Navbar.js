@@ -31,12 +31,11 @@ function Navbar() {
             </IconButton>
         </Paper>
     </Grid>
-    <Grid item xs={2}>
+    <Grid item xs={1.1}>
         <Button 
             variant='outlined'
             size='large'
             sx={{
-                ml : 12,
                 borderColor: '#fff', 
                 color: '#fff', 
                 border: 2, 
