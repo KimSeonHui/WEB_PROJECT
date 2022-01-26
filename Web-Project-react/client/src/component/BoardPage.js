@@ -1,8 +1,20 @@
 import { Box, Typography, Divider, Container   } from '@mui/material';
+import { useState, useEffect } from 'react';
 import Table from "./BoardTable";
 
-function BoardPage() {
 
+function BoardPage({category, cid}) {
+    const [selected, setSelected] = useState({});
+    const getSelectedCategory = (category, cid) => {
+        if(category !== {}) {
+            setSelected(category[cid - 1]);
+        }
+    }
+
+    useEffect(() => {
+        getSelectedCategory(category, cid);
+    }, [category]);
+   
     return <Container maxWidth="xl">
         <Box sx={{width : "100%", p : '20px'}}>
         <Typography 
@@ -10,7 +22,7 @@ function BoardPage() {
             component="div" 
             gutterBottom
         >
-            카테고리 이름
+            {selected !== undefined ? selected.name : null}
         </Typography>
         <Divider />
         <Table />
