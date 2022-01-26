@@ -15,7 +15,7 @@ function Navbar() {
             Company
         </Link>
     </Grid>
-    <Grid item xs={7} sx={{pl: 0}}>
+    <Grid item xs sx={{pl: 0}}>
         <Paper 
             component="form"
             action='/search'
@@ -36,6 +36,7 @@ function Navbar() {
             variant='outlined'
             size='large'
             sx={{
+                ml : 12,
                 borderColor: '#fff', 
                 color: '#fff', 
                 border: 2, 
