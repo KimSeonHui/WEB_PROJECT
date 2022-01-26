@@ -1,42 +1,23 @@
-import axios from "axios";
-import Grid from '@mui/material/Grid';
-import {useEffect, useState} from "react";
-import Navbar from "./component/Navbar";
-import Sidebar from "./component/Sidebar";
-import Main from "./component/Main";
+import MainHome from "./routes/MainHome";
+import Board from "./routes/Board";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom";
+
 
 function App() {
-  const [categories, setCategory] = useState({});
-
-  const callApi = async () => {
-    axios.get('/main')
-    .then((res) => {
-      setCategory(res.data);
-    })
-    .catch((err) => {
-      console.log(err);
-    })
-  };
-
-  useEffect(() => {
-    callApi();
-  }, []);
-
-  return <div>
-    <Navbar />
-    <Grid container>
-      <Grid item>
-        <Sidebar category={categories} sx={{width: '250px', height: '100vh'}}/>
-      </Grid>
-      <Grid item xs>
-       <Main />
-      </Grid>
-    </Grid>
-    
-    
-    
-    
-  </div>
+  return  <Router>
+    <Switch>
+        <Route path="/board">
+          <Board />
+        </Route>
+        <Route path="/">
+          <MainHome />
+        </Route>
+    </Switch>
+  </Router>;
 }
 
 export default App;
