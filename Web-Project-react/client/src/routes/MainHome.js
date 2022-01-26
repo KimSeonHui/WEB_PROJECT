@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 import Grid from '@mui/material/Grid';
 import Navbar from "../component/Navbar";
 import Sidebar from "../component/Sidebar";
-import Main from "../component/Main";
+import MainPage from "../component/MainPage";
 
 
 function MainHome() {
@@ -31,7 +31,7 @@ function MainHome() {
                     <Sidebar category={categories} sx={{width: '250px', height: '100vh'}}/>
                 </Grid>
                 <Grid item xs>
-                    <Main />
+                    <MainPage />
                 </Grid>
         </Grid>    
   </div>

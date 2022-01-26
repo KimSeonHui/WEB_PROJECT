@@ -30,7 +30,7 @@ const rows = [
     createData('5', '과학', 'COSMOS', '땡구', '2021-01-11'),
 ];
 
-function TableTemplete() {
+function MainTable() {
 
     return <TableContainer component={Paper} sx={{mt : '20px'}}>
         <Table size="medium">
@@ -64,4 +64,4 @@ function TableTemplete() {
     </TableContainer>
 }
 
-export default TableTemplete;
+export default MainTable;

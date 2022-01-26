@@ -1,5 +1,5 @@
 import { Box, Typography, Divider, Container   } from '@mui/material';
-import Table from "./TableTemplete";
+import Table from "./MainTable";
 
 function Main() {
     return <Container maxWidth="xl">

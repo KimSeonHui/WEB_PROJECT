@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import Grid from '@mui/material/Grid';
 import Navbar from "../component/Navbar";
 import Sidebar from "../component/Sidebar";
+import BoardPage from "../component/BoardPage";
 
 
 
@@ -10,7 +11,7 @@ function Board() {
     const [categories, setCategory] = useState({});
 
     const callApi = async () => {
-        axios.get('/main')
+        axios.get('/board')
         .then((res) => {
         setCategory(res.data);
         })
@@ -31,7 +32,7 @@ function Board() {
                 <Sidebar category={categories}  sx={{width: '250px', height: '100vh'}}/>
             </Grid>
             <Grid item xs>
-               
+                <BoardPage />
             </Grid>
     </Grid>    
 </div>
