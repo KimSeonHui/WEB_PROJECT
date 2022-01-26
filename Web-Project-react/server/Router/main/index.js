@@ -30,7 +30,6 @@ router.get("/", (req, res) => {
                 }
                 categories.push(data);
             }
-            console.log(categories);
             res.send(categories);           
         }
     })
