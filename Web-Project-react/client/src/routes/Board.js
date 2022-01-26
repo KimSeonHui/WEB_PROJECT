@@ -4,14 +4,16 @@ import Grid from '@mui/material/Grid';
 import Navbar from "../component/Navbar";
 import Sidebar from "../component/Sidebar";
 import BoardPage from "../component/BoardPage";
+import { useParams } from "react-router-dom";
 
 
 
 function Board() {
     const [categories, setCategory] = useState({});
+    const { cid } = useParams();
 
     const callApi = async () => {
-        axios.get('/board')
+        axios.get(`/board/:${cid}`)
         .then((res) => {
         setCategory(res.data);
         })
@@ -32,7 +34,7 @@ function Board() {
                 <Sidebar category={categories}  sx={{width: '250px', height: '100vh'}}/>
             </Grid>
             <Grid item xs>
-                <BoardPage />
+                <BoardPage category={categories} cid={cid}/>
             </Grid>
     </Grid>    
 </div>

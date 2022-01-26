@@ -12,8 +12,7 @@ const conn = mysql.createConnection({
 
 conn.connect();
 
-router.get("/", (req, res) => {
-
+router.get("/:cid", (req, res) => {
     let sql = `SELECT * FROM CATEGORY`;
     conn.query(sql, (error, result) => {
         if(error) {
@@ -32,7 +31,7 @@ router.get("/", (req, res) => {
             }
             res.send(categories);           
         }
-    })
+    });
 });
 
 module.exports = router;

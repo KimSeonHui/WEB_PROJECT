@@ -10,7 +10,7 @@ import {
 function App() {
   return  <Router>
     <Switch>
-        <Route path="/board">
+        <Route path="/board/:cid">
           <Board />
         </Route>
         <Route path="/">
