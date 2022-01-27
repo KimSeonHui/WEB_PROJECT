@@ -1,8 +1,17 @@
 import {useEffect, useState} from "react";
-import { Box, Typography, TextField, Button, Link} from '@mui/material';
+import { Box, Typography, TextField, Button, Link, Input} from '@mui/material';
 
 function Login() {
+    const checkValidation = (event) => {
+        const email = document.getElementById('email');
+        const pw = document.getElementById('password');
 
+        console.log('email', email.value, ' pw', pw.value)
+        if(email.value === '' || pw.value === '') {
+            event.preventDefault();
+            console.log('이메일 또는 비밀번호가 유효하지 않습니다.');
+        }
+    }
 
     return <Box 
         sx={{
@@ -38,6 +47,8 @@ function Login() {
                     autoComplete="off"
                     action="/user/login"
                     method="post"
+                    className="needs-validation"
+                    onSubmit={checkValidation}
                     >
                     <TextField  
                         required
@@ -65,7 +76,7 @@ function Login() {
                     </Button>
                     <br />
 
-                    <Link underline="none" href="/user/singin" sx={{color : '#6c757d', mr : 4}}>
+                    <Link underline="none" href="/user/singin" sx={{color : '#6c757d', mr : 2}}>
                         회원가입
                     </Link>
                     <Link underline="none" href="/user/findPw"  sx={{color : '#6c757d'}}>
