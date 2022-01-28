@@ -8,7 +8,7 @@ function Navbar() {
     return <Grid container spacing={2} sx={{bgcolor : '#212529', py : '10px'}}>
     <Grid item sx={{width:'250px'}}>
         <Link 
-            href="/" 
+            href="/user/login" 
             underline='none' 
             sx={{color : '#fff', fontSize : 'h5.fontSize', px : '70px'}}
         >

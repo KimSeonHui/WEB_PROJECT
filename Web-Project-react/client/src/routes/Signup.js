@@ -1,3 +1,4 @@
+import axios from "axios";
 import {useState} from "react";
 import { Box, Typography, TextField, Button, Link } from '@mui/material';
 
@@ -45,17 +46,21 @@ function Login() {
 
     const onSubmit = (event) => {
         if(email.length === 0 || emailErr) {
-            event.preventDefault();
             setEmailErr(true);
         }
         if(pw.length === 0 || pwErr) {
-            event.preventDefault();
             setPwErr(true);
         }   
         if(name.length === 0 || nameErr) {
-            event.preventDefault();
             setNameErr(true);
         }  
+        event.preventDefault();
+        axios.post('/signin', {
+                username : name,
+                emails : email,
+                password : pw
+        })
+        .then((result) => console.log('result', result));
     }
 
     return <Box 
