@@ -6,36 +6,39 @@ function Login() {
     const checkPw = /^[A-Za-z0-9_-]{2,8}$/;
 
     const [email, setEmail] = useState('');
+    const [emailErr, setEmailErr] = useState(false);
     const [pw, setPw] = useState('');
+    const [pwErr, setPwErr] = useState(false);
 
     const onChangeEmail = (event) => {
         setEmail(event.target.value);
+        if(checkEmail.test(email)) {
+            setEmailErr(false);
+        }
+        else {
+            setEmailErr(true);
+        }
     }
 
     const onChangePw = (event) => {
         setPw(event.target.value);
-    }
-
-    const checkEmailValidation = () => {
-        if(email !== '' && !checkEmail.test(email)) {
-            return checkEmail.test(email);
+        if(checkPw.test(pw)) {
+            setPwErr(false);
         }
         else {
-            return !checkEmail.test(email);
+            setPwErr(true);
         }
     }
 
-    const checkPwValidation = () => {
-        if(pw === '') {
-            return true;
+    const onSubmit = (event) => {
+        if(email.length === 0 || emailErr) {
+            event.preventDefault();
+            setEmailErr(true);
         }
-        if(pw !== '' && !checkPw.test(pw)) {
-            return false;
-        }
-        else if (pw !== '' && checkPw.test(pw)) {
-            return true;
-        }
-        
+        if(pw.length === 0 || pwErr) {
+            event.preventDefault();
+            setPwErr(true);
+        }    
     }
 
     return <Box 
@@ -73,16 +76,16 @@ function Login() {
                     action="/user/login"
                     method="post"
                     className="needs-validation"
-                    
-                    >
+                    onSubmit={onSubmit}    
+                >
                     <TextField  
                         required
                         id="email"
                         label="Email adress"
                         variant="standard"
                         value={email}
-                        error={!checkEmailValidation()}
-                        helperText={checkEmailValidation() ? '' : '이메일이 유효하지 않습니다.'}
+                        error={emailErr}
+                        helperText={emailErr ? '이메일이 유효하지 않습니다.' : ''}
                         onChange={onChangeEmail}
                     />
                     <TextField  
@@ -91,8 +94,8 @@ function Login() {
                         label="password"
                         variant="standard"
                         value={pw}
-                        error={!checkPwValidation()}
-                        helperText={checkPwValidation() ? '' : '비밀번호를 2글자 이상 8글자 이하로 입력해주세요'}
+                        error={pwErr}
+                        helperText={pwErr ? '비밀번호를 2글자 이상 8글자 이하로 입력해주세요' : ''}
                         onChange={onChangePw}
                     />
                     <Button 
