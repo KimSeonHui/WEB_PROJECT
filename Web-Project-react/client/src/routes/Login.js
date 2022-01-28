@@ -3,6 +3,7 @@ import { Box, Typography, TextField, Button, Link, Input} from '@mui/material';
 
 function Login() {
     const checkEmail = /[\w\-\.]+\@[\w\-\.]+/g;
+    const checkPw = /^[A-Za-z0-9_-]{2,8}$/;
 
     const [email, setEmail] = useState('');
     const [pw, setPw] = useState('');
@@ -22,6 +23,19 @@ function Login() {
         else {
             return !checkEmail.test(email);
         }
+    }
+
+    const checkPwValidation = () => {
+        if(pw === '') {
+            return true;
+        }
+        if(pw !== '' && !checkPw.test(pw)) {
+            return false;
+        }
+        else if (pw !== '' && checkPw.test(pw)) {
+            return true;
+        }
+        
     }
 
     return <Box 
