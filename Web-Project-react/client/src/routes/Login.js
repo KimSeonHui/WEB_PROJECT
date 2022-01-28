@@ -2,25 +2,25 @@ import {useEffect, useState} from "react";
 import { Box, Typography, TextField, Button, Link, Input} from '@mui/material';
 
 function Login() {
-    const [helpTextEmail, setEmailText] = useState('');
-    const [helpTextPw, setPwText] = useState('');
+    const checkEmail = /[\w\-\.]+\@[\w\-\.]+/g;
 
-    const checkValidation = (event) => {
-        const email = document.getElementById('email');
-        const pw = document.getElementById('password');
+    const [email, setEmail] = useState('');
+    const [pw, setPw] = useState('');
 
-        console.log('email', email.value, ' pw', pw.value)
-        if(email.value === '') {
-            event.preventDefault();
-            email.parentElement.classList.add('Mui-error');
-            email.parentElement.previousElementSibling.classList.add('Mui-error');
-            setEmailText('이메일이 유효하지 않습니다.');           
+    const onChangeEmail = (event) => {
+        setEmail(event.target.value);
+    }
+
+    const onChangePw = (event) => {
+        setPw(event.target.value);
+    }
+
+    const checkEmailValidation = () => {
+        if(email !== '' && !checkEmail.test(email)) {
+            return checkEmail.test(email);
         }
-        if(pw.value === '') {
-            event.preventDefault();
-            pw.parentElement.classList.add('Mui-error');
-            pw.parentElement.previousElementSibling.classList.add('Mui-error');
-            setPwText('이메일 또는 비밀번호가 유효하지 않습니다.');
+        else {
+            return !checkEmail.test(email);
         }
     }
 
@@ -59,21 +59,27 @@ function Login() {
                     action="/user/login"
                     method="post"
                     className="needs-validation"
-                    onSubmit={checkValidation}
+                    
                     >
                     <TextField  
                         required
                         id="email"
                         label="Email adress"
                         variant="standard"
-                        helperText={helpTextEmail}
+                        value={email}
+                        error={!checkEmailValidation()}
+                        helperText={checkEmailValidation() ? '' : '이메일이 유효하지 않습니다.'}
+                        onChange={onChangeEmail}
                     />
                     <TextField  
                         required
                         id="password"
                         label="password"
                         variant="standard"
-                        helperText={helpTextPw}
+                        value={pw}
+                        error={!checkPwValidation()}
+                        helperText={checkPwValidation() ? '' : '비밀번호를 2글자 이상 8글자 이하로 입력해주세요'}
+                        onChange={onChangePw}
                     />
                     <Button 
                         variant="contained" 
