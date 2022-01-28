@@ -4,15 +4,18 @@ import { Box, Typography, TextField, Button, Link } from '@mui/material';
 function Login() {
     const checkEmail = /[\w\-\.]+\@[\w\-\.]+/g;
     const checkPw = /^[A-Za-z0-9_-]{2,8}$/;
+    const checkName = /^[가-힣A-Za-z]{2,4}$/;
 
     const [email, setEmail] = useState('');
-    const [emailErr, setEmailErr] = useState(false);
     const [pw, setPw] = useState('');
+    const [name, setName] = useState('');
+    const [emailErr, setEmailErr] = useState(false);
     const [pwErr, setPwErr] = useState(false);
+    const [nameErr, setNameErr] = useState(false);
 
     const onChangeEmail = (event) => {
         setEmail(event.target.value);
-        if(checkEmail.test(email)) {
+        if(checkEmail.test(email) || email.length === 0) {
             setEmailErr(false);
         }
         else {
@@ -22,11 +25,21 @@ function Login() {
 
     const onChangePw = (event) => {
         setPw(event.target.value);
-        if(checkPw.test(pw)) {
+        if(checkPw.test(pw) || pw.length === 0) {
             setPwErr(false);
         }
         else {
             setPwErr(true);
+        }
+    }
+
+    const onChangeName = (event) => {
+        setName(event.target.value);
+        if(checkName.test(name) || name.length === 0) {
+            setNameErr(false);
+        }
+        else {
+            setNameErr(true);
         }
     }
 
@@ -38,7 +51,11 @@ function Login() {
         if(pw.length === 0 || pwErr) {
             event.preventDefault();
             setPwErr(true);
-        }    
+        }   
+        if(name.length === 0 || nameErr) {
+            event.preventDefault();
+            setNameErr(true);
+        }  
     }
 
     return <Box 
@@ -63,7 +80,7 @@ function Login() {
                     gutterBottom
                     sx={{mt : 8, mb : 4, p :'auto'}}
                 >
-                    Please sign in
+                    Sign up to company
                 </Typography>
 
                 <Box
@@ -73,16 +90,28 @@ function Login() {
                     }}
                     noValidate
                     autoComplete="off"
-                    action="/user/login"
+                    action="/signin"
                     method="post"
                     className="needs-validation"
                     onSubmit={onSubmit}    
                 >
                     <TextField  
                         required
+                        id="username"
+                        label="User name"
+                        variant="outlined"
+                        name="username"
+                        value={name}
+                        error={nameErr}
+                        helperText={nameErr ? '이름이 유효하지 않습니다.' : ''}
+                        onChange={onChangeName}
+                    />
+                    <TextField  
+                        required
                         id="email"
                         label="Email adress"
-                        variant="standard"
+                        variant="outlined"
+                        name="email"
                         value={email}
                         error={emailErr}
                         helperText={emailErr ? '이메일이 유효하지 않습니다.' : ''}
@@ -92,7 +121,8 @@ function Login() {
                         required
                         id="password"
                         label="password"
-                        variant="standard"
+                        variant="outlined"
+                        name="password"
                         type="password"
                         value={pw}
                         error={pwErr}
@@ -104,21 +134,13 @@ function Login() {
                         type="submit"
                         sx={{
                             width :'80%', 
-                            mt : 6,
+                            mt : 2,
                             mb : 2, 
                             py : 1, 
                             backgroundColor : '#0186D3'
                         }}>
-                        Sign in
+                        확인
                     </Button>
-                    <br />
-
-                    <Link underline="none" href="/signin" sx={{color : '#6c757d', mr : 2}}>
-                        회원가입
-                    </Link>
-                    <Link underline="none" href="/user/findPw"  sx={{color : '#6c757d'}}>
-                        비밀번호 찾기
-                    </Link>
                 </Box>
 
         </Box>

@@ -1,6 +1,7 @@
 import MainHome from "./routes/MainHome";
 import Board from "./routes/Board";
 import Login from "./routes/Login";
+import Signup from "./routes/Signup";
 
 import {
   BrowserRouter as Router,
@@ -15,8 +16,11 @@ function App() {
         <Route path="/board/:cid">
           <Board />
         </Route>
-        <Route path="/login">
+        <Route path="/user/login">
           <Login />
+        </Route>
+        <Route path="/signin">
+          <Signup />
         </Route>
         <Route path="/">
           <MainHome />
