@@ -1,7 +1,15 @@
-import { Box, Typography, Divider, Container   } from '@mui/material';
+import { Box, Typography, Divider, Container, Button } from '@mui/material';
 import { useState, useEffect } from 'react';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Table from "./BoardTable";
 
+const theme = createTheme({
+    palette: {
+      primary: {
+          main : '#003964',
+      }
+    },
+  });
 
 function BoardPage({category, cid}) {
     const [selected, setSelected] = useState({});
@@ -17,13 +25,25 @@ function BoardPage({category, cid}) {
    
     return <Container maxWidth="xl">
         <Box sx={{width : "100%", p : '20px'}}>
-        <Typography 
-            variant='h5' 
-            component="div" 
-            gutterBottom
-        >
-            {selected !== undefined ? selected.name : null}
-        </Typography>
+        <Box sx={{display : 'flex', justifyContent: 'space-between'}} >
+            <Typography 
+                variant='h5' 
+                component="div" 
+                gutterBottom
+            >
+                {selected !== undefined ? selected.name : null}
+            </Typography>
+            <ThemeProvider theme={theme}>
+                <Button 
+                    variant="outlined"
+                    href="/create"
+                    sx={{mb : 1}}
+                >
+                    글쓰기
+                </Button>
+            </ThemeProvider>  
+        </Box>
+       
         <Divider />
         <Table cid={cid}/>
 
