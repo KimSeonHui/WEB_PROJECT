@@ -25,7 +25,7 @@ function BoardPage({category, cid}) {
             {selected !== undefined ? selected.name : null}
         </Typography>
         <Divider />
-        <Table />
+        <Table cid={cid}/>
 
         </Box>
     </Container>

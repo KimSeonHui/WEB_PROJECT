@@ -15,7 +15,7 @@ function Board() {
     const callApi = async () => {
         axios.get(`/board/:${cid}`)
         .then((res) => {
-        setCategory(res.data);
+        setCategory(res.data.category);
         })
         .catch((err) => {
         console.log(err);

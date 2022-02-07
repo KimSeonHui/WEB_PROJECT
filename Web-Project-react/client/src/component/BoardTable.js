@@ -1,6 +1,7 @@
 import { Paper, TableContainer , Table, TableHead } from "@mui/material";
 import { TableRow, TableBody, styled, Link  } from "@mui/material";
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import axios from "axios";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -30,7 +31,13 @@ const rows = [
     createData('5', '과학', 'COSMOS', '땡구', '2021-01-11'),
 ];
 
-function BoardTable() {
+function BoardTable({cid}) {
+    const getData = async () => {
+        axios.get(`/board/:${cid}`)
+        .then((res) => console.log(res))
+    }
+
+    getData();
 
     return <TableContainer component={Paper} sx={{mt : '20px'}}>
         <Table size="medium">
