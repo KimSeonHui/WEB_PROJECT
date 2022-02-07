@@ -1,6 +1,6 @@
 import { Box, Typography, Divider, Container, Button, ButtonGroup } from '@mui/material';
-import { useState, useEffect } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import SummernoteEditor from './SummernoteEditor';
 
 const theme = createTheme({
     palette: {
@@ -11,7 +11,6 @@ const theme = createTheme({
   });
 
 function CreatePage() {
-
     return <Container maxWidth="xl">
     <Box sx={{width : "100%", p : '20px'}}>
     <Box sx={{display : 'flex', justifyContent: 'space-between'}} >
@@ -31,7 +30,7 @@ function CreatePage() {
     </Box>
    
     <Divider />
-
+    <SummernoteEditor />
     </Box>
 </Container>
 }
