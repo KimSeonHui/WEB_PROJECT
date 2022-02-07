@@ -2,6 +2,7 @@ import MainHome from "./routes/MainHome";
 import Board from "./routes/Board";
 import Login from "./routes/Login";
 import Signup from "./routes/Signup";
+import Create from "./routes/Create";
 
 import {
   BrowserRouter as Router,
@@ -21,6 +22,9 @@ function App() {
         </Route>
         <Route path="/signin">
           <Signup />
+        </Route>
+        <Route path="/create">
+          <Create />
         </Route>
         <Route path="/">
           <MainHome />
