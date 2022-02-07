@@ -4,6 +4,7 @@ import Grid from '@mui/material/Grid';
 import Navbar from "../component/Navbar";
 import Sidebar from "../component/Sidebar";
 import { useParams } from "react-router-dom";
+import CreatePage from "../component/CreatePage";
 
 function Create() {
     const [categories, setCategory] = useState({});
@@ -31,7 +32,7 @@ function Create() {
                 <Sidebar category={categories}  sx={{width: '250px', height: '100vh'}}/>
             </Grid>
             <Grid item xs>
-                
+                <CreatePage />
             </Grid>
     </Grid>    
 </div>
