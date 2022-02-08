@@ -7,22 +7,23 @@ import 'react-summernote/lang/summernote-ko-KR'; // you can import any other loc
 import 'bootstrap/js/modal';
 import 'bootstrap/js/dropdown';
 import 'bootstrap/js/tooltip';
-import 'bootstrap/dist/css/bootstrap.css';
+//import 'bootstrap/dist/css/bootstrap.css';
+import '../summernoteStyle.scss'
 
 
-class SummernoteEditor extends Component {
-  onChange = content => {
+function SummernoteEditor() {
+  const onChange = content => {
     console.log("onChange ", content);
   };
 
-  render() {
     return (
+      <div className='use-bootstrap'>
         <ReactSummernote
           value="Default value"
           options={{
             lang: 'ko-KR',
             height: 350,
-            dialogsInBody: true,
+            dialogsInBody: false,
             toolbar: [
               ['style', ['style']],
               ['font', ['bold', 'underline', 'clear']],
@@ -33,10 +34,11 @@ class SummernoteEditor extends Component {
               ['view', ['fullscreen', 'codeview']]
             ]
           }}
-          onChange={this.onChange}
+          onChange={onChange}
         />
+      </div>  
       );
-  }
+
 }
 
 export default SummernoteEditor;
