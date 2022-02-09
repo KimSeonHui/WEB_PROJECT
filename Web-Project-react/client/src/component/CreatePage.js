@@ -1,6 +1,7 @@
+import axios from "axios";
 import {useState} from "react";
 import { Box, Typography, Divider, Container, Button } from '@mui/material';
-import { FormControl, Select, MenuItem  } from '@mui/material';
+import { FormControl, Select, MenuItem, TextField } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import SummernoteEditor from './SummernoteEditor';
 
@@ -13,13 +14,13 @@ const theme = createTheme({
   });
 
 function CreatePage({category}) {
-    console.log('cat', category)
     const cateArr = Object.values(category);
     const [large, setLarge] = useState('');
     const [medium, setMedium] = useState('');
     const [small, setSmall] = useState('');
     const [isLargeSelected, setLargeSelected] = useState(false);
     const [isMidSelected, setMidSelected] = useState(false);
+    const [title, setTitle] = useState('');
 
     const handleLarge = (event) => {
         setLarge(event.target.value);
@@ -39,9 +40,30 @@ function CreatePage({category}) {
         setSmall(event.target.value);
     }
 
+    const onChangeTitle = (event) => {
+        setTitle(event.target.value);
+    }
+
+    const handleSubmit = (event) => {
+        axios.post('/create', {
+            categoryLarge : large,
+            categoryMedium : medium,
+            categorySmall : small,
+            Title : title, 
+            Desc : ''
+        });
+
+        event.preventDafault();
+        alert('등록!');
+    }
+
     return <Container maxWidth="xl">
     <Box sx={{width : "100%", p : '20px'}}>
-    <Box sx={{display : 'flex', justifyContent: 'space-between'}} >
+    <Box 
+        component="form" 
+        onSubmit={handleSubmit}
+        sx={{display : 'flex', justifyContent: 'space-between'}} 
+    >
         <Typography 
             variant='h5' 
             component="div" 
@@ -50,7 +72,7 @@ function CreatePage({category}) {
             글쓰기
         </Typography>
         <ThemeProvider theme={theme}>
-            <Button variant="outlined" sx={{mb : 1}}>등록</Button> 
+            <Button type="submit" variant="outlined" sx={{mb : 1}}>등록</Button> 
         </ThemeProvider>  
     </Box>
    
@@ -61,7 +83,8 @@ function CreatePage({category}) {
                 <em>카테고리 1 선택</em>
             </MenuItem>
             {cateArr.map((val) => (
-                val.level === '0' ? <MenuItem key={val.id} value={val.id}>{val.name}</MenuItem> : null
+                val.level === '0' ? 
+                <MenuItem key={val.id} value={val.id} name="large">{val.name}</MenuItem> : null
             ))}
         </Select>
     </FormControl>
@@ -73,7 +96,7 @@ function CreatePage({category}) {
             </MenuItem>
             {cateArr.map((val) => (
                 val.level === '1' && val.parent === Number(large) ? 
-                <MenuItem key={val.id} value={val.id}>{val.name}</MenuItem> : null
+                <MenuItem key={val.id} value={val.id} name="medium">{val.name}</MenuItem> : null
             ))}
         </Select>
     </FormControl>
@@ -85,10 +108,20 @@ function CreatePage({category}) {
             </MenuItem>
             {cateArr.map((val) => (
                 val.level === '2' && val.parent === Number(medium) ? 
-                <MenuItem key={val.id} value={val.id}>{val.name}</MenuItem> : null
+                <MenuItem key={val.id} value={val.id} name="small">{val.name}</MenuItem> : null
             ))}
         </Select>
     </FormControl>
+    <TextField 
+        id="title" 
+        name="title" 
+        variant="outlined"
+        label="제목"  
+        value={title}
+        fullWidth 
+        sx={{mb : 2}}
+        onChange={onChangeTitle}
+    />
     <SummernoteEditor />
     </Box>
 </Container>
