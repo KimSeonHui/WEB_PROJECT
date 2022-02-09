@@ -32,7 +32,7 @@ function Create() {
                 <Sidebar category={categories}  sx={{width: '250px', height: '100vh'}}/>
             </Grid>
             <Grid item xs>
-                <CreatePage />
+                <CreatePage category={categories} />
             </Grid>
     </Grid>    
 </div>
