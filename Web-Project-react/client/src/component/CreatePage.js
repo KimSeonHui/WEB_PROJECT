@@ -13,6 +13,7 @@ const theme = createTheme({
   });
 
 function CreatePage({category}) {
+    console.log('cat', category)
     const cateArr = Object.values(category);
     const [large, setLarge] = useState('');
     const [medium, setMedium] = useState('');
@@ -22,10 +23,16 @@ function CreatePage({category}) {
 
     const handleLarge = (event) => {
         setLarge(event.target.value);
+        if(medium !== '') {
+            setMedium('');
+            setSmall('');
+            setMidSelected(false);
+        }
         setLargeSelected(true);
     }
     const handleMedium = (event) => {
         setMedium(event.target.value);
+        if(small !== '') setSmall('');
         setMidSelected(true);
     }
     const handleSmall = (event) => {
