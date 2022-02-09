@@ -20,6 +20,7 @@ const renderSubTree = (category, node) => {
                 label={category[i].name}
                 sx={{mt : '4px'}}
             >
+                {category[i].level < 2  ? renderSubTree(category, category[i]) : null }
             </TreeItem>); 
         }
     }
