@@ -2,6 +2,7 @@ import { Paper, TableContainer , Table, TableHead } from "@mui/material";
 import { TableRow, TableBody, styled, Link  } from "@mui/material";
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import axios from "axios";
+import { useEffect } from "react";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -23,21 +24,20 @@ const createData = (postId, category, title, creater, date) => {
     return {postId, category, title, creater, date};
 }
 
-const rows = [
-    createData('1', '소설/시/희곡', '허상의 어릿광대', '땡구', '2021-01-11'),
-    createData('2', '소설/시/희곡', '시소 첫번째', '땡구', '2021-01-11'),
-    createData('3', '인문학', '안나의 토성', '땡구', '2021-01-11'),
-    createData('4', '인문학', '빛을 두려워하는', '땡구', '2021-01-11'),
-    createData('5', '과학', 'COSMOS', '땡구', '2021-01-11'),
-];
+const rows = [];
 
 function BoardTable({cid}) {
     const getData = async () => {
-        axios.get(`/board/:${cid}`)
-        .then((res) => console.log(res))
+        axios.get(`/board/${cid}`)
+        .then((res) => res.data.post.map((val) => 
+            rows.push(createData(val.POSTID, val.NAME, val.TITLE, val.CREATER, val.ADDTIME))
+        ))
     }
 
-    getData();
+    useEffect(() => {
+        getData();
+    }, []);
+    
 
     return <TableContainer component={Paper} sx={{mt : '20px'}}>
         <Table size="medium">
