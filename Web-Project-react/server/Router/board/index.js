@@ -24,24 +24,14 @@ const handleQuery = (sql, values) => {
 router.get("/:cid", async (req, res) => {
     const { cid } = req.params;
     const categories = [];
-    const posts = [];
-    const info = {
-        category : categories,
-        post : posts
-    }
-    
-    let sql = `SELECT BOARDID, POSTID, TITLE, CREATER, VIEWS, UID, DATE_FORMAT(ADDTIME, '%Y-%m-%d-%H : %i') as ADDTIME
-                FROM BOARD WHERE BOARDID = ? AND TEMP = 0 AND ISDELETED = 0 ORDER BY DSPORD, ADDTIME;`;
 
-    conn.query(sql, (error, result) => {
-        if(error) {
-            console.log(error);
-        }
-        else {
-            console.log('posts', result);
-            posts.push(result);
-        }
-    })
+    let sql = `SELECT BOARDID, POSTID, TITLE, CREATER, VIEWS, UID, NAME, DATE_FORMAT(ADDTIME, '%Y-%m-%d-%H : %i') as ADDTIME
+             FROM BOARD LEFT JOIN CATEGORY ON BOARD.BOARDID = CATEGORY.CID 
+             WHERE BOARDID = ? AND TEMP = 0 AND ISDELETED = 0 ORDER BY DSPORD, ADDTIME
+             `;
+
+    const boardRows = await handleQuery(sql, cid);
+
 
     sql = `SELECT * FROM CATEGORY`;
     conn.query(sql, (error, result) => {
@@ -58,6 +48,10 @@ router.get("/:cid", async (req, res) => {
                 }
                 categories.push(data);
             }       
+            const info = {
+                category : categories,
+                post : boardRows
+            }
             res.send(info); 
         }
     });
