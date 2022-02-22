@@ -13,12 +13,12 @@ function Board() {
     const { cid } = useParams();
 
     const callApi = async () => {
-        axios.get(`/board/:${cid}`)
+        axios.get(`/board/${cid}`)
         .then((res) => {
-        setCategory(res.data.category);
+            setCategory(res.data.category);   
         })
         .catch((err) => {
-        console.log(err);
+            console.log(err);
         })
     };
 
