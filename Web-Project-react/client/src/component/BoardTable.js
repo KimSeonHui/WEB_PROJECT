@@ -20,8 +20,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     }
 }));
 
-const createData = (postId, category, title, creater, date) => {
-    return {postId, category, title, creater, date};
+const createData = (postId, category, title, creater, views, date) => {
+    return {postId, category, title, creater, views, date};
 }
 
 const rows = [];
@@ -30,7 +30,7 @@ function BoardTable({cid}) {
     const getData = async () => {
         axios.get(`/board/${cid}`)
         .then((res) => res.data.post.map((val) => 
-            rows.push(createData(val.POSTID, val.NAME, val.TITLE, val.CREATER, val.ADDTIME))
+            rows.push(createData(val.POSTID, val.NAME, val.TITLE, val.CREATER, val.VIEWS, val.ADDTIME))
         ))
     }
 
@@ -47,6 +47,7 @@ function BoardTable({cid}) {
                     <StyledTableCell>카테고리</StyledTableCell>
                     <StyledTableCell>제목</StyledTableCell>
                     <StyledTableCell>작성자</StyledTableCell>
+                    <StyledTableCell>조회수</StyledTableCell>
                     <StyledTableCell>작성일</StyledTableCell>
                 </TableRow>
             </TableHead>
@@ -61,6 +62,7 @@ function BoardTable({cid}) {
                             </Link>
                         </TableCell>
                         <TableCell>{row.creater}</TableCell>
+                        <TableCell>{row.views}</TableCell>
                         <TableCell>{row.date}</TableCell>
                     </StyledTableRow>
                 ))}
