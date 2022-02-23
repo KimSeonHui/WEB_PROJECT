@@ -55,7 +55,7 @@ function BoardTable({cid}) {
                     <StyledTableRow key={row.postId}>
                         <TableCell>{row.postId}</TableCell>
                         <TableCell>
-                            <Link href={`/board/`} underline="none" sx={{color : '#000'}}>
+                            <Link href={`/read/${row.postId}`} underline="none" sx={{color : '#000'}}>
                                 {row.title}
                             </Link>
                         </TableCell>
