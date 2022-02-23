@@ -1,6 +1,8 @@
 import { Paper, TableContainer , Table, TableHead } from "@mui/material";
 import { TableRow, TableBody, styled, Link  } from "@mui/material";
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import axios from "axios";
+import { useEffect } from "react";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -18,19 +20,23 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     }
 }));
 
-const createData = (postId, category, title, creater, date) => {
-    return {postId, category, title, creater, date};
+const createData = (postId, category, title, creater, views, date) => {
+    return {postId, category, title, creater, views, date};
 }
 
-const rows = [
-    createData('1', '소설/시/희곡', '허상의 어릿광대', '땡구', '2021-01-11'),
-    createData('2', '소설/시/희곡', '시소 첫번째', '땡구', '2021-01-11'),
-    createData('3', '인문학', '안나의 토성', '땡구', '2021-01-11'),
-    createData('4', '인문학', '빛을 두려워하는', '땡구', '2021-01-11'),
-    createData('5', '과학', 'COSMOS', '땡구', '2021-01-11'),
-];
+const rows = [];
 
 function MainTable() {
+    const getData = async () => {
+        axios.get(`/main`)
+        .then((res) => res.data.post.map((val) => 
+            rows.push(createData(val.POSTID, val.NAME, val.TITLE, val.CREATER, val.VIEWS, val.ADDTIME))
+        ))
+    }
+
+    useEffect(() => {
+        getData();
+    }, []);
 
     return <TableContainer component={Paper} sx={{mt : '20px'}}>
         <Table size="medium">
@@ -40,6 +46,7 @@ function MainTable() {
                     <StyledTableCell>카테고리</StyledTableCell>
                     <StyledTableCell>제목</StyledTableCell>
                     <StyledTableCell>작성자</StyledTableCell>
+                    <StyledTableCell>조회수</StyledTableCell>
                     <StyledTableCell>작성일</StyledTableCell>
                 </TableRow>
             </TableHead>
@@ -54,6 +61,7 @@ function MainTable() {
                             </Link>
                         </TableCell>
                         <TableCell>{row.creater}</TableCell>
+                        <TableCell>{row.views}</TableCell>
                         <TableCell>{row.date}</TableCell>
                     </StyledTableRow>
                 ))}

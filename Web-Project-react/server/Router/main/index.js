@@ -12,9 +12,27 @@ const conn = mysql.createConnection({
 
 conn.connect();
 
-router.get("/", (req, res) => {
+const handleQuery = (sql, values) => {
+	return new Promise((resolve, reject) => {
+		conn.query(sql, values, (err, rows) => {
+			if(err) return reject(err);
+			resolve(rows);
+		})
+	})
+}
 
-    let sql = `SELECT * FROM CATEGORY`;
+router.get("/",  async (req, res) => {
+    let sql = `SELECT BOARDID, POSTID, TITLE, CREATER, VIEWS, NAME, DATE_FORMAT(ADDTIME, '%Y-%m-%d-%H : %i') 
+     as ADDTIME FROM BOARD LEFT JOIN CATEGORY ON BOARD.BOARDID = CATEGORY.CID 
+    ORDER BY VIEWS DESC LIMIT 5;`
+
+    const viewsTopRows = await handleQuery(sql).catch(err => {
+        console.log(err);
+		res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+		res.write(`<script>alert('오류가 발생하였습니다.')</script>`);
+    })
+
+    sql = `SELECT * FROM CATEGORY`;
     conn.query(sql, (error, result) => {
         if(error) {
             console.log(error);
@@ -30,7 +48,11 @@ router.get("/", (req, res) => {
                 }
                 categories.push(data);
             }
-            res.send(categories);           
+            const info = {
+                category : categories,
+                post : viewsTopRows
+            }
+            res.send(info);           
         }
     })
 });
