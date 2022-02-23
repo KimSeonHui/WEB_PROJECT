@@ -22,10 +22,23 @@ const handleQuery = (sql, values) => {
 	})
 }
 
-router.get("/:postId", (req, res) => {
+router.get("/:postId", async (req, res) => {
+    const { postId } = req.params;
 
+    let sql = `UPDATE BOARD SET VIEWS = VIEWS + 1 WHERE POSTID = ?;`;
+    await handleQuery(sql, postId).catch(err => {
+        console.log(err);
+    })
 
-    let sql = `SELECT * FROM CATEGORY`;
+    sql = `SELECT BOARDID, POSTID, TITLE, DESCRIPTION, NAME
+         FROM BOARD LEFT JOIN CATEGORY ON BOARD.BOARDID = CATEGORY.CID
+         WHERE POSTID = ?;`
+    const postRows = await handleQuery(sql, postId).catch(err => {
+        console.log(err);
+		alert(res, "정보를 불러오지 못했습니다.", `/`);
+    })
+
+    sql = `SELECT * FROM CATEGORY`;
     conn.query(sql, (error, result) => {
         if(error) {
             console.log(error);
@@ -41,7 +54,11 @@ router.get("/:postId", (req, res) => {
                 }
                 categories.push(data);
             }
-            res.send(categories);           
+            const info = {
+                category : categories,
+                post : postRows
+            }
+            res.send(info);       
         }
     })
 });
