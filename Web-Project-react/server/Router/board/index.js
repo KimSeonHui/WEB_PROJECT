@@ -25,8 +25,8 @@ router.get("/:cid", async (req, res) => {
     const { cid } = req.params;
     const categories = [];
 
-    let sql = `SELECT BOARDID, POSTID, TITLE, CREATER, VIEWS, UID, NAME, DATE_FORMAT(ADDTIME, '%Y-%m-%d-%H : %i') as ADDTIME
-             FROM BOARD LEFT JOIN CATEGORY ON BOARD.BOARDID = CATEGORY.CID 
+    let sql = `SELECT BOARDID, POSTID, TITLE, CREATER, VIEWS, UID, 
+            DATE_FORMAT(ADDTIME, '%Y-%m-%d-%H : %i') as ADDTIME FROM BOARD 
              WHERE BOARDID = ? AND TEMP = 0 AND ISDELETED = 0 ORDER BY DSPORD, ADDTIME
              `;
 
