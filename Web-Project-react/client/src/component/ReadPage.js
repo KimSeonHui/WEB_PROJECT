@@ -10,7 +10,8 @@ const theme = createTheme({
     },
   });
 
-function ReadPage() {
+function ReadPage({ curPost }) {
+
     return <Container maxWidth="xl">
         <Box sx={{width : "100%", p : '20px'}}>
         <Box sx={{display : 'flex', justifyContent: 'space-between'}} >
@@ -20,7 +21,7 @@ function ReadPage() {
                 gutterBottom
                 sx={{color : '#6c757d'}}
             >
-                현재 카테고리
+                {curPost[0] !== undefined ? curPost[0].NAME : ''}
             </Typography>
             <Typography 
                 variant='h5' 
@@ -28,7 +29,7 @@ function ReadPage() {
                 gutterBottom
                 id='title'
             >
-                제목
+               {curPost[0] !== undefined ? curPost[0].TITLE : ''}
             </Typography>
             <ThemeProvider theme={theme}>
                 <ButtonGroup variant="outlined" >
@@ -51,7 +52,7 @@ function ReadPage() {
         <Divider />
 
         <Box sx={{my : 2, textAlign : 'center'}}>
-            글 내용
+            {curPost[0] !== undefined ? curPost[0].DESCRIPTION : ''}
         </Box>
         <Divider />
         <ThemeProvider theme={theme}>

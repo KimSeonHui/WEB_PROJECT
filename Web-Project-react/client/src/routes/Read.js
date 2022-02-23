@@ -10,12 +10,14 @@ import { useParams } from "react-router-dom";
 
 function Read() {
     const [categories, setCategory] = useState({});
+    const [post, setPost] = useState({});
     const { postId } = useParams();
 
     const callApi = async () => {
         axios.get(`/read/${postId}`)
         .then((res) => {
-            setCategory(res.data);   
+            setPost(res.data.post);
+            setCategory(res.data.category);   
         })
         .catch((err) => {
             console.log(err);
@@ -26,7 +28,6 @@ function Read() {
         callApi();
     }, []);
 
-
     return <div>
         <Navbar />
         <Grid container>
@@ -34,7 +35,7 @@ function Read() {
                 <Sidebar category={categories}  sx={{width: '250px', height: '100vh'}}/>
             </Grid>
             <Grid item xs>
-                <ReadPage />
+                <ReadPage curPost={post}/>
             </Grid>
     </Grid>    
 </div>
