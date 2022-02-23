@@ -3,6 +3,7 @@ import Board from "./routes/Board";
 import Login from "./routes/Login";
 import Signup from "./routes/Signup";
 import Create from "./routes/Create";
+import Read from "./routes/Read";
 
 import {
   BrowserRouter as Router,
@@ -14,6 +15,9 @@ import {
 function App() {
   return  <Router>
     <Switch>
+        <Route path="/read/:postId">
+          <Read />
+        </Route>
         <Route path="/board/:cid">
           <Board />
         </Route>
