@@ -1,5 +1,5 @@
 # WEB_PROJECT : 메뉴얼 게시판
-[하이온넷에서 EJS로 구현했던 게시판](https://github.com/KimSeonHui/WEB_PROJECT/tree/main/Web-Project-main)을 React로 구현
+[인턴할 때 EJS로 구현했던 게시판](https://github.com/KimSeonHui/WEB_PROJECT/tree/main/Web-Project-main)을 React로 구현
 
 **목적**
 - `React`의 기능 학습
