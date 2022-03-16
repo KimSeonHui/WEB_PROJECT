@@ -14,14 +14,12 @@ function Read() {
     const { postId } = useParams();
 
     const callApi = async () => {
-        axios.get(`/read/${postId}`)
-        .then((res) => {
+        const res = await axios.get(`/read/${postId}`);
+
+        if(res.statusText === 'OK') {
             setPost(res.data.post);
             setCategory(res.data.category);   
-        })
-        .catch((err) => {
-            console.log(err);
-        })
+        }
     };
 
     useEffect(() => {

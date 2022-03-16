@@ -10,13 +10,11 @@ function MainHome() {
     const [categories, setCategory] = useState({});
 
     const callApi = async () => {
-        axios.get('/main')
-        .then((res) => {
+        const res = await axios.get('/main');
+
+        if(res.statusText === 'OK') {
             setCategory(res.data.category);
-        })
-        .catch((err) => {
-            console.log(err);
-        })
+        }
     };
 
     useEffect(() => {

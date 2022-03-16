@@ -28,18 +28,22 @@ const rows = [];
 
 function BoardTable({cid}) {
     const getData = async () => {
-        axios.get(`/board/${cid}`)
-        .then((res) => res.data.post.map((val) => 
-            rows.push(createData(val.POSTID, val.TITLE, val.CREATER, val.VIEWS, val.ADDTIME))
-        ))
+        const res = await axios.get(`/board/${cid}`);
+
+        if(res.statusText === 'OK') {
+            const data = await res.data.post;
+            data.map((val) => 
+                rows.push(createData(val.POSTID, val.TITLE, val.CREATER, val.VIEWS, val.ADDTIME))
+            );
+        }
     }
 
     useEffect(() => {
         getData();
     }, []);
-    
 
-    return <TableContainer component={Paper} sx={{mt : '20px'}}>
+
+        return <TableContainer component={Paper} sx={{mt : '20px'}}>
         <Table size="medium">
             <TableHead>
                 <TableRow>

@@ -11,13 +11,11 @@ function Create() {
     const { cid } = useParams();
 
     const callApi = async () => {
-        axios.get(`/create`)
-        .then((res) => {
-        setCategory(res.data);
-        })
-        .catch((err) => {
-        console.log(err);
-        })
+        const res = await axios.get(`/create`);
+
+        if(res.statusText === 'OK') {
+            setCategory(res.data);
+        }
     };
 
     useEffect(() => {

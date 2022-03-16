@@ -13,13 +13,11 @@ function Board() {
     const { cid } = useParams();
 
     const callApi = async () => {
-        axios.get(`/board/${cid}`)
-        .then((res) => {
-            setCategory(res.data.category);   
-        })
-        .catch((err) => {
-            console.log(err);
-        })
+        const res = await axios.get(`/board/${cid}`);
+
+        if(res.statusText === 'OK') {
+            setCategory(res.data.category); 
+        }
     };
 
     useEffect(() => {

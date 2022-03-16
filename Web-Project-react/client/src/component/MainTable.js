@@ -28,10 +28,14 @@ const rows = [];
 
 function MainTable() {
     const getData = async () => {
-        axios.get(`/main`)
-        .then((res) => res.data.post.map((val) => 
-            rows.push(createData(val.POSTID, val.NAME, val.TITLE, val.CREATER, val.VIEWS, val.ADDTIME))
-        ))
+        const res = await axios.get(`/main`);
+
+        if(res.statusText === 'OK') {
+            const data = await res.data.post;
+            data.map((val) => 
+                rows.push(createData(val.POSTID, val.NAME, val.TITLE, val.CREATER, val.VIEWS, val.ADDTIME))
+            );
+        }
     }
 
     useEffect(() => {
