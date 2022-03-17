@@ -2,6 +2,7 @@ import { Box, Typography, Divider, Container, Button } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Table from "./BoardTable";
+import Paginavigation from './Paginavigation';
 
 const theme = createTheme({
     palette: {
@@ -46,6 +47,8 @@ function BoardPage({category, cid}) {
        
         <Divider />
         <Table cid={cid}/>
+
+        <Paginavigation />
 
         </Box>
     </Container>
