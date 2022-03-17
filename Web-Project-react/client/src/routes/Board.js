@@ -10,10 +10,10 @@ import { useParams } from "react-router-dom";
 
 function Board() {
     const [categories, setCategory] = useState({});
-    const { cid } = useParams();
+    const { cid, page } = useParams();
 
     const callApi = async () => {
-        const res = await axios.get(`/board/${cid}`);
+        const res = await axios.get(`/board/${cid}/${page}`);
 
         if(res.statusText === 'OK') {
             setCategory(res.data.category); 
@@ -32,7 +32,7 @@ function Board() {
                 <Sidebar category={categories}  sx={{width: '250px', height: '100vh'}}/>
             </Grid>
             <Grid item xs>
-                <BoardPage category={categories} cid={cid}/>
+                <BoardPage category={categories} cid={cid} page={page}/>
             </Grid>
     </Grid>    
 </div>

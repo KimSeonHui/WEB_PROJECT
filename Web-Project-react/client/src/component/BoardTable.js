@@ -26,9 +26,9 @@ const createData = (postId, title, creater, views, date) => {
 
 const rows = [];
 
-function BoardTable({cid}) {
+function BoardTable({cid, page}) {
     const getData = async () => {
-        const res = await axios.get(`/board/${cid}`);
+        const res = await axios.get(`/board/${cid}/${page}`);
 
         if(res.statusText === 'OK') {
             const data = await res.data.post;
@@ -40,7 +40,7 @@ function BoardTable({cid}) {
 
     useEffect(() => {
         getData();
-    }, []);
+    }, []);   
 
 
         return <TableContainer component={Paper} sx={{mt : '20px'}}>

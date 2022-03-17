@@ -21,8 +21,8 @@ const handleQuery = (sql, values) => {
 	})
 }
 
-router.get("/:cid", async (req, res) => {
-    const { cid } = req.params;
+router.get("/:cid/:page", async (req, res) => {
+    const { cid, page } = req.params;
     const categories = [];
 
     let sql = `SELECT BOARDID, POSTID, TITLE, CREATER, VIEWS, UID, 
@@ -50,7 +50,8 @@ router.get("/:cid", async (req, res) => {
             }       
             const info = {
                 category : categories,
-                post : boardRows
+                post : boardRows,
+                page : page,
             }
             res.send(info); 
         }

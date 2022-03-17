@@ -18,7 +18,7 @@ function App() {
         <Route path="/read/:postId">
           <Read />
         </Route>
-        <Route path="/board/:cid">
+        <Route path="/board/:cid/:page">
           <Board />
         </Route>
         <Route path="/user/login">

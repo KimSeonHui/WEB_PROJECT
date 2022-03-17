@@ -5,7 +5,7 @@ import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 
 const getSelectedNode = (event, nodeIds) => {
     if(event.target.previousSibling !== null) {
-        window.location.href = `../board/${nodeIds}`;
+        window.location.href = `../../board/${nodeIds}/1`;
     }
 }
 
