@@ -12,7 +12,7 @@ const theme = createTheme({
     },
   });
 
-function BoardPage({category, cid, page}) {
+function BoardPage({category, cid, page, post}) {
     const [selected, setSelected] = useState({});
     const getSelectedCategory = (category, cid) => {
         if(category !== {}) {
@@ -48,7 +48,7 @@ function BoardPage({category, cid, page}) {
         <Divider />
         <Table cid={cid} page={page}/>
 
-        <Paginavigation />
+        {post.length !== undefined && post.length !== 0 ? <Paginavigation cid={cid} page={page}/> : ''}        
 
         </Box>
     </Container>

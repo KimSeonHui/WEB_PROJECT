@@ -10,6 +10,7 @@ import { useParams } from "react-router-dom";
 
 function Board() {
     const [categories, setCategory] = useState({});
+    const [posts, setPosts] = useState({});
     const { cid, page } = useParams();
 
     const callApi = async () => {
@@ -17,6 +18,7 @@ function Board() {
 
         if(res.statusText === 'OK') {
             setCategory(res.data.category); 
+            setPosts(res.data.post);
         }
     };
 
@@ -32,7 +34,7 @@ function Board() {
                 <Sidebar category={categories}  sx={{width: '250px', height: '100vh'}}/>
             </Grid>
             <Grid item xs>
-                <BoardPage category={categories} cid={cid} page={page}/>
+                <BoardPage category={categories} post={posts} cid={cid} page={page}/>
             </Grid>
     </Grid>    
 </div>
