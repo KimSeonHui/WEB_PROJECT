@@ -25,6 +25,7 @@ const createData = (postId, title, creater, views, date) => {
 }
 
 const rows = [];
+const maxRow = 20;
 
 function BoardTable({cid, page}) {
     const getData = async () => {
@@ -32,9 +33,16 @@ function BoardTable({cid, page}) {
 
         if(res.statusText === 'OK') {
             const data = await res.data.post;
-            data.map((val) => 
-                rows.push(createData(val.POSTID, val.TITLE, val.CREATER, val.VIEWS, val.ADDTIME))
-            );
+            for(let i = (page * maxRow) - maxRow; i < (page * maxRow); i++) {
+                if( i > data.length - 1) {
+                    //i++;
+                    break;
+                }
+                else {
+                    const val = data[i];
+                    rows.push(createData(val.POSTID, val.TITLE, val.CREATER, val.VIEWS, val.ADDTIME))
+                }
+            }
         }
     }
 
