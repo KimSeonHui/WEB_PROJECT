@@ -14,15 +14,23 @@ const theme = createTheme({
 
 function BoardPage({category, cid, page, post}) {
     const [selected, setSelected] = useState({});
+    const [posts, setPosts] = useState({});
     const getSelectedCategory = (category, cid) => {
-        if(category !== {}) {
+        if(category.length !== undefined) {
             setSelected(category[cid - 1]);
+        }
+    }
+
+    const getPost = () => {
+        if(post.length !== undefined) {
+            setPosts(post);
         }
     }
 
     useEffect(() => {
         getSelectedCategory(category, cid);
-    }, [category]);
+        getPost();
+    }, [category, post]);
    
     return <Container maxWidth="xl">
         <Box sx={{width : "100%", p : '20px'}}>
@@ -48,7 +56,8 @@ function BoardPage({category, cid, page, post}) {
         <Divider />
         <Table cid={cid} page={page}/>
 
-        {post.length !== undefined && post.length !== 0 ? <Paginavigation cid={cid} page={page}/> : ''}        
+        {post.length !== undefined && post.length !== 0 ? 
+            <Paginavigation cid={cid} page={page} post={posts} /> : ''}        
 
         </Box>
     </Container>
