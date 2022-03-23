@@ -55,7 +55,7 @@ function Login() {
             setNameErr(true);
         }  
         event.preventDefault();
-        axios.post('/signin', {
+        axios.post('/signup', {
                 username : name,
                 emails : email,
                 password : pw

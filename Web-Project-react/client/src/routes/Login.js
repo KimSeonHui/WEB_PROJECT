@@ -113,7 +113,7 @@ function Login() {
                     </Button>
                     <br />
 
-                    <Link underline="none" href="/signin" sx={{color : '#6c757d', mr : 2}}>
+                    <Link underline="none" href="/signup" sx={{color : '#6c757d', mr : 2}}>
                         회원가입
                     </Link>
                     <Link underline="none" href="/user/findPw"  sx={{color : '#6c757d'}}>
