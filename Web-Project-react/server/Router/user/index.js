@@ -21,11 +21,6 @@ const handleQuery = (sql, values) => {
 	});
 }
 
-function alert(res, str, url) {
-   res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-   res.write(`<script>alert('${str}')</script>`);
-   res.write(`<script>window.location=\"${url}\"</script>`);
-}
 
 router.get("/", (req, res) => {
    res.send('hi');
@@ -38,24 +33,23 @@ router.post('/',  async (req, res) => {
    const values = [emails, username];
    const exUser = await handleQuery(sql, values).catch((err) => {
       console.log(err);
-      alert(res, "DB 접속 오류", "/user/signup");
+      res.send('DBerror');
    });
 
    console.log('exUser', exUser);
    if(exUser.length > 0) {
-      alert(res, "이미 가입되어 있는 이메일 혹은 이름입니다.", "/user/signup");
+      res.send('exUser');
    }
    else {
       const hashPW = crypto.createHash('sha512').update(password + salt).digest('hex');
       const sql = `INSERT INTO USER(EMAIL, NAME, PW, SALT, JOINDATE) VALUES (?,?,?,?, NOW());`;
       const values = [emails, username, hashPW, salt];
       await handleQuery(sql, values).then(async () =>{
-         console.log('가입 완료');
-         alert(res, "회원가입이 완료되었습니다:) 다시 로그인 해주세요.", "/user/login");
+         res.send('signup');
       })
       .catch(err => {
          console.error(err)
-         alert(res, "잘못된 양식 입니다. 다시 입력해 주세요.", "/user/signup");
+         res.send('error');
       });
    }
 })

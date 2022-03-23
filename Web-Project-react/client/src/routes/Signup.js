@@ -4,7 +4,7 @@ import { Box, Typography, TextField, Button, Link } from '@mui/material';
 
 function Login() {
     const checkEmail = /[\w\-\.]+\@[\w\-\.]+/g;
-    const checkPw = /^[A-Za-z0-9_-]{2,8}$/;
+    const checkPw = /^[A-Za-z0-9_-]{8,20}$/;
     const checkName = /^[가-힣A-Za-z]{2,4}$/;
 
     const [email, setEmail] = useState('');
@@ -44,23 +44,47 @@ function Login() {
         }
     }
 
-    const onSubmit = (event) => {
+    const onSubmit = async (event) => {
+        event.preventDefault();
         if(email.length === 0 || emailErr) {
             setEmailErr(true);
+            alert('이메일이 유효하지 않습니다.');
+            return false;
         }
-        if(pw.length === 0 || pwErr) {
-            setPwErr(true);
+        if(pw.length < 8 || pw.length > 20 || pwErr) {
+            setPwErr(true); 
+            alert('비밀번호는 8자 이상, 20자 이하로 설정하세요.');
+            return false;
         }   
-        if(name.length === 0 || nameErr) {
+        if(name.length < 2 || name.length > 6 || nameErr) {
             setNameErr(true);
+            alert('이름은 2자 이상, 6자 이하로 설정하세요.');
+            return false;
         }  
-        event.preventDefault();
-        axios.post('/signup', {
+        const res = await axios.post('/signup', {
                 username : name,
                 emails : email,
                 password : pw
         })
-        .then((result) => console.log('result', result));
+        
+        if(res.statusText === 'OK') {
+            if(res.data === 'exUser') {
+                alert('이미 가입되어 있는 이메일 또는 이름입니다.\n다시 입력해 주세요.');
+                window.location.href = `../signup`;
+            }
+            else if(res.data === 'signup') {
+                alert("회원가입이 완료되었습니다:) 다시 로그인 해주세요.");
+                window.location.href = `../user/login`;
+            }
+            else if(res.data === 'error') {
+                alert("잘못된 양식 입니다. 다시 입력해 주세요.");
+                window.location.href = "../signup";
+            }
+            else if(res.data === 'DBerror') {
+                alert('DB 접속 오류');
+                window.location.href = "../signup";
+            }
+        }
     }
 
     return <Box 
@@ -131,7 +155,7 @@ function Login() {
                         type="password"
                         value={pw}
                         error={pwErr}
-                        helperText={pwErr ? '비밀번호를 2글자 이상 8글자 이하로 입력해주세요' : ''}
+                        helperText={pwErr ? '비밀번호는 8자 이상, 20자 이하로 설정하세요.' : ''}
                         onChange={onChangePw}
                     />
                     <Button 
