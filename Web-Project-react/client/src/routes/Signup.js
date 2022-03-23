@@ -61,7 +61,7 @@ function Login() {
             alert('이름은 2자 이상, 6자 이하로 설정하세요.');
             return false;
         }  
-        const res = await axios.post('/signup', {
+        const res = await axios.post('/user/signup', {
                 username : name,
                 emails : email,
                 password : pw
@@ -70,7 +70,7 @@ function Login() {
         if(res.statusText === 'OK') {
             if(res.data === 'exUser') {
                 alert('이미 가입되어 있는 이메일 또는 이름입니다.\n다시 입력해 주세요.');
-                window.location.href = `../signup`;
+                window.location.href = `../user/signup`;
             }
             else if(res.data === 'signup') {
                 alert("회원가입이 완료되었습니다:) 다시 로그인 해주세요.");
@@ -78,11 +78,11 @@ function Login() {
             }
             else if(res.data === 'error') {
                 alert("잘못된 양식 입니다. 다시 입력해 주세요.");
-                window.location.href = "../signup";
+                window.location.href = "../user/signup";
             }
             else if(res.data === 'DBerror') {
                 alert('DB 접속 오류');
-                window.location.href = "../signup";
+                window.location.href = "../user/signup";
             }
         }
     }

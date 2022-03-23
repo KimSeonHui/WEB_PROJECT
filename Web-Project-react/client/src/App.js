@@ -24,7 +24,7 @@ function App() {
         <Route path="/user/login">
           <Login />
         </Route>
-        <Route path="/signup">
+        <Route path="/user/signup">
           <Signup />
         </Route>
         <Route path="/create">

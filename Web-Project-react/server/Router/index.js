@@ -11,7 +11,7 @@ const read = require("./board/read/index");
 router.use("/main", main);
 router.use("/board", board);
 router.use("/user/login", login);
-router.use("/signup", signup);
+router.use("/user/signup", signup);
 router.use("/create", create);
 router.use("/read", read);
 
