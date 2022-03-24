@@ -1,9 +1,10 @@
+import axios from "axios";
 import {useState} from "react";
 import { Box, Typography, TextField, Button, Link } from '@mui/material';
 
 function Login() {
     const checkEmail = /[\w\-\.]+\@[\w\-\.]+/g;
-    const checkPw = /^[A-Za-z0-9_-]{2,8}$/;
+    const checkPw = /^[A-Za-z0-9_-]{8,20}$/;
 
     const [email, setEmail] = useState('');
     const [emailErr, setEmailErr] = useState(false);
@@ -30,15 +31,33 @@ function Login() {
         }
     }
 
-    const onSubmit = (event) => {
+    const onSubmit = async (event) => {
+        event.preventDefault();
         if(email.length === 0 || emailErr) {
-            event.preventDefault();
             setEmailErr(true);
+            return false;
         }
         if(pw.length === 0 || pwErr) {
-            event.preventDefault();
             setPwErr(true);
+            return false;
         }    
+
+        const res = await axios.post('/user/login', {
+            email : email,
+            password : pw
+        });
+
+        if(res.statusText === 'OK') {
+            if(res.data === 'DBerror') {
+                alert('DB 에러');
+            }
+            else if(res.data === 'infoError') {
+                alert('아이디 또는 비밀번호가 잘못 되었습니다.')
+            }
+            else {
+                window.location.href = '../../';
+            }
+        }
     }
 
     return <Box 
@@ -81,6 +100,7 @@ function Login() {
                     <TextField  
                         required
                         id="email"
+                        name="email"
                         label="Email adress"
                         variant="standard"
                         value={email}
@@ -91,12 +111,13 @@ function Login() {
                     <TextField  
                         required
                         id="password"
+                        name="password"
                         label="password"
                         variant="standard"
                         type="password"
                         value={pw}
                         error={pwErr}
-                        helperText={pwErr ? '비밀번호를 2글자 이상 8글자 이하로 입력해주세요' : ''}
+                        helperText={pwErr ? '비밀번호를 8글자 이상 20글자 이하로 입력해주세요' : ''}
                         onChange={onChangePw}
                     />
                     <Button 
