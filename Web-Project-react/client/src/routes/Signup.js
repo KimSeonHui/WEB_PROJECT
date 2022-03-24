@@ -2,7 +2,7 @@ import axios from "axios";
 import {useState} from "react";
 import { Box, Typography, TextField, Button, Link } from '@mui/material';
 
-function Login() {
+function Signup() {
     const checkEmail = /[\w\-\.]+\@[\w\-\.]+/g;
     const checkPw = /^[A-Za-z0-9_-]{8,20}$/;
     const checkName = /^[가-힣A-Za-z]{2,4}$/;
@@ -176,4 +176,4 @@ function Login() {
     </Box>
 }
 
-export default Login;
+export default Signup;
