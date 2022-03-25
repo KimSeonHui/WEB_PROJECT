@@ -23,18 +23,16 @@ const handleQuery = (sql, values) => {
 	})
 }
 
-router.get("/", (req, res) => {
-   res.send('hi login');
-});
+router.get('/', (req, res) => {
+    console.log('get user login')
+})
 
 
 passport.serializeUser((user, done) => {
-    console.log('serializeUser');
-   done(null, user.UID);
+    done(null, user.UID);
 });
 
 passport.deserializeUser(async (UID, done) => {
-    console.log('deserializeUser');
     const sql = 'SELECT UID, NAME, AUTHORITY FROM USER WHERE UID = ?';
     const loginUser = await handleQuery(sql, UID)
     .then(user => done(null, user))
@@ -90,7 +88,6 @@ passport.use('local', new LocalStrategy( {
 
 router.post('/', (req, res, next) => {
    passport.authenticate('local', (authError, user) => {
-	   console.log('user', user)
       if(authError) {
           console.error(authError);
           return next(authError);
@@ -98,7 +95,6 @@ router.post('/', (req, res, next) => {
       if(!user) {
          console.error('아이디 또는 비밀번호가 잘못 되었습니다.');
          res.send('infoError');
-         return false;
       }
       return req.login(user, (loginError) => {
           if(loginError) {
@@ -107,8 +103,7 @@ router.post('/', (req, res, next) => {
           }
           req.session.passport.name = user.NAME;
           req.session.passport.authority = user.AUTHORITY;
-          res.send('login');
-		  console.log('login complete')
+          res.send('login')
       });
   })
   (req, res, next);

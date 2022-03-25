@@ -50,7 +50,8 @@ router.get("/",  async (req, res) => {
             }
             const info = {
                 category : categories,
-                post : viewsTopRows
+                post : viewsTopRows,
+                session : (req.session.passport !== undefined) ? req.session.passport : '',
             }
             res.send(info);           
         }
