@@ -1,19 +1,29 @@
-import { Grid, Button, InputBase, Paper, Link, IconButton } from '@mui/material';
+import axios from "axios";
+import { useEffect ,useState} from "react";
+import { Grid, Button, InputBase, Paper, IconButton, Typography } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
 
 
-function Navbar() {
+function Navbar({session}) {
+    const [logined, setLogined] = useState(false);
+
+    useEffect(() => {
+        if(session !== '') {
+            setLogined(true);
+        }
+    }, [])
     
     return <Grid container spacing={2} sx={{bgcolor : '#212529', py : '10px'}}>
     <Grid item sx={{width:'250px'}}>
-        <Link 
-            href="/user/login" 
-            underline='none' 
-            sx={{color : '#fff', fontSize : 'h5.fontSize', px : '70px'}}
+        <Typography 
+          variant='h5' 
+          component="div" 
+          gutterBottom
+          sx={{color : '#fff', px : '70px'}}
         >
             Company
-        </Link>
+        </Typography>
     </Grid>
     <Grid item xs sx={{pl: 0}}>
         <Paper 
@@ -35,6 +45,7 @@ function Navbar() {
         <Button 
             variant='outlined'
             size='large'
+            href={!logined ? "/user/login" : ''}
             sx={{
                 borderColor: '#fff', 
                 color: '#fff', 
@@ -47,7 +58,7 @@ function Navbar() {
                 }
              }}
         >
-            김선희님
+            {!logined ? '로그인' : `${session.name}`}
         </Button>
     </Grid>
 </Grid>

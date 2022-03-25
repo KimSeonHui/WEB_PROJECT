@@ -8,12 +8,15 @@ import MainPage from "../component/MainPage";
 
 function MainHome() {
     const [categories, setCategory] = useState({});
+    const [session, setSession] = useState({});
 
     const callApi = async () => {
         const res = await axios.get('/main');
 
         if(res.statusText === 'OK') {
+            console.log('data', res.data)
             setCategory(res.data.category);
+            setSession(res.data.session);
         }
     };
 
@@ -23,7 +26,7 @@ function MainHome() {
 
 
     return <div>
-        <Navbar />
+        <Navbar session={session}/>
             <Grid container>
                 <Grid item>
                     <Sidebar category={categories} sx={{width: '250px', height: '100vh'}}/>
