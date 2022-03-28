@@ -21,12 +21,7 @@ const handleQuery = (sql, values) => {
 	});
 }
 
-
-router.get("/", (req, res) => {
-   res.send('hi');
-});
-
-router.post('/',  async (req, res) => {
+router.post('/signup',  async (req, res) => {
    const {emails, username, password } = req.body;
 
    const sql = `SELECT * from USER WHERE EMAIL=? OR NAME=?`;
@@ -52,6 +47,19 @@ router.post('/',  async (req, res) => {
          res.send('error');
       });
    }
-})
+});
+
+
+router.get("/logout", (req, res) => {
+  if(!req.session.passport) {
+     res.send('not Logined')
+  }
+  else {
+   req.session.destroy();
+   res.clearCookie('loginData');
+   res.send('logout')
+  }
+});
+
 
 module.exports = router;

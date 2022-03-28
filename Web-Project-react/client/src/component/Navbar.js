@@ -1,18 +1,42 @@
 import axios from "axios";
 import { useEffect ,useState} from "react";
-import { Grid, Button, InputBase, Paper, IconButton, Typography } from '@mui/material';
+import { Grid, Button, InputBase, Paper, IconButton, Typography, Menu, MenuItem } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
 
 
 function Navbar({session}) {
     const [logined, setLogined] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (e) => {
+        setAnchorEl(e.target);
+    }
+    const handleClose = () => {
+        setAnchorEl(null);
+    }
+
+    const handleLogout = async () => {
+        const res = await axios.get('/user/logout');
+        if(res.statusText === 'OK') {
+            console.log('data', res.data);
+
+            if(res.data === 'logout') {
+                window.location.href = '/user/login'
+            }
+            else {
+                alert('로그인한 상태가 아닙니다')
+            }
+        }
+    }
+
 
     useEffect(() => {
-        if(session !== '') {
+        if(session.name !== undefined) {
+            console.log('session', session)
             setLogined(true);
         }
-    }, [])
+    }, [session])
     
     return <Grid container spacing={2} sx={{bgcolor : '#212529', py : '10px'}}>
     <Grid item sx={{width:'250px'}}>
@@ -43,9 +67,12 @@ function Navbar({session}) {
     </Grid>
     <Grid item xs={1.1}>
         <Button 
+            id="btnLogin"
+            aria-controls={logined ? 'dropdown' : undefined}
             variant='outlined'
             size='large'
             href={!logined ? "/user/login" : ''}
+            onClick={handleClick}
             sx={{
                 borderColor: '#fff', 
                 color: '#fff', 
@@ -60,6 +87,16 @@ function Navbar({session}) {
         >
             {!logined ? '로그인' : `${session.name}`}
         </Button>
+        <Menu
+            id="dropdown"
+            aria-labelledby="btnLogin"
+            anchorEl={anchorEl}
+            open={open && logined}
+            onClose={handleClose}
+        >
+            <MenuItem component="a" href="/user/findpw">비밀번호 변경</MenuItem>
+            <MenuItem component="a" onClick={handleLogout}>로그아웃</MenuItem>
+        </Menu>
     </Grid>
 </Grid>
 }
