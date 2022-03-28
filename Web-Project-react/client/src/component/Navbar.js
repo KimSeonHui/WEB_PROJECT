@@ -30,10 +30,24 @@ function Navbar({session}) {
         }
     }
 
+    const createMenuItem = (authority) => {
+        const data = [];
+        if(authority < 2) {
+            data.push({href : '/user/withdrawal', name : '회원 탈퇴'});
+        }
+        else {
+            data.push({href : '/setting?order=UID', name : '관리'});
+        }
+
+        data.push({href : '/user/findpw', name : '비밀변호 변경'});
+        data.push({href : '', onClick : handleLogout, name : '로그아웃'});
+
+        return data;
+    }
+
 
     useEffect(() => {
         if(session.name !== undefined) {
-            console.log('session', session)
             setLogined(true);
         }
     }, [session])
@@ -94,8 +108,11 @@ function Navbar({session}) {
             open={open && logined}
             onClose={handleClose}
         >
-            <MenuItem component="a" href="/user/findpw">비밀번호 변경</MenuItem>
-            <MenuItem component="a" onClick={handleLogout}>로그아웃</MenuItem>
+            {session.authority !== undefined ? createMenuItem(session.authority).map((data) => (
+                <MenuItem key={data.name} component="a" href={data.href} onClick={data.onClick !== undefined ? data.onClick : null}>
+                    {data.name}
+                </MenuItem>
+            )) : ''}
         </Menu>
     </Grid>
 </Grid>
