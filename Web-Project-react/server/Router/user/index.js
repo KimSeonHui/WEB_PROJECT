@@ -51,6 +51,42 @@ router.post('/signup',  async (req, res) => {
    }
 });
 
+router.post('/changepw', async (req, res) => {
+   const {newPW1, newPW2} = req.body;
+
+   if(newPW1 === newPW2) {//새 비밀번호가 동일한지 체크
+      const sql = `SELECT PW, SALT FROM USER WHERE UID = ?;`;
+      const pw = await handleQuery(sql, req.session.passport.user).catch(err => {
+         console.log(err);
+         res.send('error');
+      });
+      const currentPW = crypto.createHash('sha512').update(req.body.currentPW + pw[0].SALT).digest('hex');
+
+      if(newPW1 === req.body.currentPW) {//현재 비밀번호와 새 비밀번호가 동일한지 체크
+         res.send('correspond');
+      } 
+      else if(pw[0].PW === currentPW) {//현재 비밀번호가 일치하는지 체크
+         const hashPW = crypto.createHash('sha512').update(newPW1 + salt).digest('hex');
+         const sql = `UPDATE USER SET PW = ?, SALT = ? WHERE UID = ? AND PW = ?;`;
+         const values = [hashPW, salt, req.session.passport.user, currentPW];
+         await handleQuery(sql, values).then(() => {
+           res.send('changePW');
+         })
+         .catch(err => {
+            console.log(err);
+           res.send('fail');
+         });
+      } 
+      else {
+        res.send('currentPWErr');
+      }
+   } 
+   else {
+     res.send('newPWErr');
+   }
+      
+});
+
 
 router.get("/logout", (req, res) => {
   if(!req.session.passport) {

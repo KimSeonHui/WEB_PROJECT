@@ -37,7 +37,7 @@ function Navbar({session}) {
             data.push({href : '/setting?order=UID', name : '관리'});
         }
 
-        data.push({href : '/user/findpw', name : '비밀변호 변경'});
+        data.push({href : '/user/changepw', name : '비밀변호 변경'});
         data.push({href : '', onClick : handleLogout, name : '로그아웃'});
 
         return data;
