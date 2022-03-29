@@ -43,47 +43,54 @@ function Withdrawal() {
             alert('비밀번호는 8자 이상, 20자 이하로 설정하세요.');
             return false;
         }   
-        const res = await axios.post('/user/withdrawal', {
+
+        if(window.confirm('삭제 시 복구가 불가능 합니다. 정말 삭제하시겠습니까?')) {
+            const res = await axios.post('/user/withdrawal', {
                 email : email,
                 password : pw
-        })
+            });
         
-        if(res.statusText === 'OK') {
-            console.log('res.data', res.data);
-            if(res.data === 'withdrawal') {
-                alert('탈퇴가 완료되었습니다.');
+            if(res.statusText === 'OK') {
+                console.log('res.data', res.data);
+                if(res.data === 'withdrawal') {
+                    alert('탈퇴가 완료되었습니다.');
 
-                const result = await axios.get('/user/logout');
-                if(result.statusText === 'OK') {
-                    if(result.data === 'logout') {
-                        window.location.href = '/user/login'
-                    }
-                    else {
-                        alert('로그인한 상태가 아닙니다')
+                    const result = await axios.get('/user/logout');
+                    if(result.statusText === 'OK') {
+                        if(result.data === 'logout') {
+                            window.location.href = '/user/login'
+                        }
+                        else {
+                            alert('로그인한 상태가 아닙니다')
+                        }
                     }
                 }
-            }
-            else if(res.data === 'notLogined') {
-                alert('로그인해 주십시오');
-                window.location.href = `../user/login`;
-            }
-            else if(res.data === 'admin') {
-                alert("관리자는 탈퇴할 수 없습니다.");
-                window.location.href = `../../`;
-            }
-            else if(res.data === 'pwError') {
-                alert("비밀번호가 잘못 되었습니다. \n 다시 입력해주세요.");
-                window.location.href = "../user/withdrawal";
-            }
-            else if(res.data === 'emailError') {
-                alert("이메일이 잘못 되었습니다. \n 다시 입력해주세요.");
-                window.location.href = "../user/withdrawal";
-            }
-            else if(res.data === 'DBerror') {
-                alert('DB 접속 오류, 탈퇴하지 못했습니다.');
-                window.location.href = "../user/withdrawal";
+                else if(res.data === 'notLogined') {
+                    alert('로그인해 주십시오');
+                    window.location.href = `../user/login`;
+                }
+                else if(res.data === 'admin') {
+                    alert("관리자는 탈퇴할 수 없습니다.");
+                    window.location.href = `../../`;
+                }
+                else if(res.data === 'pwError') {
+                    alert("비밀번호가 잘못 되었습니다. \n 다시 입력해주세요.");
+                    window.location.href = "../user/withdrawal";
+                }
+                else if(res.data === 'emailError') {
+                    alert("이메일이 잘못 되었습니다. \n 다시 입력해주세요.");
+                    window.location.href = "../user/withdrawal";
+                }
+                else if(res.data === 'DBerror') {
+                    alert('DB 접속 오류, 탈퇴하지 못했습니다.');
+                    window.location.href = "../user/withdrawal";
+                }
             }
         }
+        else {
+            return false;
+        }
+        
     }
 
     return <Box 
