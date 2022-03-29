@@ -19,8 +19,6 @@ function Navbar({session}) {
     const handleLogout = async () => {
         const res = await axios.get('/user/logout');
         if(res.statusText === 'OK') {
-            console.log('data', res.data);
-
             if(res.data === 'logout') {
                 window.location.href = '/user/login'
             }
@@ -105,6 +103,7 @@ function Navbar({session}) {
             id="dropdown"
             aria-labelledby="btnLogin"
             anchorEl={anchorEl}
+            autoFocus={false}
             open={open && logined}
             onClose={handleClose}
         >
