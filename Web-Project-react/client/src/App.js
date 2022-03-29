@@ -4,6 +4,7 @@ import Login from "./routes/Login";
 import Signup from "./routes/Signup";
 import Create from "./routes/Create";
 import Read from "./routes/Read";
+import Withdrawal from "./routes/Withdrawal";
 
 import {
   BrowserRouter as Router,
@@ -26,6 +27,9 @@ function App() {
         </Route>
         <Route path="/user/signup">
           <Signup />
+        </Route>
+        <Route path="/user/withdrawal">
+          <Withdrawal />
         </Route>
         <Route path="/create">
           <Create />
