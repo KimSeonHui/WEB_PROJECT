@@ -58,7 +58,8 @@ router.get("/:postId", async (req, res) => {
             }
             const info = {
                 category : categories,
-                post : postRows
+                post : postRows,
+                session : (req.session.passport !== undefined) ? req.session.passport : '',
             }
             res.send(info);       
         }

@@ -25,6 +25,7 @@ const handleQuery = (sql, values) => {
 }
 
 router.get("/", (req, res) => {
+    const categories = [];
 
     let sql = `SELECT * FROM CATEGORY`;
     conn.query(sql, (error, result) => {
@@ -32,7 +33,6 @@ router.get("/", (req, res) => {
             console.log(error);
         }
         else {
-            const categories = [];
             for(node of result) {
                 const data = {
                     id : `${node.CID}`,
@@ -42,7 +42,11 @@ router.get("/", (req, res) => {
                 }
                 categories.push(data);
             }
-            res.send(categories);           
+            const info = {
+                category : categories,
+                session : (req.session.passport !== undefined) ? req.session.passport : '',
+            }
+            res.send(info);           
         }
     })
 });

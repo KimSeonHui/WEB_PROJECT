@@ -8,13 +8,15 @@ import CreatePage from "../component/CreatePage";
 
 function Create() {
     const [categories, setCategory] = useState({});
+    const [session, setSession] = useState({});
     const { cid } = useParams();
 
     const callApi = async () => {
         const res = await axios.get(`/create`);
 
         if(res.statusText === 'OK') {
-            setCategory(res.data);
+            setCategory(res.data.category);
+            setSession(res.data.session)
         }
     };
 
@@ -24,7 +26,7 @@ function Create() {
 
 
     return <div>
-        <Navbar />
+        <Navbar session={session}/>
         <Grid container>
             <Grid item>
                 <Sidebar category={categories}  sx={{width: '250px', height: '100vh'}}/>

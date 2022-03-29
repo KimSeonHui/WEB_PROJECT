@@ -54,6 +54,7 @@ router.get("/:cid/:page", async (req, res) => {
                 category : categories,
                 post : boardRows,
                 page : page,
+                session : (req.session.passport !== undefined) ? req.session.passport : '',
             }
             res.send(info); 
         }

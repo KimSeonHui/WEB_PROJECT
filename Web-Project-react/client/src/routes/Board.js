@@ -11,6 +11,7 @@ import { useParams } from "react-router-dom";
 function Board() {
     const [categories, setCategory] = useState({});
     const [posts, setPosts] = useState({});
+    const [session, setSession] = useState({});
     const { cid, page } = useParams();
 
     const callApi = async () => {
@@ -19,6 +20,7 @@ function Board() {
         if(res.statusText === 'OK') {
             setCategory(res.data.category); 
             setPosts(res.data.post);
+            setSession(res.data.session);
         }
     };
 
@@ -28,7 +30,7 @@ function Board() {
 
 
     return <div>
-        <Navbar />
+        <Navbar session={session}/>
         <Grid container>
             <Grid item>
                 <Sidebar category={categories}  sx={{width: '250px', height: '100vh'}}/>

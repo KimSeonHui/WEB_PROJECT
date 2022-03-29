@@ -10,6 +10,7 @@ import { useParams } from "react-router-dom";
 
 function Read() {
     const [categories, setCategory] = useState({});
+    const [session, setSession] = useState({});
     const [post, setPost] = useState({});
     const { postId } = useParams();
 
@@ -19,6 +20,7 @@ function Read() {
         if(res.statusText === 'OK') {
             setPost(res.data.post);
             setCategory(res.data.category);   
+            setSession(res.data.session);
         }
     };
 
@@ -27,7 +29,7 @@ function Read() {
     }, []);
 
     return <div>
-        <Navbar />
+        <Navbar session={session}/>
         <Grid container>
             <Grid item>
                 <Sidebar category={categories}  sx={{width: '250px', height: '100vh'}}/>
