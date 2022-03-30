@@ -3,7 +3,7 @@ import {useState} from "react";
 import { Box, Typography, TextField, Button, Link } from '@mui/material';
 
 function ChangePw() {
-    const checkPw = /^[A-Za-z0-9_-]{8,20}$/;
+    const checkPw = /^[A-Za-z0-9@_-]{8,20}$/;
 
     const [pw, setPw] = useState('');
     const [newPW1, setnewPW1] = useState('');

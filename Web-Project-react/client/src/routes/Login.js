@@ -4,7 +4,7 @@ import { Box, Typography, TextField, Button, Link } from '@mui/material';
 
 function Login() {
     const checkEmail = /[\w\-\.]+\@[\w\-\.]+/g;
-    const checkPw = /^[A-Za-z0-9_-]{8,20}$/;
+    const checkPw = /^[A-Za-z0-9@_-]{8,20}$/;
 
     const [email, setEmail] = useState('');
     const [emailErr, setEmailErr] = useState(false);
@@ -137,7 +137,7 @@ function Login() {
                     <Link underline="none" href="/user/signup" sx={{color : '#6c757d', mr : 2}}>
                         회원가입
                     </Link>
-                    <Link underline="none" href="/user/findPw"  sx={{color : '#6c757d'}}>
+                    <Link underline="none" href="/user/findpw"  sx={{color : '#6c757d'}}>
                         비밀번호 찾기
                     </Link>
                 </Box>
