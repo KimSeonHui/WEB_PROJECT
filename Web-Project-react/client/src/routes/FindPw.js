@@ -4,7 +4,7 @@ import { Box, Typography, TextField, Button, Grid } from '@mui/material';
 
 function FindPw() {
     const checkEmail = /[\w\-\.]+\@[\w\-\.]+/g;
-    const checkCode = /[0-9]/;
+    const checkCode = /[0-9]+/g;
 
     const [email, setEmail] = useState('');
     const [emailErr, setEmailErr] = useState(false);
@@ -37,9 +37,51 @@ function FindPw() {
             setEmailErr(true);
             return false;
         }
-        
+
+        sendEmail();
+
+    }
+
+    const sendEmail = async () => {
+        const res = await axios.post('/user/findpw', {
+            email : email,
+            isAuthcode : document.getElementById('hasCode').value
+        });
+
+        if(res.statusText === 'OK') {
+            console.log('data', res.data);
+            if(res.data) {
+                startTimer();
+                document.getElementById('hasCode').value = res.data;
+            }
+            else {
+                alert('인증번호 전송이 실패했습니다.');
+            }
+        }
+    }
+
+    let interval;
+    const startTimer = () => {
+        clearInterval(interval);
+
         const timer = document.getElementById('timer');
+        let min = 3;
+        let sec = 0;
+
         timer.style.display = 'block';
+
+        interval = setInterval(() => {
+            if(sec === 0 && min > 0) {
+                min--;
+                sec = 59;
+            }
+            if(min === 0 && sec === 0) {
+                timer.innerText = `${min} : ${sec}`;
+                return false;
+            }
+            timer.innerText = `${min} : ${sec}`;
+            sec--;
+        }, 1000);
     }
 
     const onSubmit = async (event) => {
@@ -59,14 +101,13 @@ function FindPw() {
         });
 
         if(res.statusText === 'OK') {
-            if(res.data === 'DBerror') {
-                alert('DB 에러');
-            }
-            else if(res.data === 'infoError') {
-                alert('아이디 또는 비밀번호가 잘못 되었습니다.')
+            console.log('on submit res', res.data);
+            if(res.data) {
+                alert('비밀번호가 a123456789로 초기화 되었습니다. 다시 로그인 해 주세요.');
+                window.location.href = '../user/login';
             }
             else {
-                window.location.href = '../../';
+                alert('인증코드가 잘못 되었습니다. \n다시 확인해 주세요.')
             }
         }
     }
@@ -124,6 +165,7 @@ function FindPw() {
                             onChange={onChangeEmail}
                             sx={{width : '100%'}}
                         />
+                        <input type="hidden" name="isAuthcode" id="hasCode" value="0" />
                         </Grid>
                         <Grid item xs={6}>
                             <TextField  
@@ -172,7 +214,6 @@ function FindPw() {
                                     display : 'none'
                                 }}
                             >
-                                3:00
                             </Typography>
                         </Grid>
                     </Grid>

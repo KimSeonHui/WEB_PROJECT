@@ -6,6 +6,7 @@ import Create from "./routes/Create";
 import Read from "./routes/Read";
 import Withdrawal from "./routes/Withdrawal";
 import ChangePw from "./routes/ChangePw";
+import FindPw from "./routes/FindPw";
 
 import {
   BrowserRouter as Router,
@@ -34,6 +35,9 @@ function App() {
         </Route>
         <Route path="/user/changepw">
           <ChangePw />
+        </Route>
+        <Route path="/user/findpw">
+          <FindPw />
         </Route>
         <Route path="/create">
           <Create />

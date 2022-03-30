@@ -8,6 +8,7 @@ const user = require("./user/index");
 const create = require("./board/create/index");
 const read = require("./board/read/index");
 const withdrawal = require("./user/withdrawal/index");
+const findpw = require("./user/findPw/index");
 
 router.use("/main", main);
 router.use("/board", board);
@@ -16,5 +17,6 @@ router.use("/user", user);
 router.use("/create", create);
 router.use("/read", read);
 router.use("/user/withdrawal", withdrawal);
+router.use("/user/findpw", findpw);
 
 module.exports = router;
