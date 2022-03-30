@@ -12,6 +12,7 @@ function Read() {
     const [categories, setCategory] = useState({});
     const [session, setSession] = useState({});
     const [post, setPost] = useState({});
+    const [page, setPage] = useState(0);
     const { postId } = useParams();
 
     const callApi = async () => {
@@ -21,6 +22,7 @@ function Read() {
             setPost(res.data.post);
             setCategory(res.data.category);   
             setSession(res.data.session);
+            setPage(res.data.page);
         }
     };
 
@@ -35,7 +37,7 @@ function Read() {
                 <Sidebar category={categories}  sx={{width: '250px', height: '100vh'}}/>
             </Grid>
             <Grid item xs>
-                <ReadPage curPost={post}/>
+                <ReadPage curPost={post} page={page}/>
             </Grid>
     </Grid>    
 </div>

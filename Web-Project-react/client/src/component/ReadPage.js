@@ -10,7 +10,7 @@ const theme = createTheme({
     },
   });
 
-function ReadPage({ curPost }) {
+function ReadPage({ curPost, page }) {
 
     return <Container maxWidth="xl">
         <Box sx={{width : "100%", p : '20px'}}>
@@ -21,7 +21,7 @@ function ReadPage({ curPost }) {
                 gutterBottom
                 sx={{color : '#6c757d'}}
             >
-                {curPost[0] !== undefined ? curPost[0].NAME : ''}
+                {curPost !== undefined ? curPost.NAME : ''}
             </Typography>
             <Typography 
                 variant='h5' 
@@ -29,7 +29,7 @@ function ReadPage({ curPost }) {
                 gutterBottom
                 id='title'
             >
-               {curPost[0] !== undefined ? curPost[0].TITLE : ''}
+               {curPost !== undefined ? curPost.TITLE : ''}
             </Typography>
             <ThemeProvider theme={theme}>
                 <ButtonGroup variant="outlined" >
@@ -52,14 +52,14 @@ function ReadPage({ curPost }) {
         <Divider />
 
         <Box sx={{my : 2, textAlign : 'center'}}>
-            {curPost[0] !== undefined ? curPost[0].DESCRIPTION : ''}
+            {curPost !== undefined ? curPost.DESCRIPTION : ''}
         </Box>
         <Divider />
         <ThemeProvider theme={theme}>
             <ButtonGroup variant="outlined" 
                 sx={{mt : 1, display : 'flex', justifyContent : 'flex-end'}} >
                 <Button 
-                    href="#"
+                    href={curPost !== undefined && page !== undefined ? `/board/${curPost.BOARDID}/${page}` : ''}
                     sx={{mb : 1}}
                 >
                     목록

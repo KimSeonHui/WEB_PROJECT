@@ -27,6 +27,7 @@ const handleQuery = (sql, values) => {
 router.get("/:postId", async (req, res) => {
     const { postId } = req.params;
 
+    //조회수 체크
     let sql = `UPDATE BOARD SET VIEWS = VIEWS + 1 WHERE POSTID = ?;`;
     await handleQuery(sql, postId).catch(err => {
         console.log(err);
@@ -39,6 +40,23 @@ router.get("/:postId", async (req, res) => {
         console.log(err);
 		alert(res, "정보를 불러오지 못했습니다.", `/`);
     })
+
+    //목록 기능
+    sql = `SELECT POSTID FROM BOARD WHERE BOARDID = ? AND TEMP = 0 AND ISDELETED = 0
+	ORDER BY DSPORD, ADDTIME;`;
+	const value = postRows[0].BOARDID;
+	const row = await handleQuery(sql, value).catch(err => {
+		console.log(err);
+		alert(res, "정보를 불러오지 못했습니다.", `/`);
+	});
+	
+	const page = [];
+	for(let i = 0; i < row.length; i++) {
+		if(row[i].POSTID === parseInt(postId)) {
+			page.push((parseInt(i / 20) + 1));
+		}
+	}
+
 
     sql = `SELECT * FROM CATEGORY`;
     conn.query(sql, (error, result) => {
@@ -58,7 +76,8 @@ router.get("/:postId", async (req, res) => {
             }
             const info = {
                 category : categories,
-                post : postRows,
+                post : postRows[0],
+                page : page[0],
                 session : (req.session.passport !== undefined) ? req.session.passport : '',
             }
             res.send(info);       
