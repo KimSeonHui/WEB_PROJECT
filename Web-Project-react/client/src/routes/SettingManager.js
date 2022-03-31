@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import Grid from '@mui/material/Grid';
 import Navbar from '../component/Navbar';
 import SettingSidebar from '../component/SettingSidebar';
+import ManagerPage from '../component/ManagerPage';
 
 function SettingManager() {
     const [session, setSession] = useState({});
@@ -26,7 +27,7 @@ function SettingManager() {
                 <SettingSidebar  session={session} sx={{width: '250px', height: '100vh'}}/>
             </Grid>
             <Grid item xs>
-                <h1>SettingManager 자리</h1>
+                <ManagerPage />
             </Grid>
     </Grid>    
 </div>
