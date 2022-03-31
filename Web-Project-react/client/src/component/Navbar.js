@@ -34,7 +34,7 @@ function Navbar({session}) {
             data.push({href : '/user/withdrawal', name : '회원 탈퇴'});
         }
         else {
-            data.push({href : '/setting?order=UID', name : '관리'});
+            data.push({href : `/setting?order=${session.user}`, name : '관리'});
         }
 
         data.push({href : '/user/changepw', name : '비밀변호 변경'});
