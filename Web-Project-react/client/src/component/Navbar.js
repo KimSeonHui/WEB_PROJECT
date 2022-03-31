@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect ,useState} from "react";
-import { Grid, Button, InputBase, Paper, IconButton, Typography, Menu, MenuItem } from '@mui/material';
+import { Grid, Button, InputBase, Paper, IconButton, Typography, Menu, MenuItem, Link } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
 
@@ -52,14 +52,13 @@ function Navbar({session}) {
     
     return <Grid container spacing={2} sx={{bgcolor : '#212529', py : '10px'}}>
     <Grid item sx={{width:'250px'}}>
-        <Typography 
-          variant='h5' 
-          component="div" 
-          gutterBottom
-          sx={{color : '#fff', px : '70px'}}
+        <Link 
+          href='/'
+          underline='none'
+          sx={{color : '#fff', fontSize : 'h5.fontSize', px : '70px'}}
         >
             Company
-        </Typography>
+        </Link>
     </Grid>
     <Grid item xs sx={{pl: 0}}>
         <Paper 
