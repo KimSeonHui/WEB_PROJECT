@@ -2,7 +2,7 @@ import axios from 'axios';
 import {useState} from 'react';
 import { Box, Typography, Divider, Container, Button, Select, MenuItem, TableCell, tableCellClasses } from '@mui/material';
 import { Grid, InputBase, Paper, TableContainer , Table, TableHead } from '@mui/material';
-import {TableRow, TableBody, styled, } from "@mui/material";
+import {TableRow, TableBody, styled, Checkbox } from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -21,55 +21,14 @@ const StyledTableRow = styled(TableRow)(() => ({
 }));
 
 
-
-const appendRow = (data) => {
-
-    console.log('appendRow ', data.UID);
-    const tbody = document.getElementById('addManagerTbody');
-
-    const tr = document.createElement('tr');
-    tbody.appendChild(tr);
-
-    const check = document.createElement('td');
-    const uid = document.createElement('td');
-    uid.innerText = data.UID;
-
-    const email = document.createElement('td');
-    email.innerText = data.EMAIL;
-
-    const name = document.createElement('td');
-    name.innerText = data.NAME;
-
-    const join = document.createElement('td');
-    join.innerText = data.JOINDATE;
-
-    const recentLogin = document.createElement('td');
-    recentLogin.innerText = data.RECENTLOGIN;
-
-    tr.appendChild(check);
-    tr.appendChild(uid);
-    tr.appendChild(email);
-    tr.appendChild(name);
-    tr.appendChild(join);
-    tr.appendChild(recentLogin);
-
-    // tbody.appendChild(
-    // <StyledTableRow key={data.UID}>
-    //     <TableCell>체크박스</TableCell>
-    //     <TableCell>{data.UID}</TableCell>
-    //     <TableCell>{data.EMAIL}</TableCell>
-    //     <TableCell>{data.NAME}</TableCell>
-    //     <TableCell>{data.JOINDATE}</TableCell>
-    //     <TableCell>{data.RECENTLOGIN}</TableCell>
-    // </StyledTableRow>
-    // );
-}
-
-
 function ManagerPage() {
     const [rows, setRows] = useState([]);
     const [select, setSelect] = useState('email');
     const [word, setWord] = useState('');
+    const [check, setCheck] = useState({
+        all : false,
+        searchCheck : false
+    });
 
     const handleSelect = (event) => {
         setSelect(event.target.value);
@@ -77,10 +36,6 @@ function ManagerPage() {
 
     const onChange = (event) => {
         setWord(event.target.value);
-    }
-
-    const createData = (UID, EMAIL, NAME, JOINDATE, RECENTLOGIN) => {
-        return {UID, EMAIL, NAME, JOINDATE, RECENTLOGIN};
     }
 
     const onSubmit = async (e) => {
@@ -104,33 +59,19 @@ function ManagerPage() {
                 alert('검색 결과가 없습니다.');
             }
             else {
-                // setRows(res.data.map((val) => (
-                //     rows.push(createData(val.UID, val.EMAIL, val.NAME, val.JOINDATE, val.RECENTLOGIN))
-                // )));
-                // setRows(res.data);
-                // console.log('rows', rows)                 
-
-                const tbody = document.getElementById('addManagerTbody');
-                while(tbody.hasChildNodes()) {
-                    tbody.removeChild(tbody.firstElementChild);
-                }
-
-                //const value = Object.values(res.data);
-          
-                // for(let i = 0; i < value.length; i++) {
-                //     console.log('res.data[i]' + value);
-                //     appendRow(value[i]);
-                // }
-
-                for(let val of res.data) {
-                    console.log('v', val)
-                    appendRow(val);
-                }
-
+                setRows(res.data);
                 document.getElementById('addManagerDiv').style.display = 'block';
             }
         }
     }
+
+    const handleAllCheck = (e) => {
+        setCheck({
+            ...check,
+            [e.target.name] : e.target.checked
+        });
+    }
+    const {all , searchCheck} = check;
 
     console.log('생성')
     return <Container maxWidth="xl">
@@ -216,7 +157,9 @@ function ManagerPage() {
             <Table size="medium">
                 <TableHead>
                     <TableRow>
-                        <StyledTableCell>체크박스</StyledTableCell>
+                        <StyledTableCell>
+                            <Checkbox id="searchAll" name="all" checked={all} onChange={handleAllCheck}/>
+                        </StyledTableCell>
                         <StyledTableCell>UID</StyledTableCell>
                         <StyledTableCell>이메일</StyledTableCell>
                         <StyledTableCell>이름</StyledTableCell>
@@ -224,17 +167,17 @@ function ManagerPage() {
                         <StyledTableCell>최근 로그인</StyledTableCell>
                     </TableRow>
                 </TableHead>
-                <TableBody id='addManagerTbody'>
-                    {/* {rows.map((row) => (
-                        <StyledTableRow key={row.UID}>
-                            <TableCell>체크박스</TableCell>
+                <TableBody>
+                    {rows.map((row) => (
+                         <StyledTableRow key={row.UID}>
+                            <TableCell><Checkbox name="searchCheck" checked={all} onChange={handleAllCheck}/></TableCell>
                             <TableCell>{row.UID}</TableCell>
                             <TableCell>{row.EMAIL}</TableCell>
                             <TableCell>{row.NAME}</TableCell>
                             <TableCell>{row.JOINDATE}</TableCell>
                             <TableCell>{row.RECENTLOGIN}</TableCell>
                         </StyledTableRow>
-                    ))} */}
+                    ))}
                 </TableBody>
             </Table>
         </TableContainer>
