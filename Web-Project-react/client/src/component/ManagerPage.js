@@ -45,7 +45,7 @@ const appendRow = (data) => {
 
     const recentLogin = document.createElement('td');
     recentLogin.innerText = data.RECENTLOGIN;
-    
+
     tr.appendChild(check);
     tr.appendChild(uid);
     tr.appendChild(email);
@@ -111,9 +111,8 @@ function ManagerPage() {
                 // console.log('rows', rows)                 
 
                 const tbody = document.getElementById('addManagerTbody');
-
                 while(tbody.hasChildNodes()) {
-                    tbody.remove(tbody.firstElementChild);
+                    tbody.removeChild(tbody.firstElementChild);
                 }
 
                 //const value = Object.values(res.data);
