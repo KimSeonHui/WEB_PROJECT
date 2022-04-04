@@ -53,4 +53,30 @@ route.post('/adminSelect', async (req, res) => {
     }
 });
 
+route.post('/addAdmin', async (req, res) => {
+    if (!req.session.passport || req.session.passport.authority !== 2) {
+       // alert(res, "관리자 권한이 필요합니다.", "/");
+       res.send('authorityFail');
+    }
+    else {
+        const {emails} = req.body;
+        //const email = req.body.emails.split(",");
+        //let sql = `UPDATE USER SET AUTHORITY = 1 WHERE EMAIL = ?`;
+        let sql = `SELECT EMAIL, NAME, AUTHORITY FROM USER WHERE EMAIL = ?`;
+
+        for(let i = 1; i < emails.length; i++) {
+            sql += `OR EMAIL = ?`;
+        }
+        
+        await handleQuery(sql, emails)
+        .then((result) => console.log('result', result))
+        // .then(alert(res, "관리자를 추가하였습니다.", "/setting?order=UID"))
+        .catch(err => {
+            console.error(err);
+            res.send('error');
+            //alert(res, "DB 접속 에러. 작업에 실패하였습니다.", "/setting?order=UID");
+        });
+    }
+});
+
 module.exports = route;

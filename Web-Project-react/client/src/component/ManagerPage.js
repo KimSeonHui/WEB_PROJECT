@@ -65,6 +65,44 @@ function ManagerPage() {
         }
     }
 
+    const getEmails = () => {
+        const emails = [];
+
+        const checked = document.querySelectorAll('input[name=searchCheck]:checked');
+        for(let node of checked) {
+            const selectedTr = node.parentNode.parentNode.parentNode;
+            emails.push(selectedTr.children[2].innerText);
+        }
+        
+        console.log('emails', emails)
+        return emails;
+    }
+
+    const addManager = async () => {
+        if(window.confirm('선택한 회원을 관리자에 추가하시겠습니까?')){
+            getEmails();
+        }
+
+        const res = await axios.post('/setting/addAdmin', {
+            emails : getEmails()
+        });
+
+        if(res.statusText === 'OK') {
+            console.log('res.data', res.data);
+
+            if(res.data === 'authorityFail'){
+                alert('관리자 권한이 필요합니다.');
+                window.location.href = '/';
+            }
+            else if(res.data === 'error') {
+                alert('DB 접속 에러. 작업에 실패하였습니다.');
+            }
+            else {
+                console.log('관리자 추가!');
+            }
+        }
+    }
+
     const handleAllCheck = (e) => {
         if(e.target.name === 'all') {
             setCheck({
@@ -160,6 +198,7 @@ function ManagerPage() {
             variant='outlined'
             type='button'
             disabled={all || searchCheck ? false : true}
+            onClick={addManager}
             sx={{boarderColor : '#0186D3', mt : 2, mb : 1}}
         >
             추가
