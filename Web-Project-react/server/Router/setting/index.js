@@ -23,9 +23,34 @@ const handleQuery = (sql, values) => {
 	})
 }
 
-route.get('/', (req, res) => {
-    const session = (req.session.passport !== undefined) ? req.session.passport : '';
-    res.send(session);
+route.get('/', async (req, res) => {
+    if (!req.session.passport || req.session.passport.authority !== 2) {
+        //alert(res, "관리자 권한이 필요합니다.", "/");
+        res.send('authorityFail');
+    } 
+    else {
+        console.log('query', req.query)
+        const order = req.query.order;
+        const sql = `SELECT UID, AUTHORITY, EMAIL, NAME, DATE_FORMAT(JOINDATE, '%Y-%m-%d %H : %i') AS JOINDATE,
+                DATE_FORMAT(RECENTLOGIN, '%Y-%m-%d %H : %i') AS RECENTLOGIN FROM USER WHERE AUTHORITY > 0 ORDER BY ${order}`;
+        const allUser = await handleQuery(sql).catch(err => {
+            console.log(err);
+            res.send('error');
+            //alert(res, "오류가 발생했습니다.", "/setting?order=UID");
+        });
+        console.log('allUser', allUser);
+
+        const info = {
+            session : (req.session.passport !== undefined) ? req.session.passport : '',
+            allUser : allUser
+        }
+
+        res.send(info);
+        // res.render('settingManager.ejs', {
+        //     session: req.session.passport,
+        //     allUserInfo: allUser
+        // });
+    }
 });
 
 route.post('/adminSelect', async (req, res) => {
