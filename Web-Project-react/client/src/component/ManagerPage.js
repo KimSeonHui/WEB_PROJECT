@@ -66,10 +66,21 @@ function ManagerPage() {
     }
 
     const handleAllCheck = (e) => {
-        setCheck({
-            ...check,
-            [e.target.name] : e.target.checked
-        });
+        if(e.target.name === 'all') {
+            setCheck({
+                all : e.target.checked,
+                searchCheck : e.target.checked
+            })
+        }
+        else {
+            const searchChecks = document.querySelectorAll('input[name=searchCheck]');
+            const searchChecked = document.querySelectorAll('input[name=searchCheck]:checked');
+            setCheck({
+                all : (searchChecks.length === searchChecked.length) ? true : false,
+                searchCheck : e.target.checked
+            });
+        }
+
     }
     const {all , searchCheck} = check;
 
@@ -148,6 +159,7 @@ function ManagerPage() {
         <Button
             variant='outlined'
             type='button'
+            disabled={all || searchCheck ? false : true}
             sx={{boarderColor : '#0186D3', mt : 2, mb : 1}}
         >
             추가
@@ -170,7 +182,9 @@ function ManagerPage() {
                 <TableBody>
                     {rows.map((row) => (
                          <StyledTableRow key={row.UID}>
-                            <TableCell><Checkbox name="searchCheck" checked={all} onChange={handleAllCheck}/></TableCell>
+                            <TableCell>
+                                <Checkbox name="searchCheck" checked={searchCheck} onChange={handleAllCheck}/>
+                            </TableCell>
                             <TableCell>{row.UID}</TableCell>
                             <TableCell>{row.EMAIL}</TableCell>
                             <TableCell>{row.NAME}</TableCell>
