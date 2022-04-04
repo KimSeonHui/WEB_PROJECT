@@ -14,9 +14,19 @@ function SettingManager() {
             {params : parseQuery()}
         );
         if(res.statusText === 'OK') {
-            console.log('data', res.data);
-            setSession(res.data.session);
-            setManager(res.data.allUser);
+            console.log('res.data', res.data);
+            if(res.data === 'authorityFail') {
+                alert('관리자 권한이 필요합니다.');
+                window.location.href = '/';
+            }
+            else if(res.data === 'error') {
+                alert('오류가 발생했습니다.');
+                window.location.href = '/setting?order=UID';
+            }
+            else {
+                setSession(res.data.session);
+                setManager(res.data.allUser);
+            }
         }
     }
 

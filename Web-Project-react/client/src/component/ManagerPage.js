@@ -99,6 +99,7 @@ function ManagerPage({manager}) {
             }
             else {
                 console.log('관리자 추가!');
+                window.location.href = '/setting?order=UID';
             }
         }
     }
@@ -257,7 +258,7 @@ function ManagerPage({manager}) {
                 <TableHead>
                     <TableRow>
                         <StyledTableCell>
-                            <Checkbox id="searchAll" name="all"  />
+                            <Checkbox   />
                         </StyledTableCell>
                         <StyledTableCell>UID</StyledTableCell>
                         <StyledTableCell>권한</StyledTableCell>
@@ -268,10 +269,10 @@ function ManagerPage({manager}) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {manager.map((row) => (
+                    {manager.length !== undefined ? manager.map((row) => (
                          <StyledTableRow key={row.UID}>
                             <TableCell>
-                                {row.AUTHORITY !== 2 ? <Checkbox name="searchCheck" checked={searchCheck} onChange={handleAllCheck}/>
+                                {row.AUTHORITY !== 2 ? <Checkbox  />
                                  : null }
                             </TableCell>
                             <TableCell>{row.UID}</TableCell>
@@ -281,7 +282,7 @@ function ManagerPage({manager}) {
                             <TableCell>{row.JOINDATE}</TableCell>
                             <TableCell>{row.RECENTLOGIN}</TableCell>
                         </StyledTableRow>
-                    ))}
+                    )) : null }
                 </TableBody>
             </Table>
         </TableContainer>

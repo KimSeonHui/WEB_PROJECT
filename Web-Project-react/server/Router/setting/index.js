@@ -25,7 +25,6 @@ const handleQuery = (sql, values) => {
 
 route.get('/', async (req, res) => {
     if (!req.session.passport || req.session.passport.authority !== 2) {
-        //alert(res, "관리자 권한이 필요합니다.", "/");
         res.send('authorityFail');
     } 
     else {
@@ -36,7 +35,6 @@ route.get('/', async (req, res) => {
         const allUser = await handleQuery(sql).catch(err => {
             console.log(err);
             res.send('error');
-            //alert(res, "오류가 발생했습니다.", "/setting?order=UID");
         });
         console.log('allUser', allUser);
 
@@ -44,12 +42,7 @@ route.get('/', async (req, res) => {
             session : (req.session.passport !== undefined) ? req.session.passport : '',
             allUser : allUser
         }
-
         res.send(info);
-        // res.render('settingManager.ejs', {
-        //     session: req.session.passport,
-        //     allUserInfo: allUser
-        // });
     }
 });
 
@@ -85,21 +78,17 @@ route.post('/addAdmin', async (req, res) => {
     }
     else {
         const {emails} = req.body;
-        //const email = req.body.emails.split(",");
-        //let sql = `UPDATE USER SET AUTHORITY = 1 WHERE EMAIL = ?`;
-        let sql = `SELECT EMAIL, NAME, AUTHORITY FROM USER WHERE EMAIL = ?`;
+        let sql = `UPDATE USER SET AUTHORITY = 1 WHERE EMAIL = ?`;
 
         for(let i = 1; i < emails.length; i++) {
             sql += `OR EMAIL = ?`;
         }
         
         await handleQuery(sql, emails)
-        .then((result) => console.log('result', result))
-        // .then(alert(res, "관리자를 추가하였습니다.", "/setting?order=UID"))
+        .then(res.send('addManager'))
         .catch(err => {
             console.error(err);
             res.send('error');
-            //alert(res, "DB 접속 에러. 작업에 실패하였습니다.", "/setting?order=UID");
         });
     }
 });
