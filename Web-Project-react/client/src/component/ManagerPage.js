@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {useEffect, useState} from 'react';
 import { Box, Typography, Divider, Container, Button, Select, MenuItem, TableCell, tableCellClasses } from '@mui/material';
-import { Grid, InputBase, Paper, TableContainer , Table, TableHead } from '@mui/material';
+import { Grid, InputBase, Paper, TableContainer , Table, TableHead, Menu } from '@mui/material';
 import {TableRow, TableBody, styled, Checkbox } from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -29,11 +29,18 @@ function ManagerPage({manager}) {
         searchAll : false,
         searchCheck : false
     });
-
     const [checkbox, setCheckbox] = useState({
         all : false,
         check : false
     });
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (e) => {
+        setAnchorEl(e.target);
+    }
+    const handleClose = () => {
+        setAnchorEl(null);
+    }
 
     const handleSelect = (event) => {
         setSelect(event.target.value);
@@ -314,10 +321,31 @@ function ManagerPage({manager}) {
             type='button'
             disabled={all || check ? false : true}
             onClick={deleteManager}
-            sx={{boarderColor : '#0186D3', mt : 2, mb : 1}}
+            sx={{boarderColor : '#0186D3', mt : 2, mb : 1, mr : 2}}
         >
             삭제
         </Button>
+        <Button
+            id="order"
+            variant='outlined'
+            type='button'
+            onClick={handleClick}
+            sx={{boarderColor : '#0186D3', mt : 2, mb : 1, mr : 2}}
+        >
+            정렬
+        </Button>
+        <Menu
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+        >
+            <MenuItem  component="a" href="/setting?order=UID">적용 안함</MenuItem>
+            <MenuItem  component="a" href="/setting?order=EMAIL">이메일 </MenuItem>
+            <MenuItem  component="a" href="/setting?order=NAME">이름 </MenuItem>
+            <MenuItem  component="a" href="/setting?order=JOINDATE">가입일</MenuItem>
+            <MenuItem  component="a" href="/setting?order=RECENTLOGIN">최근 로그인</MenuItem>
+        </Menu>
+
         <TableContainer component={Paper} >
             <Table size="medium" id="allManagerTable">
                 <TableHead>
