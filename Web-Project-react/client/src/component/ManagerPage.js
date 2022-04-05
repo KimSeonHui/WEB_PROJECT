@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import { Box, Typography, Divider, Container, Button, Select, MenuItem, TableCell, tableCellClasses } from '@mui/material';
 import { Grid, InputBase, Paper, TableContainer , Table, TableHead } from '@mui/material';
 import {TableRow, TableBody, styled, Checkbox } from "@mui/material";
@@ -28,6 +28,11 @@ function ManagerPage({manager}) {
     const [searchCheckbox, setSearchCheckbox] = useState({
         searchAll : false,
         searchCheck : false
+    });
+
+    const [checkbox, setCheckbox] = useState({
+        all : false,
+        check : false
     });
 
     const handleSelect = (event) => {
@@ -104,7 +109,7 @@ function ManagerPage({manager}) {
         }
     }
 
-    const handleAllCheck = (e) => {
+    const handleSearchAllCheck = (e) => {
         if(e.target.name === 'searchAll') {
             setSearchCheckbox({
                 searchAll : e.target.checked,
@@ -122,6 +127,25 @@ function ManagerPage({manager}) {
 
     }
     const {searchAll , searchCheck} = searchCheckbox;
+
+    const handleAllCheck = (e) => {
+        if(e.target.name === 'all') {
+            setCheckbox({
+                all : e.target.checked,
+                check : e.target.checked
+            })
+        }
+        else {
+            const checks = document.querySelectorAll('input[name=check]');
+            const checked = document.querySelectorAll('input[name=check]:checked');
+            setCheckbox({
+                all : (checks.length === checked.length) ? true : false,
+                check : e.target.checked
+            });
+        }
+
+    }
+    const {all, check } = checkbox;
 
     console.log('manager', manager);
     console.log('생성')
@@ -211,7 +235,7 @@ function ManagerPage({manager}) {
                 <TableHead>
                     <TableRow>
                         <StyledTableCell>
-                            <Checkbox id="searchAll" name="searchAll" checked={searchAll} onChange={handleAllCheck}/>
+                            <Checkbox id="searchAll" name="searchAll" checked={searchAll} onChange={handleSearchAllCheck}/>
                         </StyledTableCell>
                         <StyledTableCell>UID</StyledTableCell>
                         <StyledTableCell>이메일</StyledTableCell>
@@ -224,7 +248,7 @@ function ManagerPage({manager}) {
                     {rows.map((row) => (
                          <StyledTableRow key={row.UID}>
                             <TableCell>
-                                <Checkbox name="searchCheck" checked={searchCheck} onChange={handleAllCheck}/>
+                                <Checkbox name="searchCheck" checked={searchCheck} onChange={handleSearchAllCheck}/>
                             </TableCell>
                             <TableCell>{row.UID}</TableCell>
                             <TableCell>{row.EMAIL}</TableCell>
@@ -249,6 +273,7 @@ function ManagerPage({manager}) {
         <Button
             variant='outlined'
             type='button'
+            disabled={all || check ? false : true}
             sx={{boarderColor : '#0186D3', mt : 2, mb : 1}}
         >
             삭제
@@ -258,7 +283,7 @@ function ManagerPage({manager}) {
                 <TableHead>
                     <TableRow>
                         <StyledTableCell>
-                            <Checkbox  name="all"  />
+                            <Checkbox  name="all" checked={all} onChange={handleAllCheck} />
                         </StyledTableCell>
                         <StyledTableCell>UID</StyledTableCell>
                         <StyledTableCell>권한</StyledTableCell>
@@ -269,10 +294,10 @@ function ManagerPage({manager}) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {manager.length !== undefined ? manager.map((row) => (
+                    {manager.length !== undefined ? manager.map((row, index) => (
                          <StyledTableRow key={row.UID}>
                             <TableCell>
-                                {row.AUTHORITY !== 2 ? <Checkbox name="check" />
+                                {row.AUTHORITY !== 2 ? <Checkbox name="check" checked={check} onChange={handleAllCheck} />
                                  : null }
                             </TableCell>
                             <TableCell>{row.UID}</TableCell>
