@@ -93,4 +93,26 @@ route.post('/addAdmin', async (req, res) => {
     }
 });
 
+route.post('/deleteManager', async (req, res) => {
+    if (!req.session.passport || req.session.passport.authority !== 2) {
+        res.send('authorityFail');
+
+    } 
+    else {
+        const {emails} = req.body;
+        let sql = `UPDATE USER SET AUTHORITY = 0 WHERE EMAIL = ?`;
+
+        for(let i = 1; i < emails.length; i++) {
+            sql += `OR EMAIL = ?`;
+        }
+
+        await handleQuery(sql, emails)
+        .then(res.send('deleteManager'))
+        .catch(err => {
+            console.error(err);
+            res.send('error');
+        });
+    }
+});
+
 module.exports = route;

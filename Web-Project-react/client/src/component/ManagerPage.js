@@ -70,41 +70,80 @@ function ManagerPage({manager}) {
         }
     }
 
-    const getEmails = () => {
-        const emails = [];
+    function getColumnIndex(tableRow, col) {
+        let index = 0;
+        
+        for(let i = 0; i < tableRow.children.length; i++) {
+            if(tableRow.children[i].innerText === col) {
+                index = i;
+            }
+        }
+        return index;
+    }
 
-        const checked = document.querySelectorAll('input[name=searchCheck]:checked');
+    const getEmails = (tableRow, checkbox) => {
+        const emails = [];
+        const index = getColumnIndex(tableRow, '이메일');
+
+        const checked = checkbox;
         for(let node of checked) {
             const selectedTr = node.parentNode.parentNode.parentNode;
-            emails.push(selectedTr.children[2].innerText);
+            emails.push(selectedTr.children[index].innerText);
         }
-        
-        console.log('emails', emails)
         return emails;
     }
 
     const addManager = async () => {
+        const tr = document.querySelector('#addManagerTable tr');
+        const check = document.querySelectorAll('input[name=searchCheck]:checked');
+
         if(window.confirm('선택한 회원을 관리자에 추가하시겠습니까?')){
-            getEmails();
+            const res = await axios.post('/setting/addAdmin', {
+                emails : getEmails(tr, check)
+            });
+    
+            if(res.statusText === 'OK') {    
+                if(res.data === 'authorityFail'){
+                    alert('관리자 권한이 필요합니다.');
+                    window.location.href = '/';
+                }
+                else if(res.data === 'error') {
+                    alert('DB 접속 에러. 작업에 실패하였습니다.');
+                }
+                else {
+                    console.log('관리자 추가!');
+                    window.location.href = '/setting?order=UID';
+                }
+            }
+        }
+        else {
+            return false;
         }
 
-        const res = await axios.post('/setting/addAdmin', {
-            emails : getEmails()
-        });
 
-        if(res.statusText === 'OK') {
-            console.log('res.data', res.data);
+    }
 
-            if(res.data === 'authorityFail'){
-                alert('관리자 권한이 필요합니다.');
-                window.location.href = '/';
-            }
-            else if(res.data === 'error') {
-                alert('DB 접속 에러. 작업에 실패하였습니다.');
-            }
-            else {
-                console.log('관리자 추가!');
-                window.location.href = '/setting?order=UID';
+    const deleteManager = async () => {
+        const tr = document.querySelector('#allManagerTable tr')
+        const check = document.querySelectorAll('input[name=check]:checked');
+
+        if(window.confirm('선택한 회원을 관리자에서 삭제하겠습니까?')) {
+            const res = await axios.post('/setting/deleteManager', {
+                emails : getEmails(tr, check)
+            });
+    
+            if(res.statusText === 'OK') {
+                if(res.data === 'authorityFail'){
+                    alert('관리자 권한이 필요합니다.');
+                    window.location.href = '/';
+                }
+                else if(res.data === 'error') {
+                    alert('DB 접속 에러. 작업에 실패하였습니다.');
+                }
+                else {
+                    console.log('관리자 삭제!');
+                    window.location.href = '/setting?order=UID';
+                }
             }
         }
     }
@@ -231,7 +270,7 @@ function ManagerPage({manager}) {
         </Button>
         <input type='hidden' name='email' value='' id="addedEmail"/>
         <TableContainer component={Paper} >
-            <Table size="medium">
+            <Table size="medium" id="addManagerTable">
                 <TableHead>
                     <TableRow>
                         <StyledTableCell>
@@ -274,12 +313,13 @@ function ManagerPage({manager}) {
             variant='outlined'
             type='button'
             disabled={all || check ? false : true}
+            onClick={deleteManager}
             sx={{boarderColor : '#0186D3', mt : 2, mb : 1}}
         >
             삭제
         </Button>
         <TableContainer component={Paper} >
-            <Table size="medium">
+            <Table size="medium" id="allManagerTable">
                 <TableHead>
                     <TableRow>
                         <StyledTableCell>
