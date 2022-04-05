@@ -25,8 +25,8 @@ function ManagerPage({manager}) {
     const [rows, setRows] = useState([]);
     const [select, setSelect] = useState('email');
     const [word, setWord] = useState('');
-    const [check, setCheck] = useState({
-        saerchAll : false,
+    const [searchCheckbox, setSearchCheckbox] = useState({
+        searchAll : false,
         searchCheck : false
     });
 
@@ -105,23 +105,23 @@ function ManagerPage({manager}) {
     }
 
     const handleAllCheck = (e) => {
-        if(e.target.name === 'all') {
-            setCheck({
-                saerchAll : e.target.checked,
+        if(e.target.name === 'searchAll') {
+            setSearchCheckbox({
+                searchAll : e.target.checked,
                 searchCheck : e.target.checked
             })
         }
         else {
             const searchChecks = document.querySelectorAll('input[name=searchCheck]');
             const searchChecked = document.querySelectorAll('input[name=searchCheck]:checked');
-            setCheck({
-                saerchAll : (searchChecks.length === searchChecked.length) ? true : false,
+            setSearchCheckbox({
+                searchAll : (searchChecks.length === searchChecked.length) ? true : false,
                 searchCheck : e.target.checked
             });
         }
 
     }
-    const {saerchAll , searchCheck} = check;
+    const {searchAll , searchCheck} = searchCheckbox;
 
     console.log('manager', manager);
     console.log('생성')
@@ -199,7 +199,7 @@ function ManagerPage({manager}) {
         <Button
             variant='outlined'
             type='button'
-            disabled={saerchAll || searchCheck ? false : true}
+            disabled={searchAll || searchCheck ? false : true}
             onClick={addManager}
             sx={{boarderColor : '#0186D3', mt : 2, mb : 1}}
         >
@@ -211,7 +211,7 @@ function ManagerPage({manager}) {
                 <TableHead>
                     <TableRow>
                         <StyledTableCell>
-                            <Checkbox id="searchAll" name="saerchAll" checked={saerchAll} onChange={handleAllCheck}/>
+                            <Checkbox id="searchAll" name="searchAll" checked={searchAll} onChange={handleAllCheck}/>
                         </StyledTableCell>
                         <StyledTableCell>UID</StyledTableCell>
                         <StyledTableCell>이메일</StyledTableCell>
@@ -258,7 +258,7 @@ function ManagerPage({manager}) {
                 <TableHead>
                     <TableRow>
                         <StyledTableCell>
-                            <Checkbox   />
+                            <Checkbox  name="all"  />
                         </StyledTableCell>
                         <StyledTableCell>UID</StyledTableCell>
                         <StyledTableCell>권한</StyledTableCell>
@@ -272,7 +272,7 @@ function ManagerPage({manager}) {
                     {manager.length !== undefined ? manager.map((row) => (
                          <StyledTableRow key={row.UID}>
                             <TableCell>
-                                {row.AUTHORITY !== 2 ? <Checkbox  />
+                                {row.AUTHORITY !== 2 ? <Checkbox name="check" />
                                  : null }
                             </TableCell>
                             <TableCell>{row.UID}</TableCell>
