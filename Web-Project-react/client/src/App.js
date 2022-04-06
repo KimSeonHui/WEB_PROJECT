@@ -8,6 +8,7 @@ import Withdrawal from "./routes/Withdrawal";
 import ChangePw from "./routes/ChangePw";
 import FindPw from "./routes/FindPw";
 import SettingManager from "./routes/SettingManager";
+import SettingPost from "./routes/SettingPost";
 
 import {
   BrowserRouter as Router,
@@ -42,6 +43,9 @@ function App() {
         </Route>
         <Route path="/create">
           <Create />
+        </Route>
+        <Route path="/setting/post">
+          <SettingPost />
         </Route>
         <Route path="/setting">
           <SettingManager />

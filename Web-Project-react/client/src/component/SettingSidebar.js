@@ -8,7 +8,7 @@ import PersonIcon from '@mui/icons-material/PersonOutlineOutlined';
 const createData = () => {
     const data = [
         {id : '1', name : '카테고리', href : '/setting/category', icon : <ListIcon />},
-        {id : '2', name : '게시글', href : '/setting/post', icon : <FileIcon />},
+        {id : '2', name : '게시글', href : '/setting/post?order=category&page=1&filter=no', icon : <FileIcon />},
         {id : '3', name : '회원', href : '/setting/user', icon : <PersonIcon />},
     ];
     return data;

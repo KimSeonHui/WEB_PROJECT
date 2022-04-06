@@ -10,6 +10,7 @@ const read = require("./board/read/index");
 const withdrawal = require("./user/withdrawal/index");
 const findpw = require("./user/findPw/index");
 const setting = require("./setting/index");
+const post = require('./setting/post/index');
 
 router.use("/main", main);
 router.use("/board", board);
@@ -20,5 +21,6 @@ router.use("/read", read);
 router.use("/user/withdrawal", withdrawal);
 router.use("/user/findpw", findpw);
 router.use("/setting", setting);
+router.use("/setting/post", post);
 
 module.exports = router;
