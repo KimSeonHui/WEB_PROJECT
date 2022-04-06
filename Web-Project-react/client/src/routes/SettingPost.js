@@ -3,9 +3,11 @@ import {useEffect, useState} from "react";
 import Grid from '@mui/material/Grid';
 import Navbar from '../component/Navbar';
 import SettingSidebar from '../component/SettingSidebar';
+import PostPage from '../component/PostPage';
 
 function SettingPost() {
     const [session, setSession] = useState({});
+    const [post, setPost] = useState({});
 
     const callApi = async () => {
         parseQuery();
@@ -20,6 +22,7 @@ function SettingPost() {
             }
             else {
                 setSession(res.data.session);
+                setPost(res.data.post);
             }
             
         }
@@ -50,7 +53,7 @@ function SettingPost() {
                 <SettingSidebar sx={{width: '250px', height: '100vh'}}/>
             </Grid>
             <Grid item xs>
-                
+                <PostPage posts={post}/>
             </Grid>
     </Grid>    
 </div>
