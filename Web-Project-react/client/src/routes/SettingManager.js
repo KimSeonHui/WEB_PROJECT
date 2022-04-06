@@ -50,7 +50,7 @@ function SettingManager() {
     <Navbar session={session}/>
         <Grid container>
             <Grid item>
-                <SettingSidebar  session={session} sx={{width: '250px', height: '100vh'}}/>
+                <SettingSidebar sx={{width: '250px', height: '100vh'}}/>
             </Grid>
             <Grid item xs>
                 <ManagerPage manager={manager} />

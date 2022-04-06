@@ -16,7 +16,7 @@ const createData = () => {
 
 
 
-function SettingSidebar({session}) {
+function SettingSidebar() {
     return <Box
         sx={{
             width : '250px',
@@ -25,7 +25,7 @@ function SettingSidebar({session}) {
         }}
     >
         <Link
-             href={`/setting?order=${session.user}`}
+             href='/setting?order=UID'
              underline='none' 
              sx={{
                  color : '#6c757d', 
