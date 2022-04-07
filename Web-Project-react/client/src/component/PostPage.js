@@ -22,6 +22,7 @@ const StyledTableRow = styled(TableRow)(() => ({
 
 function PostPage({posts, query}) {
     const [all, setAll] = useState(false);
+    const [checked, setChecked] = useState(document.querySelectorAll('input[name=check]:checked'));
 
     const [filterAnchor, setFilter] = useState(null);
     const [orderAnchor, setOrder] = useState(null);
@@ -44,7 +45,8 @@ function PostPage({posts, query}) {
 
     const handleCheckbox = (e) => {
         const check = document.querySelectorAll('input[name=check]');
-        
+        const checked = document.querySelectorAll('input[name=check]:checked');
+
         if(e.target.name === 'all') {
             setAll(e.target.checked)
             check.forEach((item) => {
@@ -53,18 +55,82 @@ function PostPage({posts, query}) {
                     item.nextElementSibling.setAttribute('data-testid', 'CheckBoxIcon');
                     item.nextElementSibling.children[0].setAttribute('d', `M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11
                      0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z`);
+                    
+                     setChecked(check);
                 }
                 else {
                     item.parentElement.classList.remove('Mui-checked');
                     item.nextElementSibling.setAttribute('data-testid', 'CheckBoxOutlineBlankIcon');
                     item.nextElementSibling.children[0].setAttribute('d', `M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9
                      2-2V5c0-1.1-.9-2-2-2z`);
+                    
+                    setChecked([]);
                 }
             });
         }
         else {
-            const checked = document.querySelectorAll('input[name=check]:checked');
+            setChecked(checked);
             setAll(check.length === checked.length ? true : false);
+        }
+    }
+
+    const getChecked = () => {
+        if(checked.length > 1) {
+            const data = [];
+            checked.forEach((item) => {
+                data.push(item.value);
+            });
+            return data;
+        }
+        else {
+            return checked[0].value;
+        }
+    }
+
+    const handleOpen = async () => {
+        if(window.confirm('선택한 글을 공개로 전환하시겠습니까?')) {
+            const res = await axios.post('/setting/post/admin', {
+                modify : 'open',
+                check : getChecked()
+            });
+
+            if(res.statusText === 'OK') {
+                console.log('data', res.data);
+
+                if(res.data !== 'error') {
+                    alert(`선택한 게시글이 ${res.data} 처리되었습니다.`);
+                    window.location.href = `../setting/post?order=${query.order}&page=${query.page}&filter=${query.filter}`;
+                }
+                else {
+                    alert('오류가 발생했습니다.');
+                }
+            }
+        }
+    }
+
+    const handleDelete = async () => {
+        if(window.confirm('선택한 글을 삭제하시겠습니까?')) {
+            const res = await axios.post('/setting/post/admin', {
+                modify : 'delete',
+                check : getChecked()
+            });
+
+            if(res.statusText === 'OK') {
+                console.log('data', res.data);
+
+                if(res.data === 'authorityFail') {
+                    alert('관리자 권한이 필요합니다.');
+                    window.location.href = '/';
+                }
+                if(res.data === 'error') {
+                    alert('오류가 발생했습니다.');
+                }
+                else {
+                    alert(`선택한 게시글이 ${res.data} 처리되었습니다.`);
+                    window.location.href = `../setting/post?order=${query.order}&page=${query.page}&filter=${query.filter}`;
+                    
+                }
+            }
         }
     }
 
@@ -92,7 +158,8 @@ function PostPage({posts, query}) {
     <Button
             variant='outlined'
             type='button'
-            disabled={true}
+            disabled={all || checked.length > 0 ? false : true}
+            onClick={handleOpen}
             sx={{boarderColor : '#0186D3', mt : 2, mb : 1, mr : 2}}
         >
             공개
@@ -101,7 +168,8 @@ function PostPage({posts, query}) {
         <Button
             variant='outlined'
             type='button'
-            disabled={true}
+            disabled={all || checked.length > 0 ? false : true}
+            onClick={handleDelete}
             sx={{boarderColor : '#0186D3', mt : 2, mb : 1, mr : 2}}
         >
             삭제
@@ -164,7 +232,7 @@ function PostPage({posts, query}) {
                     {posts.length !== undefined ? posts.map((post) => (
                          <StyledTableRow key={post.POSTID}>
                             <TableCell>
-                                <Checkbox name='check' onChange={handleCheckbox} />
+                                <Checkbox name='check' onChange={handleCheckbox} value={post.POSTID} />
                             </TableCell>
                             <TableCell>{post.category}</TableCell>
                             <TableCell>

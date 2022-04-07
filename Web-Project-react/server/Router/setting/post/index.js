@@ -66,5 +66,46 @@ router.get('/', async (req, res) => {
 
 });
 
+router.post('/admin', async (req, res) => {
+    if (!req.session.passport || req.session.passport.authority !== 2) {
+        res.send('authorityFail')
+    } 
+    else {
+        //button: 기능 종류, check: 선택된 회원
+        const [button, check, values] = [req.body.modify, req.body.check, []];
+        let sql = "UPDATE BOARD SET ISDELETED = ";
+        const word = button === "open" ? "공개" : "삭제";
+
+        if(button === "open") {
+            sql += "FALSE WHERE";
+        } else {
+            sql += "TRUE WHERE";
+        }
+
+        if(typeof(check) === "string") {
+            sql += ` POSTID = ?;`;
+            values.push(check);
+
+        } else {
+            for(let i = 0; i < check.length; i++) {
+                if(i === check.length-1) {
+                    sql += ` POSTID = ?;`;
+                } else {
+                    sql += ` POSTID = ? OR`;
+                }
+                values.push(check[i]);
+            }
+        }
+
+        await handleQuery(sql, values).then(
+            res.send(word)
+        )
+        .catch(err => {
+            console.log(err);
+            res.send('error')
+        });  
+    }
+})
+
 
 module.exports = router;
