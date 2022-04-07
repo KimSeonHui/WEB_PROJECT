@@ -42,7 +42,8 @@ router.get('/', async (req, res) => {
             });
             const info = {
                 session : (req.session.passport !== undefined) ? req.session.passport : '',
-                post : allPost
+                post : allPost,
+                query : {order : order, page : allPost.length > 0 ? page : 1, filter : filter}
             }
             res.send(info);
         } 
@@ -52,11 +53,12 @@ router.get('/', async (req, res) => {
             FROM BOARD as t1 LEFT JOIN CATEGORY as t2 ON t1.BOARDID = t2.CID ORDER BY ISDELETED, ${order};`;
             const allPost = await handleQuery(sql).catch(err => {
                 console.log(err);
-                alert(res, "오류가 발생했습니다.", "/setting/post?order=category&page=1&filter=no");
+                res.send('error');
             });
             const info = {
                 session : (req.session.passport !== undefined) ? req.session.passport : '',
-                post : allPost
+                post : allPost,
+                query : {order : order, page : allPost.length > 0 ? page : 1, filter : filter}
             }
             res.send(info);
         }

@@ -8,9 +8,9 @@ import PostPage from '../component/PostPage';
 function SettingPost() {
     const [session, setSession] = useState({});
     const [post, setPost] = useState({});
+    const [query, setQuery] = useState({});
 
     const callApi = async () => {
-        parseQuery();
         const res = await axios.get('/setting/post', 
             {params : parseQuery()}
         );
@@ -20,9 +20,13 @@ function SettingPost() {
                 alert('관리자 권한이 필요합니다.');
                 window.location.href = '/';
             }
+            else if(res.data === 'error') {
+                alert('오류가 발생했습니다.');
+            }
             else {
                 setSession(res.data.session);
                 setPost(res.data.post);
+                setQuery(res.data.query);
             }
             
         }
@@ -34,6 +38,9 @@ function SettingPost() {
         const temp = qs.split('&');
         for(let i = 0; i < temp.length; i++) {
             let query = temp[i].split('=');
+            if(query[1].includes('%20')) {
+                query[1] = query[1].replace('%20', ' ');
+            }
             parse[query[0]] = query[1];
         }
 
@@ -53,7 +60,7 @@ function SettingPost() {
                 <SettingSidebar sx={{width: '250px', height: '100vh'}}/>
             </Grid>
             <Grid item xs>
-                <PostPage posts={post}/>
+                <PostPage posts={post} query={query}/>
             </Grid>
     </Grid>    
 </div>
