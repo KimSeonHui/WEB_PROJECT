@@ -21,6 +21,8 @@ const StyledTableRow = styled(TableRow)(() => ({
 }));
 
 function PostPage({posts, query}) {
+    const [all, setAll] = useState(false);
+
     const [filterAnchor, setFilter] = useState(null);
     const [orderAnchor, setOrder] = useState(null);
     const filterOpen = Boolean(filterAnchor);
@@ -38,6 +40,32 @@ function PostPage({posts, query}) {
     }
     const closeOrder = () => {
         setOrder(null);
+    }
+
+    const handleCheckbox = (e) => {
+        const check = document.querySelectorAll('input[name=check]');
+        
+        if(e.target.name === 'all') {
+            setAll(e.target.checked)
+            check.forEach((item) => {
+                if(e.target.checked) {
+                    item.parentElement.classList.add('Mui-checked');
+                    item.nextElementSibling.setAttribute('data-testid', 'CheckBoxIcon');
+                    item.nextElementSibling.children[0].setAttribute('d', `M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11
+                     0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z`);
+                }
+                else {
+                    item.parentElement.classList.remove('Mui-checked');
+                    item.nextElementSibling.setAttribute('data-testid', 'CheckBoxOutlineBlankIcon');
+                    item.nextElementSibling.children[0].setAttribute('d', `M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9
+                     2-2V5c0-1.1-.9-2-2-2z`);
+                }
+            });
+        }
+        else {
+            const checked = document.querySelectorAll('input[name=check]:checked');
+            setAll(check.length === checked.length ? true : false);
+        }
     }
 
     return <Container maxWidth="xl">
@@ -122,7 +150,7 @@ function PostPage({posts, query}) {
                 <TableHead>
                     <TableRow>
                         <StyledTableCell>
-                            <Checkbox />
+                            <Checkbox name='all' checked={all} onChange={handleCheckbox} />
                         </StyledTableCell>
                         <StyledTableCell>카테고리</StyledTableCell>
                         <StyledTableCell>제목</StyledTableCell>
@@ -136,7 +164,7 @@ function PostPage({posts, query}) {
                     {posts.length !== undefined ? posts.map((post) => (
                          <StyledTableRow key={post.POSTID}>
                             <TableCell>
-                                <Checkbox />
+                                <Checkbox name='check' onChange={handleCheckbox} />
                             </TableCell>
                             <TableCell>{post.category}</TableCell>
                             <TableCell>
