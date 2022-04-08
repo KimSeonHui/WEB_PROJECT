@@ -22,10 +22,9 @@ const StyledTableRow = styled(TableRow)(() => ({
 }));
 
 function ManagerTable({manager}) {
-    const [checkbox, setCheckbox] = useState({
-        all : false,
-        check : false
-    });
+    const [all, setAll] = useState(false);
+    const [checked, setChecked] = useState(document.querySelectorAll('input[name=check]:checked'));
+
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (e) => {
@@ -61,23 +60,36 @@ function ManagerTable({manager}) {
     }
 
     const handleAllCheck = (e) => {
+        const checks = document.querySelectorAll('input[name=check]');
+        const checked = document.querySelectorAll('input[name=check]:checked');
+
         if(e.target.name === 'all') {
-            setCheckbox({
-                all : e.target.checked,
-                check : e.target.checked
-            })
+            setAll(e.target.checked);
+            checks.forEach((item) => {
+                if(e.target.checked) {
+                    item.parentElement.classList.add('Mui-checked');
+                    item.nextElementSibling.setAttribute('data-testid', 'CheckBoxIcon');
+                    item.nextElementSibling.children[0].setAttribute('d', `M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.11
+                     0 2-.9 2-2V5c0-1.1-.89-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z`);
+                    
+                     setChecked(checks);
+                }
+                else {
+                    item.parentElement.classList.remove('Mui-checked');
+                    item.nextElementSibling.setAttribute('data-testid', 'CheckBoxOutlineBlankIcon');
+                    item.nextElementSibling.children[0].setAttribute('d', `M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9
+                     2-2V5c0-1.1-.9-2-2-2z`);
+                    
+                    setChecked([]);
+                }
+            });
         }
         else {
-            const checks = document.querySelectorAll('input[name=check]');
-            const checked = document.querySelectorAll('input[name=check]:checked');
-            setCheckbox({
-                all : (checks.length === checked.length) ? true : false,
-                check : e.target.checked
-            });
+            setChecked(checked);
+            setAll(checks.length === checked.length ? true : false);
         }
 
     }
-    const {all, check } = checkbox;
 
     return <div style={{marginTop : '4em'}}>
     <Typography 
@@ -90,7 +102,7 @@ function ManagerTable({manager}) {
     <Button
         variant='outlined'
         type='button'
-        disabled={all || check ? false : true}
+        disabled={all || checked.length > 0 ? false : true}
         onClick={deleteManager}
         sx={{boarderColor : '#0186D3', mt : 2, mb : 1, mr : 2}}
     >
@@ -133,10 +145,10 @@ function ManagerTable({manager}) {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {manager.length !== undefined ? manager.map((row, index) => (
+                {manager.length !== undefined ? manager.map((row) => (
                      <StyledTableRow key={row.UID}>
                         <TableCell>
-                            {row.AUTHORITY !== 2 ? <Checkbox name="check" checked={check} onChange={handleAllCheck} />
+                            {row.AUTHORITY !== 2 ? <Checkbox name="check" onChange={handleAllCheck} />
                              : null }
                         </TableCell>
                         <TableCell>{row.UID}</TableCell>
