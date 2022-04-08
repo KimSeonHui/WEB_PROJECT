@@ -2,7 +2,7 @@ import axios from 'axios';
 import {useState} from 'react';
 import { Box, Typography, Divider, Container, Button, MenuItem, TableCell, tableCellClasses } from '@mui/material';
 import { Paper, TableContainer , Table, TableHead, Link, Menu } from '@mui/material';
-import {TableRow, TableBody, styled, Checkbox } from "@mui/material";
+import {TableRow, TableBody, styled, Checkbox, Pagination, PaginationItem } from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -19,6 +19,8 @@ const StyledTableRow = styled(TableRow)(() => ({
         backgroundColor : '#eceff1'
     }
 }));
+
+const maxRow = 20;
 
 function PostPage({posts, query}) {
     const [all, setAll] = useState(false);
@@ -247,6 +249,33 @@ function PostPage({posts, query}) {
                 </TableBody>
             </Table>
         </TableContainer>
+
+        <Box sx={{display : 'flex', justifyContent : 'center', mt: 6 }}>
+            <Pagination 
+                count={posts.length !== undefined ? Math.ceil(400 / maxRow) : 0} 
+                shape="rounded" 
+                color='info'
+                hidePrevButton 
+                hideNextButton 
+                showFirstButton 
+                showLastButton
+                siblingCount={1}
+                boundaryCount={2}
+                defaultPage={1}
+                page={query.page !== undefined ? parseInt(query.page) : 1}
+                renderItem={(item) => {
+                        return <PaginationItem
+                            component={Link}
+                            href={`/setting/post?order=${query.order}&page=${item.page}&filter=${query.filter}`}
+                            type={item.type}
+                            page={item.page}
+                            selected={item.selected}
+                            shape='rounded'
+                            color='info'
+                        />           
+                }}
+            />
+        </Box>
     </div>
 
 </Box>
