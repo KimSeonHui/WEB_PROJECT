@@ -118,6 +118,30 @@ function UserPage({users, query}) {
         }
     }
 
+    const handleChangePW = async () => {
+        if(window.confirm('선택한 회원의 비밀번호를 초기화 하시겠습니까?')) {
+            const res = await axios.post('/setting/user/admin', {
+                button : 'setPW',
+                check : getChecked()
+            });
+
+            if(res.statusText === 'OK') {
+                console.log('data', res.data);
+
+                if(res.data === 'authorityFail') {
+                    alert('관리자 권한이 필요합니다.');
+                    window.location.href = '/';
+                }
+                else if(res.data === 'error'){
+                    alert('오류가 발생했습니다.');
+                }
+                else {
+                    alert('비밀번호를 초기화했습니다. 초기화된 비밀번호는 a123456789 입니다.');
+                }
+            }
+        }
+    }
+
 
     return <Container maxWidth="xl">
     <Box sx={{width : "100%", p : '20px'}}>
@@ -154,6 +178,7 @@ function UserPage({users, query}) {
             variant='outlined'
             type='button'
             disabled={all || checked.length > 0 ? false : true}
+            onClick={handleChangePW}
             sx={{boarderColor : '#0186D3', mt : 2, mb : 1, mr : 2}}
         >
             비밀번호 초기화

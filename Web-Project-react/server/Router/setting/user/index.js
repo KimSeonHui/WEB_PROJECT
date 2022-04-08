@@ -3,6 +3,8 @@ dotenv.config();
 const express = require('express');
 const router = express.Router();
 const mysql = require('mysql');
+const crypto = require('crypto');
+const salt = crypto.randomBytes(128).toString('base64');
 
 const conn = mysql.createConnection({
     host : 'localhost',
@@ -97,7 +99,37 @@ router.post('/admin', async (req, res) => {
     else {
         const [button, check] = [req.body.button, req.body.check];
 
-        if(button === 'withdrawal') {
+        if(button === "setPW"){
+            const pw = crypto.createHash('sha512').update('a123456789' + salt).digest('hex');
+            let sql = `UPDATE USER SET PW = ?, SALT = ? WHERE`;
+            const values = [pw, salt];
+
+            if(typeof(check) === "string") {
+                sql += ` UID = ?;`;
+                values.push(check);
+
+            } 
+            else {
+                for(let i = 0; i < check.length; i++) {
+                    if(i === check.length-1) {
+                        sql += ` UID = ?;`;
+                    } 
+                    else {
+                        sql += ` UID = ? OR`;
+                    }
+                    values.push(check[i])
+                }
+            }
+
+            await handleQuery(sql, values).then(() => {
+                res.send('success');
+            }).catch(err =>{
+                console.log(err);
+                res.send('error');
+            })
+        }
+        //탈퇴
+        else if(button === 'withdrawal') {
             let sql = "DELETE FROM USER WHERE";
             const values = [];
 
