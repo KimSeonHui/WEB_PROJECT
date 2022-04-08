@@ -90,4 +90,44 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.post('/admin', async (req, res) => {
+    if (!req.session.passport || req.session.passport.authority !== 2) {
+        res.send('authorityFail');
+    } 
+    else {
+        const [button, check] = [req.body.button, req.body.check];
+
+        if(button === 'withdrawal') {
+            let sql = "DELETE FROM USER WHERE";
+            const values = [];
+
+            if(typeof(check) === "string") {
+                sql += ` UID = ?;`;
+                values.push(check);
+
+            } 
+            else {
+                for(let i = 0; i < check.length; i++) {
+                    if(i === check.length-1) {
+                        sql += ` UID = ?;`;
+                    } 
+                    else {
+                        sql += ` UID = ? OR`;
+                    }
+                    values.push(check[i]);
+                }
+            }
+
+            await handleQuery(sql, values).then(() => {
+                res.send('success');
+            })
+            .catch(err => {
+                console.log(err);
+                res.send('error');
+            })
+        }
+    }
+    
+});
+
 module.exports = router;

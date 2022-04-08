@@ -80,6 +80,44 @@ function UserPage({users, query}) {
         }
     }
 
+    const getChecked = () => {
+        if(checked.length > 1) {
+            const data = [];
+            checked.forEach((item) => {
+                data.push(item.value);
+            });
+            return data;
+        }
+        else {
+            return checked[0].value;
+        }
+    }
+
+    const handleWithdrawalUser = async () => {
+        if(window.confirm('선택한 회원을 탈퇴시키겠습니까?')) {
+            const res = await axios.post('/setting/user/admin', {
+                button : 'withdrawal',
+                check : getChecked()
+            });
+
+            if(res.statusText === 'OK') {
+                console.log('res.data', res.data);
+
+                if(res.data === 'authorityFail') {
+                    alert('관리자 권한이 필요합니다.');
+                    window.location.href = '/';
+                }
+                else if(res.data === 'error') {
+                    alert('오류가 발생했습니다.');
+                }
+                else {
+                    alert('선택한 회원이 탈퇴되었습니다.');
+                    window.location.href = `../setting/user?order=${query.order}&page=${query.page}`;
+                }
+            }
+        }
+    }
+
 
     return <Container maxWidth="xl">
     <Box sx={{width : "100%", p : '20px'}}>
@@ -105,7 +143,8 @@ function UserPage({users, query}) {
     <Button
             variant='outlined'
             type='button'
-            disabled={true}
+            disabled={all || checked.length > 0 ? false : true}
+            onClick={handleWithdrawalUser}
             sx={{boarderColor : '#0186D3', mt : 2, mb : 1, mr : 2}}
         >
             탈퇴
@@ -114,7 +153,7 @@ function UserPage({users, query}) {
         <Button
             variant='outlined'
             type='button'
-            disabled={true}
+            disabled={all || checked.length > 0 ? false : true}
             sx={{boarderColor : '#0186D3', mt : 2, mb : 1, mr : 2}}
         >
             비밀번호 초기화
@@ -123,7 +162,7 @@ function UserPage({users, query}) {
         <Button
             variant='outlined'
             type='button'
-            disabled={true}
+            disabled={all || checked.length > 0 ? false : true}
             sx={{boarderColor : '#0186D3', mt : 2, mb : 1, mr : 2}}
         >
             이름 수정
