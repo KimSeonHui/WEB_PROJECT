@@ -10,7 +10,6 @@ function SettingUser() {
     const [session, setSession] = useState({});
     const [users, setUsers] = useState({});
     const [query, setQuery] = useState({});
-    const [page, setPage] = useState(1);
 
     const callApi = async () => {
         const res = await axios.get('/setting/user', 
@@ -28,13 +27,7 @@ function SettingUser() {
             else {
                 setSession(res.data.session);
                 setUsers(res.data.users);
-
-                if(res.data.query !== undefined) {
-                    setQuery(res.data.query);
-                }
-                else {
-                    setPage(res.data.page);
-                }
+                setQuery(res.data.query);
             }
             
         }
@@ -67,7 +60,7 @@ function SettingUser() {
                 <SettingSidebar sx={{width: '250px', height: '100vh'}}/>
             </Grid>
             <Grid item xs>
-                <UserPage users={users} page={page} />
+                <UserPage users={users} query={query} />
             </Grid>
         </Grid>    
     </div>

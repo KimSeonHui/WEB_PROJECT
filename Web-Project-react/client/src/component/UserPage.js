@@ -22,7 +22,7 @@ const StyledTableRow = styled(TableRow)(() => ({
 
 const maxRow = 20;
 
-function UserPage({users, page}) {
+function UserPage({users, query}) {
     const [all, setAll] = useState(false);
     const [checked, setChecked] = useState(document.querySelectorAll('input[name=check]:checked'));
 
@@ -142,11 +142,11 @@ function UserPage({users, page}) {
             open={open}    
             onClose={handleClose}
         >
-            <MenuItem component="a" href={`/setting/user?order=UID`}>적용 안함</MenuItem>
-            <MenuItem component="a" href={`/setting/user?order=EMAIL`}>이메일</MenuItem>
-            <MenuItem component="a" href={`/setting/user?order=NAME`}>이름</MenuItem>
-            <MenuItem component="a" href={`/setting/user?order=JOINDATE`}>가입일</MenuItem>
-            <MenuItem component="a" href={`/setting/user?order=RECENTLOGIN`}>최근 로그인</MenuItem>
+            <MenuItem component="a" href={`/setting/user?order=UID&page=${query.page}`}>적용 안함</MenuItem>
+            <MenuItem component="a" href={`/setting/user?order=EMAIL&page=${query.page}`}>이메일</MenuItem>
+            <MenuItem component="a" href={`/setting/user?order=NAME&page=${query.page}`}>이름</MenuItem>
+            <MenuItem component="a" href={`/setting/user?order=JOINDATE&page=${query.page}`}>가입일</MenuItem>
+            <MenuItem component="a" href={`/setting/user?order=RECENTLOGIN&page=${query.page}`}>최근 로그인</MenuItem>
         </Menu>
 
         <TableContainer component={Paper} >
@@ -194,11 +194,11 @@ function UserPage({users, page}) {
                 siblingCount={1}
                 boundaryCount={2}
                 defaultPage={1}
-                page={page !== undefined ? parseInt(page) : 1}
+                page={query.page !== undefined ? parseInt(query.page) : 1}
                 renderItem={(item) => {
                         return <PaginationItem
                             component={Link}
-                            href={`/setting/user?page=${item.page}`}
+                            href={`/setting/user?order=${query.order}&page=${item.page}`}
                             type={item.type}
                             page={item.page}
                             selected={item.selected}

@@ -53,9 +53,10 @@ router.get('/', async (req, res) => {
         } 
         else {
             const page = req.query.page;
+            const order = req.query.order;
+
             //정렬 적용
-            if(req.query.order) {
-                const order = req.query.order;
+            if(order) {
                 const sql = `SELECT UID, EMAIL, NAME, AUTHORITY, DATE_FORMAT(JOINDATE, '%Y-%m-%d %H : %i') AS JOINDATE,
                 DATE_FORMAT(RECENTLOGIN, '%Y-%m-%d %H : %i') AS RECENTLOGIN FROM USER ORDER BY ${order};`;
                 const orderedUser = await handleQuery(sql).catch(err => {
@@ -65,7 +66,7 @@ router.get('/', async (req, res) => {
                 const info = {
                     session : req.session.passport !== undefined ? req.session.passport : '',
                     users : orderedUser,
-                    page : page
+                    query : {order : order, page : orderedUser.length > 0 ? page : 1}
                 }
                 res.send(info);
 
@@ -81,7 +82,7 @@ router.get('/', async (req, res) => {
                 const info = {
                     session : req.session.passport !== undefined ? req.session.passport : '',
                     users : allUser,
-                    page : page
+                    query : {order : order, page : allUser.length > 0 ? page : 1}
                 }
                 res.send(info);
             }
