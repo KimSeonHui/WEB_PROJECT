@@ -3,13 +3,19 @@ import {useEffect, useState} from "react";
 import Grid from '@mui/material/Grid';
 import Navbar from '../component/Navbar';
 import SettingSidebar from '../component/SettingSidebar';
+import UserPage from "../component/UserPage";
 
 
 function SettingUser() {
     const [session, setSession] = useState({});
+    const [users, setUsers] = useState({});
+    const [query, setQuery] = useState({});
+    const [page, setPage] = useState(1);
 
     const callApi = async () => {
-        const res = await axios.get('/setting/user');
+        const res = await axios.get('/setting/user', 
+            {params : parseQuery()}
+        );
         if(res.statusText === 'OK') {
             console.log('res.data', res.data);
             if(res.data === 'authorityFail') {
@@ -21,9 +27,33 @@ function SettingUser() {
             }
             else {
                 setSession(res.data.session);
+                setUsers(res.data.users);
+
+                if(res.data.query !== undefined) {
+                    setQuery(res.data.query);
+                }
+                else {
+                    setPage(res.data.page);
+                }
             }
             
         }
+    }
+
+    const parseQuery = () => {
+        const qs = window.location.search.substring(1);
+        const parse = {};
+        const temp = qs.split('&');
+        for(let i = 0; i < temp.length; i++) {
+            let query = temp[i].split('=');
+            if(query[1].includes('%20')) {
+                query[1] = query[1].replace('%20', ' ');
+            }
+            parse[query[0]] = query[1];
+        }
+
+        console.log('parse', parse)
+        return parse;
     }
 
     useEffect(() => {
@@ -37,7 +67,7 @@ function SettingUser() {
                 <SettingSidebar sx={{width: '250px', height: '100vh'}}/>
             </Grid>
             <Grid item xs>
-                
+                <UserPage users={users} page={page} />
             </Grid>
         </Grid>    
     </div>
