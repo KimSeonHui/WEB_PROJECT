@@ -54,8 +54,8 @@ router.get("/", (req, res) => {
 router.post("/", (req, res) => {
     console.log('req.body', req.body);
     const {categoryLarge, categoryMedium, categorySmall, Title, Desc} = req.body;
-    const creater = 'sunny';
-    const uid = 1;
+    const creater = req.session.passport !== undefined ? req.session.passport.name : '';
+    const uid = req.session.passport !== undefined ? req.session.passport.user : '';
     const description = Desc;
     const title = Title;
     let bid = -1;
