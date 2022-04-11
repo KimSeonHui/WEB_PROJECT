@@ -3,6 +3,7 @@ import {useState} from 'react';
 import { Box, Typography, Divider, Container, Button, MenuItem, TableCell, tableCellClasses } from '@mui/material';
 import { Paper, TableContainer , Table, TableHead, Link, Menu } from '@mui/material';
 import {TableRow, TableBody, styled, Checkbox, Pagination, PaginationItem } from "@mui/material";
+import * as setting from '../js/SettingScript';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -153,7 +154,13 @@ function UserPage({users, query}) {
         setPostOrder(null);
     }
 
-    const showUserPost = async (uid) => {
+    const showUserPost = () => {
+        const row = document.querySelector('#users tr');
+        const index = setting.getColumnIndex(row, 'UID');
+
+        const selectedTr = postAnchor.parentNode.parentNode;
+        const uid = selectedTr.children[index].innerText;
+
         window.location.href = `../setting/post?uid=${uid}`
     }
 
@@ -229,7 +236,7 @@ function UserPage({users, query}) {
         </Menu>
 
         <TableContainer component={Paper} >
-            <Table size="medium" >
+            <Table size="medium" id="users">
                 <TableHead>
                     <TableRow>
                         <StyledTableCell>
@@ -255,7 +262,7 @@ function UserPage({users, query}) {
                             <TableCell>
                                 <Button variant='text' onClick={handleUserPost} type='button' sx={{color : 'black'}}>{user.NAME}</Button>
                                 <Menu anchorEl={postAnchor} open={postOpen} onClose={userPostClose}>
-                                    <MenuItem component='button' onClick={() => showUserPost(user.UID)}>작성 글 보기</MenuItem>
+                                    <MenuItem component='button' onClick={showUserPost}>작성 글 보기</MenuItem>
                                 </Menu>
                             </TableCell>                         
                             <TableCell>{user.JOINDATE}</TableCell>
