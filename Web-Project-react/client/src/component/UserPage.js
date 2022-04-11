@@ -29,6 +29,9 @@ function UserPage({users, query}) {
     const [orderAnchor, setOrder] = useState(null);
     const open = Boolean(orderAnchor);
 
+    const [postAnchor, setPostOrder] = useState(null);
+    const postOpen = Boolean(postAnchor);
+
     const handleClick = (e) => {
         setOrder(e.target);
     }
@@ -142,6 +145,18 @@ function UserPage({users, query}) {
         }
     }
 
+    const handleUserPost = (e) => {
+        setPostOrder(e.target);
+    }
+
+    const userPostClose = () =>{
+        setPostOrder(null);
+    }
+
+    const showUserPost = async (uid) => {
+        window.location.href = `../setting/post?uid=${uid}`
+    }
+
 
     return <Container maxWidth="xl">
     <Box sx={{width : "100%", p : '20px'}}>
@@ -237,7 +252,12 @@ function UserPage({users, query}) {
                             <TableCell>{user.UID}</TableCell>
                             <TableCell>{ displayAuthority(user.AUTHORITY) }</TableCell>
                             <TableCell>{user.EMAIL}</TableCell>
-                            <TableCell>{user.NAME}</TableCell>                         
+                            <TableCell>
+                                <Button variant='text' onClick={handleUserPost} type='button' sx={{color : 'black'}}>{user.NAME}</Button>
+                                <Menu anchorEl={postAnchor} open={postOpen} onClose={userPostClose}>
+                                    <MenuItem component='button' onClick={() => showUserPost(user.UID)}>작성 글 보기</MenuItem>
+                                </Menu>
+                            </TableCell>                         
                             <TableCell>{user.JOINDATE}</TableCell>
                             <TableCell>{user.RECENTLOGIN}</TableCell>
                         </StyledTableRow>

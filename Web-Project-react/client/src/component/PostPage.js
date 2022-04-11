@@ -231,7 +231,7 @@ function PostPage({posts, query}) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {posts.length !== undefined ? posts.map((post) => (
+                    {posts.length !== 0 && posts.length !== undefined? posts.map((post) => (
                          <StyledTableRow key={post.POSTID}>
                             <TableCell>
                                 <Checkbox name='check' onChange={handleCheckbox} value={post.POSTID} />
@@ -245,7 +245,9 @@ function PostPage({posts, query}) {
                             <TableCell>{post.UPDTIME}</TableCell>
                             <TableCell>{post.ISDELETED === 1 ? '삭제' : '공개'}</TableCell>
                         </StyledTableRow>
-                    )) : null}
+                    )) : <StyledTableRow>
+                            <TableCell colSpan={7} sx={{textAlign : 'center'}}>결과가 없습니다.</TableCell>
+                        </StyledTableRow>}
                 </TableBody>
             </Table>
         </TableContainer>
@@ -266,7 +268,8 @@ function PostPage({posts, query}) {
                 renderItem={(item) => {
                         return <PaginationItem
                             component={Link}
-                            href={`/setting/post?order=${query.order}&page=${item.page}&filter=${query.filter}`}
+                            href={query.uid !== undefined ? `/setting/post?order=${query.order}&page=${item.page}&filter=${query.filter}&uid=${query.uid}`
+                                : `/setting/post?order=${query.order}&page=${item.page}&filter=${query.filter}`}
                             type={item.type}
                             page={item.page}
                             selected={item.selected}
