@@ -59,6 +59,7 @@ function UserPage({users, query}) {
     const handleCheckbox = (e) => {
         const checks = document.querySelectorAll('input[name=check]');
         const checked = document.querySelectorAll('input[name=check]:checked');
+        setIsRename(false);
 
         if(e.target.name === 'all') {
             setAll(e.target.checked);
