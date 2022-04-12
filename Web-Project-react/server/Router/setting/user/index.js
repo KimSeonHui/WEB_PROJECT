@@ -5,6 +5,7 @@ const router = express.Router();
 const mysql = require('mysql');
 const crypto = require('crypto');
 const salt = crypto.randomBytes(128).toString('base64');
+const sanitizeHtml = require('sanitize-html');
 
 const conn = mysql.createConnection({
     host : 'localhost',
@@ -130,6 +131,17 @@ router.post('/admin', async (req, res) => {
 
             await handleQuery(sql, values).then(() => {
                 res.send('success');
+            })
+            .catch(err => {
+                console.log(err);
+                res.send('error');
+            })
+        }
+        else if(req.body.rename) {
+            const name = sanitizeHtml(req.body.rename);
+            const [sql, values] = [`UPDATE USER SET NAME = ? WHERE UID = ?;`, [name, req.body.uid]];
+            await handleQuery(sql, values).then(() => {
+                res.send('rename')
             })
             .catch(err => {
                 console.log(err);

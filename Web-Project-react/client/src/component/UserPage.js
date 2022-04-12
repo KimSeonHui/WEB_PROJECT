@@ -4,6 +4,7 @@ import { Box, Typography, Divider, Container, Button, MenuItem, TableCell, table
 import { Paper, TableContainer , Table, TableHead, Link, Menu } from '@mui/material';
 import {TableRow, TableBody, styled, Checkbox, Pagination, PaginationItem } from "@mui/material";
 import * as setting from '../js/SettingScript';
+import Rename from './Rename';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -32,6 +33,8 @@ function UserPage({users, query}) {
 
     const [postAnchor, setPostOrder] = useState(null);
     const postOpen = Boolean(postAnchor);
+
+    const [isRename, setIsRename] = useState(false);
 
     const handleClick = (e) => {
         setOrder(e.target);
@@ -164,6 +167,16 @@ function UserPage({users, query}) {
         window.location.href = `../setting/post?uid=${uid}`
     }
 
+    const rename = () => {
+        if(checked.length > 1) {
+            alert('하나만 선택해 주세요.');
+            setIsRename(false);
+        }
+        else {
+            setIsRename(!isRename);
+        }
+    }
+
 
     return <Container maxWidth="xl">
     <Box sx={{width : "100%", p : '20px'}}>
@@ -209,7 +222,8 @@ function UserPage({users, query}) {
         <Button
             variant='outlined'
             type='button'
-            disabled={all || checked.length > 0 ? false : true}
+            disabled={checked.length > 0 ? false : true}
+            onClick={rename}
             sx={{boarderColor : '#0186D3', mt : 2, mb : 1, mr : 2}}
         >
             이름 수정
@@ -260,10 +274,14 @@ function UserPage({users, query}) {
                             <TableCell>{ displayAuthority(user.AUTHORITY) }</TableCell>
                             <TableCell>{user.EMAIL}</TableCell>
                             <TableCell>
+                              { isRename && checked[0].value === String(user.UID) ? <Rename name={user.NAME} uid={user.UID}/> 
+                              : <div>
                                 <Button variant='text' onClick={handleUserPost} type='button' sx={{color : 'black'}}>{user.NAME}</Button>
-                                <Menu anchorEl={postAnchor} open={postOpen} onClose={userPostClose}>
-                                    <MenuItem component='button' onClick={showUserPost}>작성 글 보기</MenuItem>
+                                    <Menu anchorEl={postAnchor} open={postOpen} onClose={userPostClose}>
+                                        <MenuItem component='button' onClick={showUserPost}>작성 글 보기</MenuItem>
                                 </Menu>
+                              </div>
+                              }
                             </TableCell>                         
                             <TableCell>{user.JOINDATE}</TableCell>
                             <TableCell>{user.RECENTLOGIN}</TableCell>
