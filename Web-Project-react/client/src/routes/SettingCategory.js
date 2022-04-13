@@ -39,7 +39,7 @@ function SettingCategory() {
                 <SettingSidebar sx={{width: '250px', height: '100vh'}}/>
             </Grid>
             <Grid item xs>
-                <CategoryPage category={category}/>
+                <CategoryPage categories={category}/>
             </Grid>
     </Grid>    
 </div>

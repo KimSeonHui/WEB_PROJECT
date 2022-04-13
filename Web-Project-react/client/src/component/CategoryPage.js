@@ -22,8 +22,15 @@ const renderSubTree = (category, node) => {
     return subTree;
 }
 
-function CategoryPage({category}) {
+function CategoryPage({categories}) {
+    const [category, setCategory] = useState([]);
     const [expanded, setExpanded] = useState([]);
+    const [selected, setSelected] = useState(-1);
+    const [name, setName] = useState('');
+
+    const onChange = (e) => {
+        setName(e.target.value);
+    }
 
     const handleToggle = (e, nodeIds) => {
         setExpanded(nodeIds);
@@ -31,11 +38,11 @@ function CategoryPage({category}) {
 
     const expandingAll = () => {
         const parents = [];
-        if(category.length !== undefined && expanded.length === 0) {          
-            for(let i = 0; i < category.length; i++) {
-                for(let j = 0; j < category.length; j++) {
-                    if(category[i].id === String(category[j].parent)) {
-                        parents.push(category[i].id);
+        if(categories.length !== undefined && expanded.length === 0) {          
+            for(let i = 0; i < categories.length; i++) {
+                for(let j = 0; j < categories.length; j++) {
+                    if(categories[i].id === String(categories[j].parent)) {
+                        parents.push(categories[i].id);
                     }
                 }
             }
@@ -44,10 +51,37 @@ function CategoryPage({category}) {
     }
 
     useEffect(()=> {
+        setCategory(categories);
         expandingAll();
-    }, [category]);
+    }, [categories]);
 
- 
+    const getSelectedNode = (e, nodeId) => {
+        setSelected(nodeId);        
+    }
+
+    const addCategory = () => {
+        let selectedNode = null;
+        for(let i = 0; i < category.length; i++) {
+            if(category[i].id === String(selected)) {
+                selectedNode = category[i];
+            }
+        }
+
+        if(selectedNode !== null && selectedNode.level === '2') {
+            alert('더 이상 하위 카테고리를 생성할 수 없습니다.');
+            return false;
+        }
+
+        const newNode = {
+            id : String(category.length + 1),
+            name : name, 
+            parent : (selected === -1) ? '#' : selected,
+            level : (selected === -1) ? '0' :`${parseInt(selectedNode.level + 1)}`
+        }
+
+        const allCategory = category.concat(newNode);
+        setCategory(allCategory);
+    }
 
     return <Container maxWidth="xl">
     <Box sx={{width : "100%", p : '20px'}}>
@@ -98,6 +132,7 @@ function CategoryPage({category}) {
                             defaultExpandIcon={<FolderOutlinedIcon />}
                             expanded={expanded}
                             onNodeToggle={handleToggle}
+                            onNodeSelect={getSelectedNode}
                         >
                             { category.length !== undefined ? Object.values(category).map((node) => ( 
                                 node.parent === '#' ? (
@@ -119,7 +154,7 @@ function CategoryPage({category}) {
 
         <Box sx={{ml : 4, verticalAlign : 'center'}}>
             <Box sx={{display : 'flex', justifyContent : 'center', mb : 3}} >
-                <Button variant='outlined' type='button' sx={{mr : 1, py : 1, mt : 0.5}}>카테고리 추가</Button>
+                <Button variant='outlined' type='button' sx={{mr : 1, py : 1, mt : 0.5}} onClick={addCategory}>카테고리 추가</Button>
                 <Button variant='outlined' type='button' sx={{mr : 1, py : 1, mt : 0.5}}>카테고리 삭제</Button>
                 <Button variant='outlined' type='button' sx={{py : 1, mt : 0.5}}>저장</Button>
             </Box>
@@ -129,6 +164,8 @@ function CategoryPage({category}) {
                     id='categoryName'
                     name='categoryName'
                     placeholder=''
+                    value={name}
+                    onChange={onChange}
                     sx={{
                         width : '200px',
                         border : 1, 
