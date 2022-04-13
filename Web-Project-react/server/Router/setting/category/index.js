@@ -28,11 +28,29 @@ router.get('/', async (req, res) => {
         res.send('authorityFail');
     }
     else {
-        const info = {
-            session : req.session.passport !== undefined ? req.session.passport : ''
-        }
-
-        res.send(info);
+        const categories = [];
+        let sql = `SELECT * FROM CATEGORY`;
+        conn.query(sql, (error, result) => {
+            if(error) {
+                console.log(error);
+            }
+            else {
+                for(node of result) {
+                    const data = {
+                        id : `${node.CID}`,
+                        name : `${node.NAME}`,
+                        parent : node.PID === null ? '#' : node.PID,
+                        level : `${node.LEVEL}`
+                    }
+                    categories.push(data);
+                }
+                const info = {
+                    category : categories,
+                    session : (req.session.passport !== undefined) ? req.session.passport : '',
+                }
+                res.send(info);           
+            }
+        });
     }
 });
 

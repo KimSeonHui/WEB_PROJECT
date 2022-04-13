@@ -7,6 +7,7 @@ import CategoryPage from '../component/CategoryPage';
 
 function SettingCategory() {
     const [session, setSession] = useState({});
+    const [category, setCategory] = useState({});
 
     const callApi = async () => {
         const res = await axios.get('/setting/category');
@@ -22,6 +23,7 @@ function SettingCategory() {
             }
             else {
                 setSession(res.data.session);
+                setCategory(res.data.category);
             }
         }
     }
@@ -37,7 +39,7 @@ function SettingCategory() {
                 <SettingSidebar sx={{width: '250px', height: '100vh'}}/>
             </Grid>
             <Grid item xs>
-                <CategoryPage />
+                <CategoryPage category={category}/>
             </Grid>
     </Grid>    
 </div>

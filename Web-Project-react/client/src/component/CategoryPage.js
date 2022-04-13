@@ -1,6 +1,28 @@
-import { Box, Typography, Divider, Container, InputBase, Button } from '@mui/material';
+import { useState } from 'react';
+import { Box, Typography, Divider, Container, InputBase, Button} from '@mui/material';
+import {TreeView, TreeItem } from '@mui/lab';
+import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
+import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 
-function CategoryPage() {
+const renderSubTree = (category, node) => {
+    const subTree = [];
+    for(let i = 0; i < category.length; i++) {
+        if(node.id === String(category[i].parent)) {
+            subTree.push(
+            <TreeItem 
+                key={category[i].id} 
+                nodeId={String(category[i].id)} 
+                label={category[i].name}
+                sx={{mt : '4px'}}
+            >
+                {category[i].level < 2  ? renderSubTree(category, category[i]) : null }
+            </TreeItem>); 
+        }
+    }
+    return subTree;
+}
+
+function CategoryPage({category}) {
 
     return <Container maxWidth="xl">
     <Box sx={{width : "100%", p : '20px'}}>
@@ -31,17 +53,39 @@ function CategoryPage() {
             />
             <Box sx={{
                     width : '350px',
-                    height : '600px',
                     border : 'solid',
                     borderRadius : '6px',
                     borderColor : 'black',
                     mt : 1,
-                    mb : 0
+                    mb : 0,
+                    pb : 2
                 }} 
             >
                 <Box sx={{textAlign : 'center'}} >
-                    <p style={{backgroundColor : '#212529', color : 'white', paddingTop : '1em', paddingBottom : '1em'}} >카테고리 전체보기</p>
+                    <p style={{backgroundColor : '#212529', color : 'white', paddingTop : '1em', paddingBottom : '1em'}} >
+                        카테고리 전체보기
+                    </p>
                 </Box>
+                <Box sx={{overflowX : 'auto', ml : 4}}>
+                        < TreeView
+                            aria-label="rich object"
+                            defaultCollapseIcon={<FolderOpenOutlinedIcon />}
+                            defaultExpandIcon={<FolderOutlinedIcon />}
+                        >
+                            { category.length !== undefined ? Object.values(category).map((node) => ( 
+                                node.parent === '#' ? (
+                                    <TreeItem 
+                                        nodeId={String(node.id)} 
+                                        label={node.name} 
+                                        key={node.id}
+                                        sx={{mt : '8px'}}
+                                    >
+                                        {node.level < 2  ? renderSubTree(category, node) : null }
+                                    </TreeItem>
+                                ) : null
+                            )) : null }
+                        </TreeView>
+                    </Box>
             </Box>
         </Box>
 
