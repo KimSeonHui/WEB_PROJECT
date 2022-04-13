@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import Grid from '@mui/material/Grid';
 import Navbar from '../component/Navbar';
 import SettingSidebar from '../component/SettingSidebar';
+import CategoryPage from '../component/CategoryPage';
 
 function SettingCategory() {
     const [session, setSession] = useState({});
@@ -36,7 +37,7 @@ function SettingCategory() {
                 <SettingSidebar sx={{width: '250px', height: '100vh'}}/>
             </Grid>
             <Grid item xs>
-
+                <CategoryPage />
             </Grid>
     </Grid>    
 </div>
