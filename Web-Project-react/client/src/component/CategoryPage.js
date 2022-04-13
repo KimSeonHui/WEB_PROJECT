@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Typography, Divider, Container, InputBase, Button} from '@mui/material';
 import {TreeView, TreeItem } from '@mui/lab';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
@@ -23,6 +23,31 @@ const renderSubTree = (category, node) => {
 }
 
 function CategoryPage({category}) {
+    const [expanded, setExpanded] = useState([]);
+
+    const handleToggle = (e, nodeIds) => {
+        setExpanded(nodeIds);
+    }
+
+    const expandingAll = () => {
+        const parents = [];
+        if(category.length !== undefined && expanded.length === 0) {          
+            for(let i = 0; i < category.length; i++) {
+                for(let j = 0; j < category.length; j++) {
+                    if(category[i].id === String(category[j].parent)) {
+                        parents.push(category[i].id);
+                    }
+                }
+            }
+            setExpanded(parents);
+        }
+    }
+
+    useEffect(()=> {
+        expandingAll();
+    }, [category]);
+
+ 
 
     return <Container maxWidth="xl">
     <Box sx={{width : "100%", p : '20px'}}>
@@ -71,6 +96,8 @@ function CategoryPage({category}) {
                             aria-label="rich object"
                             defaultCollapseIcon={<FolderOpenOutlinedIcon />}
                             defaultExpandIcon={<FolderOutlinedIcon />}
+                            expanded={expanded}
+                            onNodeToggle={handleToggle}
                         >
                             { category.length !== undefined ? Object.values(category).map((node) => ( 
                                 node.parent === '#' ? (
