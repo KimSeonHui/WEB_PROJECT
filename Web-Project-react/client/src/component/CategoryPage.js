@@ -55,17 +55,23 @@ function CategoryPage({categories}) {
         expandingAll();
     }, [categories]);
 
-    const getSelectedNode = (e, nodeId) => {
+    const selectedNode = (e, nodeId) => {
         setSelected(nodeId);        
     }
 
-    const addCategory = () => {
+    const getSelectedNode = () => {
         let selectedNode = null;
         for(let i = 0; i < category.length; i++) {
             if(category[i].id === String(selected)) {
                 selectedNode = category[i];
             }
         }
+
+        return selectedNode;
+    }
+
+    const addCategory = () => {
+        const selectedNode = getSelectedNode();
 
         if(selectedNode !== null && selectedNode.level === '2') {
             alert('더 이상 하위 카테고리를 생성할 수 없습니다.');
@@ -81,6 +87,40 @@ function CategoryPage({categories}) {
 
         const allCategory = category.concat(newNode);
         setCategory(allCategory);
+    }
+
+    const deleteCategory = () => {
+        console.log('selected', selected);
+        const children = [];
+        for(let i = 0; i < category.length; i++) {
+            if(selected === String(category[i].parent)) {
+                children.push(category[i]);
+            }
+        }
+
+        console.log('children', children);
+
+        if(children.length > 0) {
+            if(window.confirm('하위 카테고리와 글도 모두 삭제 됩니다.\n카테고리를 삭제하시겠습니까?')) {
+                let removeChildren = category.concat([]);
+
+                children.forEach((child) => {
+                    const index = removeChildren.indexOf(child);
+                    removeChildren = removeChildren.slice(0, index).concat(removeChildren.slice(index+1, removeChildren.length));
+                });
+
+                const allCategory = removeChildren.slice(0, selected-1).concat(removeChildren.slice(selected, removeChildren.length));
+                setCategory(allCategory);
+            }
+            else {
+                return false;
+            }
+
+        }
+        else {
+            const allCategory = category.slice(0, selected-1).concat(category.slice(selected, category.length));
+            setCategory(allCategory);
+        }
     }
 
     return <Container maxWidth="xl">
@@ -132,7 +172,7 @@ function CategoryPage({categories}) {
                             defaultExpandIcon={<FolderOutlinedIcon />}
                             expanded={expanded}
                             onNodeToggle={handleToggle}
-                            onNodeSelect={getSelectedNode}
+                            onNodeSelect={selectedNode}
                         >
                             { category.length !== undefined ? Object.values(category).map((node) => ( 
                                 node.parent === '#' ? (
@@ -155,7 +195,7 @@ function CategoryPage({categories}) {
         <Box sx={{ml : 4, verticalAlign : 'center'}}>
             <Box sx={{display : 'flex', justifyContent : 'center', mb : 3}} >
                 <Button variant='outlined' type='button' sx={{mr : 1, py : 1, mt : 0.5}} onClick={addCategory}>카테고리 추가</Button>
-                <Button variant='outlined' type='button' sx={{mr : 1, py : 1, mt : 0.5}}>카테고리 삭제</Button>
+                <Button variant='outlined' type='button' sx={{mr : 1, py : 1, mt : 0.5}} onClick={deleteCategory}>카테고리 삭제</Button>
                 <Button variant='outlined' type='button' sx={{py : 1, mt : 0.5}}>저장</Button>
             </Box>
             <Box sx={{display : 'flex', alignItems : 'center'}}>
