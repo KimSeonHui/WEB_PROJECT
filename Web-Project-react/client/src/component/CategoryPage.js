@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Box, Typography, Divider, Container, InputBase, Button} from '@mui/material';
 import {TreeView, TreeItem } from '@mui/lab';
@@ -123,6 +124,26 @@ function CategoryPage({categories}) {
         }
     }
 
+    const saveCategory = async () => {
+        console.log('save');
+
+        const res = await axios.post('/setting/category', {
+            allCategories : category
+        });
+
+        if(res.statusText === 'OK') {
+            console.log('save', res.data);
+
+            if(res.data !== 'error') {
+                alert('카테고리를 수정하였습니다.');
+                setCategory(res.data);
+            }
+            else {
+                alert('오류가 발생하였습니다. 카테고리를 수정하지 못했습니다.');
+            }
+        }
+    }
+
     return <Container maxWidth="xl">
     <Box sx={{width : "100%", p : '20px'}}>
     <Box sx={{display : 'flex', justifyContent: 'space-between'}} >
@@ -196,7 +217,7 @@ function CategoryPage({categories}) {
             <Box sx={{display : 'flex', justifyContent : 'center', mb : 3}} >
                 <Button variant='outlined' type='button' sx={{mr : 1, py : 1, mt : 0.5}} onClick={addCategory}>카테고리 추가</Button>
                 <Button variant='outlined' type='button' sx={{mr : 1, py : 1, mt : 0.5}} onClick={deleteCategory}>카테고리 삭제</Button>
-                <Button variant='outlined' type='button' sx={{py : 1, mt : 0.5}}>저장</Button>
+                <Button variant='outlined' type='button' sx={{py : 1, mt : 0.5}} onClick={saveCategory}>저장</Button>
             </Box>
             <Box sx={{display : 'flex', alignItems : 'center'}}>
                 <label htmlFor="categoryName">카테고리명</label>

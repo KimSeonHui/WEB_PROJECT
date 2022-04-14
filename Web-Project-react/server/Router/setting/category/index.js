@@ -54,4 +54,69 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.post('/', async (req, res) => {
+    if(!req.session.passport || req.session.passport.authority !== 2) {
+        res.redirect('/');
+    } 
+    else {
+        const isJson = (str) => {
+            try {
+                JSON.parse(str);
+            } 
+            catch (e) {
+                return false;
+            }
+            return JSON.parse(str);
+        }
+
+        //수정한 새 카테고리
+        const newCategories = req.body.allCategories;
+        const values = [];
+
+        console.log('new', newCategories)
+        let sql = `INSERT INTO CATEGORY  VALUES `;
+    
+        for(let i = 0; i < newCategories.length; i++) {
+            const [cid, name, level] = [newCategories[i].id, newCategories[i].name, newCategories[i].level];
+    
+            if(newCategories[i].parent === "#") {
+                sql += `(?, ?, ?, ?), `;
+                values.push(cid, name, null, level);
+            } 
+            else {
+                const pid = newCategories[i].parent;
+                sql += `(?, ?, ?, ?), `;
+                values.push(cid, name, pid, level)
+            }
+        }
+
+        sql = sql.slice(0, sql.length - 2) + ';';
+
+        console.log('sql', sql);
+
+        conn.beginTransaction(async tranErr => {
+            if(tranErr) {
+                console.log(`Transaction Error : ${tranErr}`);
+            } 
+            else {
+                await conn.query(`DELETE FROM CATEGORY;`);
+                await handleQuery(sql, values).then(async () => {
+                    //정상 실행시 커밋
+                    console.log("commit");
+                    await conn.commit();
+                    res.send('success');
+                }).catch(async err => {
+                    //오류 발생시 트랜잭션 롤백
+                    console.log(err);
+                    console.log("rollback");
+                    await conn.rollback();
+                    res.send('error');
+                });
+            }
+        });
+          
+    }
+
+});
+
 module.exports = router;
