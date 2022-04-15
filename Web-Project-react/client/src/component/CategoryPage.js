@@ -11,7 +11,9 @@ function CategoryPage({categories}) {
     const [expanded, setExpanded] = useState([]);
     const [selected, setSelected] = useState(-1);
     const [name, setName] = useState('');
+    const [word, setWord] = useState('');
     const [isRename, setIsRename] = useState(false);
+    const [search, setSearch] = useState([]);
 
     const renderSubTree = (category, node) => {
         const subTree = [];
@@ -22,7 +24,7 @@ function CategoryPage({categories}) {
                     key={category[i].id} 
                     nodeId={String(category[i].id)} 
                     label={isRename && selected === category[i].id ? <CategoryRename name={name}/> : category[i].name}
-                    sx={{mt : '4px'}}
+                    sx={search.includes(category[i].id) ? { color : 'red', mt : '4px'} : {color : 'black', mt : '4px'}}
                 >
                     {category[i].level < 2  ? renderSubTree(category, category[i]) : null }
                 </TreeItem>); 
@@ -161,6 +163,18 @@ function CategoryPage({categories}) {
         setIsRename(true);
     }
 
+    const searchCategory = (e) => {
+        setWord(e.target.value);
+
+        const result = [];
+        for(let i = 0; i < category.length; i++) {
+            if(category[i].name.includes(e.target.value) && e.target.value !== '') {
+                result.push(category[i].id);
+            }
+        }
+        setSearch(result);
+    }
+
 
     return <Container maxWidth="xl">
     <Box sx={{width : "100%", p : '20px'}}>
@@ -179,6 +193,8 @@ function CategoryPage({categories}) {
         <Box sx={{display : 'flex', flexDirection : 'column' }} >
             <InputBase 
                 name='categorySearch'
+                value={word}
+                onChange={searchCategory}
                 placeholder='카테고리 검색'
                 sx={{
                     width : '350px',
@@ -219,7 +235,7 @@ function CategoryPage({categories}) {
                                         nodeId={String(node.id)} 
                                         label={isRename && selected === node.id ? <CategoryRename name={name}/> : node.name} 
                                         key={node.id}
-                                        sx={{mt : '8px'}}
+                                        sx={search.includes(node.id) ? {color : 'red', mt : '8px'} : {mt : '8px'}}
                                     >
                                         {node.level < 2  ? renderSubTree(category, node) : null }
                                     </TreeItem>
