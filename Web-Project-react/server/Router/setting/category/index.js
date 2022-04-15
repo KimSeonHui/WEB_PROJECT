@@ -59,15 +59,6 @@ router.post('/', async (req, res) => {
         res.redirect('/');
     } 
     else {
-        const isJson = (str) => {
-            try {
-                JSON.parse(str);
-            } 
-            catch (e) {
-                return false;
-            }
-            return JSON.parse(str);
-        }
 
         //수정한 새 카테고리
         const newCategories = req.body.allCategories;
