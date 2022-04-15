@@ -95,13 +95,32 @@ router.post('/', async (req, res) => {
                     //정상 실행시 커밋
                     console.log("commit");
                     await conn.commit();
-                    res.send('success');
                 }).catch(async err => {
                     //오류 발생시 트랜잭션 롤백
                     console.log(err);
                     console.log("rollback");
                     await conn.rollback();
                     res.send('error');
+                });
+
+                const newCates = [];
+
+                await conn.query('SELECT * FROM CATEGORY', (err, result) => {
+                    if(err) {
+                        console.log(err);
+                    }
+                    else {
+                        for(let node of result) {
+                            const data = {
+                                id : `${node.CID}`,
+                                name : `${node.NAME}`,
+                                parent : node.PID === null ? '#' : node.PID,
+                                level : `${node.LEVEL}`
+                            }
+                            newCates.push(data);
+                        }
+                        res.send(newCates);
+                    }
                 });
             }
         });
