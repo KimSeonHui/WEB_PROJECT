@@ -170,11 +170,18 @@ function CategoryPage({categories}) {
         for(let i = 0; i < category.length; i++) {
             if(category[i].name.includes(e.target.value) && e.target.value !== '') {
                 result.push(category[i].id);
+                let parent = expanded.concat([]);
+                if(!expanded.includes(category[i].parent)) {
+                    parent = parent.concat([String(category[i].parent)]);
+                }
+                if(!expanded.includes(category[category[i].parent - 1].parent)) {
+                    parent = parent.concat([String(category[category[i].parent - 1].parent)]);
+                }
+                setExpanded(parent);
             }
         }
         setSearch(result);
     }
-
 
     return <Container maxWidth="xl">
     <Box sx={{width : "100%", p : '20px'}}>
