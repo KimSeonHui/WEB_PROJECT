@@ -4,33 +4,40 @@ import { Box, Typography, Divider, Container, InputBase, Button} from '@mui/mate
 import {TreeView, TreeItem } from '@mui/lab';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
-
-const renderSubTree = (category, node) => {
-    const subTree = [];
-    for(let i = 0; i < category.length; i++) {
-        if(node.id === String(category[i].parent)) {
-            subTree.push(
-            <TreeItem 
-                key={category[i].id} 
-                nodeId={String(category[i].id)} 
-                label={category[i].name}
-                sx={{mt : '4px'}}
-            >
-                {category[i].level < 2  ? renderSubTree(category, category[i]) : null }
-            </TreeItem>); 
-        }
-    }
-    return subTree;
-}
+import CategoryRename from './CategoryRename';
 
 function CategoryPage({categories}) {
     const [category, setCategory] = useState([]);
     const [expanded, setExpanded] = useState([]);
     const [selected, setSelected] = useState(-1);
     const [name, setName] = useState('');
+    const [isRename, setIsRename] = useState(false);
+
+    const renderSubTree = (category, node) => {
+        const subTree = [];
+        for(let i = 0; i < category.length; i++) {
+            if(node.id === String(category[i].parent)) {
+                subTree.push(
+                <TreeItem 
+                    key={category[i].id} 
+                    nodeId={String(category[i].id)} 
+                    label={isRename && selected === category[i].id ? <CategoryRename name={name}/> : category[i].name}
+                    sx={{mt : '4px'}}
+                >
+                    {category[i].level < 2  ? renderSubTree(category, category[i]) : null }
+                </TreeItem>); 
+            }
+        }
+        return subTree;
+    }
 
     const onChange = (e) => {
         setName(e.target.value);
+
+        if(isRename) {
+            const selectedNode = getSelectedNode();
+            selectedNode.name = e.target.value;
+        }
     }
 
     const handleToggle = (e, nodeIds) => {
@@ -58,6 +65,10 @@ function CategoryPage({categories}) {
 
     const selectedNode = (e, nodeId) => {
         setSelected(nodeId);        
+
+        if(isRename) {
+            setIsRename(false);
+        }
     }
 
     const getSelectedNode = () => {
@@ -144,6 +155,13 @@ function CategoryPage({categories}) {
         }
     }
 
+    const renameCategory = () => {
+        const selectedNode = getSelectedNode();
+        setName(selectedNode.name);
+        setIsRename(true);
+    }
+
+
     return <Container maxWidth="xl">
     <Box sx={{width : "100%", p : '20px'}}>
     <Box sx={{display : 'flex', justifyContent: 'space-between'}} >
@@ -199,7 +217,7 @@ function CategoryPage({categories}) {
                                 node.parent === '#' ? (
                                     <TreeItem 
                                         nodeId={String(node.id)} 
-                                        label={node.name} 
+                                        label={isRename && selected === node.id ? <CategoryRename name={name}/> : node.name} 
                                         key={node.id}
                                         sx={{mt : '8px'}}
                                     >
@@ -217,6 +235,7 @@ function CategoryPage({categories}) {
             <Box sx={{display : 'flex', justifyContent : 'center', mb : 3}} >
                 <Button variant='outlined' type='button' sx={{mr : 1, py : 1, mt : 0.5}} onClick={addCategory}>카테고리 추가</Button>
                 <Button variant='outlined' type='button' sx={{mr : 1, py : 1, mt : 0.5}} onClick={deleteCategory}>카테고리 삭제</Button>
+                <Button variant='outlined' type='button' sx={{mr : 1, py : 1, mt : 0.5}} onClick={renameCategory}>카테고리 이름 수정</Button>
                 <Button variant='outlined' type='button' sx={{py : 1, mt : 0.5}} onClick={saveCategory}>저장</Button>
             </Box>
             <Box sx={{display : 'flex', alignItems : 'center'}}>
