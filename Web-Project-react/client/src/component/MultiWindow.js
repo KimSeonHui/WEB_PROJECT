@@ -19,13 +19,11 @@ function MultiWindow({isClicked}) {
     const [doc, setDoc] = useState(null);
     const frame = document.getElementById('frame');
     let frameDoc = null;
-    console.log('frame22', frame);
 
     useEffect(() => {
         if(frame !== null) {
             frameDoc = frame.contentDocument;
             setDoc(frameDoc);
-            console.log('document', frameDoc);
 
             frameDoc.open();
             frameDoc.write(`<!DOCTYPE html>
@@ -49,12 +47,7 @@ function MultiWindow({isClicked}) {
             ...style
         }}
     >
-        <MultiWindowSearch frameDoc={doc}>
-            <div>
-                <h1>company</h1>
-                <button>닫기</button>
-            </div>
-        </MultiWindowSearch>
+        <MultiWindowSearch frameDoc={doc} />
     </Box>
 
 }
