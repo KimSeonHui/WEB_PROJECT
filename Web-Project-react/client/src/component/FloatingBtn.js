@@ -1,10 +1,11 @@
 import { Button } from '@mui/material';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 
-function FloatingBtn({isClicked, setClick}) {
+function FloatingBtn({setClick}) {
 
-    const createMultiWindow = () => {
-       setClick(!isClicked);
+    const createMultiWindow = (e) => {
+        e.target.style.display = 'none';
+        setClick(true); 
     }
 
     return <Button  onClick={createMultiWindow} 

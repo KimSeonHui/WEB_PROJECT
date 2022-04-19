@@ -39,7 +39,9 @@ function Main() {
         <Divider />
         <Table />
 
-        {!isClicked ? <FloatingBtn isClicked={isClicked} setClick={setClick}/> :  <MultiWindow /> }
+        <FloatingBtn setClick={setClick}/>
+        <MultiWindow isClicked={isClicked} />
+        
         </Box>
     </Container>
     
