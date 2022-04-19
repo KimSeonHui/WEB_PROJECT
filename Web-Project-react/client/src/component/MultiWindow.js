@@ -49,6 +49,12 @@ function MultiWindow({isClicked}) {
             ...style
         }}
     >
+        <MultiWindowSearch frameDoc={doc}>
+            <div>
+                <h1>company</h1>
+                <button>닫기</button>
+            </div>
+        </MultiWindowSearch>
     </Box>
 
 }
