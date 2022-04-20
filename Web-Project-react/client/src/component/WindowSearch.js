@@ -1,10 +1,29 @@
 import { Typography, InputBase, Button } from '@mui/material';
 import React, { useState } from 'react';
+import axios from 'axios';
 
 function WindowSearch() {
     const [word, setWord] = useState('');
     const onChange = (e) => {
         setWord(e.target.value)
+    }
+
+    const search = async () => {
+        console.log('submit')
+        const res = await axios.get('/search/multi', 
+            {params : {key : word}}
+        );
+
+        if(res.statusText === 'OK') {
+            console.log('res.data', res.data);
+
+            if(res.data === 'error') {
+                alert('오류가 발생했습니다.');
+            }
+            else {
+                //검색 결과 보여주기
+            }
+        }
     }
 
     return  <div style=
@@ -43,6 +62,7 @@ function WindowSearch() {
             <Button 
                 variant='contained'
                 type='submit'
+                onClick={search}
                 sx={{
                     width : '100%',
                     mb : 2,
