@@ -2,7 +2,7 @@ import { Typography, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import React from 'react';
 
-function MultiWindowSearch({setClick}) {
+function WindowTop({setClick}) {
     const closeWindow = () => {
         setClick(false);
     }
@@ -29,6 +29,6 @@ function MultiWindowSearch({setClick}) {
         </div>
 }
 
-export default MultiWindowSearch;
+export default WindowTop;
 
  

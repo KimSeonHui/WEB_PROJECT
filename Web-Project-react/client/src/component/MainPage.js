@@ -4,7 +4,8 @@ import Table from "./MainTable";
 import FloatingBtn from './FloatingBtn';
 import Iframe from './Iframe';
 import { useState } from 'react';
-import MultiWindowSearch from './MultiWindowSearch';
+import WindowTop from './WindowTop';
+import WindowSearch from './WindowSearch';
 
 const theme = createTheme({
     palette: {
@@ -42,7 +43,8 @@ function Main() {
 
         <FloatingBtn isClicked={isClicked} setClick={setClick}/>
         <Iframe isClicked={isClicked}>
-            <MultiWindowSearch setClick={setClick} />
+            <WindowTop setClick={setClick} />
+            <WindowSearch /> 
         </Iframe>
         
         </Box>
