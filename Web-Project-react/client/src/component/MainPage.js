@@ -2,7 +2,7 @@ import { Box, Typography, Divider, Container, Button } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Table from "./MainTable";
 import FloatingBtn from './FloatingBtn';
-import MultiWindow from './MultiWindow';
+import Iframe from './Iframe';
 import { useState } from 'react';
 
 const theme = createTheme({
@@ -40,7 +40,11 @@ function Main() {
         <Table />
 
         <FloatingBtn setClick={setClick}/>
-        <MultiWindow isClicked={isClicked} />
+        {/* <MultiWindow isClicked={isClicked} /> */}
+        <Iframe isClicked={isClicked}>
+            <h1>안녕</h1>
+            <button>닫기</button>
+        </Iframe>
         
         </Box>
     </Container>

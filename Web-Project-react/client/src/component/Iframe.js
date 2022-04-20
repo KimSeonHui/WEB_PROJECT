@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import MultiWindowSearch from './MultiWindowSearch';
+import { createPortal } from 'react-dom';
 
 const style = {
     position : 'fixed',
@@ -15,41 +15,45 @@ const style = {
     boxShadow : '0 1rem 3rem rgba(0, 0, 0, 0.175)' 
 }
 
-function MultiWindow({isClicked}) {  
-    const [doc, setDoc] = useState(null);
+function Iframe({children, isClicked}) {
+    const [contentRef, setContentRef] = useState(null);
+
     const frame = document.getElementById('frame');
     let frameDoc = null;
-
+    
     useEffect(() => {
         if(frame !== null) {
             frameDoc = frame.contentDocument;
-            setDoc(frameDoc);
-
             frameDoc.open();
             frameDoc.write(`<!DOCTYPE html>
-            <html><head><meta charset="utf-8"></head>
+            <html><head><meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1">
+            </head>
             <body><div id="multiWindow" name="multiWindow">
                 <div id="container" name="container"></div>
             </div></body></html>`);
+
             frameDoc.close();
         }
     }, [frame]);
 
+    const mountNode = contentRef?.contentWindow?.document?.getElementById('container')
+
     return <Box 
-        component='iframe'
-        id='frame'
-        sx={ isClicked ? {
-            display : 'block',
-            ...style
-        } 
-        : {
-            display : 'none',
-            ...style
-        }}
-    >
-        <MultiWindowSearch frameDoc={doc} />
-    </Box>
+            component='iframe'
+            id='frame'
+            ref={setContentRef}
+            sx={ isClicked ? {
+                display : 'block',
+                ...style
+            } 
+            : {
+                display : 'none',
+                ...style
+            }}
+        >
+            {mountNode && createPortal(children, mountNode)}
+        </Box> 
 
 }
 
-export default MultiWindow;
+export default Iframe;
