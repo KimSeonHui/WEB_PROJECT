@@ -4,6 +4,7 @@ import Table from "./MainTable";
 import FloatingBtn from './FloatingBtn';
 import Iframe from './Iframe';
 import { useState } from 'react';
+import MultiWindowSearch from './MultiWindowSearch';
 
 const theme = createTheme({
     palette: {
@@ -39,11 +40,9 @@ function Main() {
         <Divider />
         <Table />
 
-        <FloatingBtn setClick={setClick}/>
-        {/* <MultiWindow isClicked={isClicked} /> */}
+        <FloatingBtn isClicked={isClicked} setClick={setClick}/>
         <Iframe isClicked={isClicked}>
-            <h1>안녕</h1>
-            <button>닫기</button>
+            <MultiWindowSearch setClick={setClick} />
         </Iframe>
         
         </Box>
