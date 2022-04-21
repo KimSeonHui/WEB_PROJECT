@@ -6,6 +6,7 @@ import Iframe from './Iframe';
 import { useState } from 'react';
 import WindowTop from './WindowTop';
 import WindowSearch from './WindowSearch';
+import WindowTable from './WindowTable';
 
 const theme = createTheme({
     palette: {
@@ -17,6 +18,8 @@ const theme = createTheme({
 
 function Main() {
     const [isClicked, setClick] = useState(false);
+    const [isSearching, setSearching] = useState(false);
+    const [rows, setRows] = useState([]);
 
     return <Container maxWidth="xl">
         <Box sx={{width : "100%", p : '20px'}}>
@@ -44,7 +47,8 @@ function Main() {
         <FloatingBtn isClicked={isClicked} setClick={setClick}/>
         <Iframe isClicked={isClicked}>
             <WindowTop setClick={setClick} />
-            <WindowSearch /> 
+           {isSearching ?  <WindowTable rows={rows} setSearching={setSearching}/> 
+           : <WindowSearch setSearching={setSearching} setRows={setRows} />  } 
         </Iframe>
         
         </Box>

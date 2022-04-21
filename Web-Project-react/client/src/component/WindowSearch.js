@@ -2,7 +2,7 @@ import { Typography, InputBase, Button } from '@mui/material';
 import React, { useState } from 'react';
 import axios from 'axios';
 
-function WindowSearch() {
+function WindowSearch({setSearching, setRows}) {
     const [word, setWord] = useState('');
     const onChange = (e) => {
         setWord(e.target.value)
@@ -21,7 +21,8 @@ function WindowSearch() {
                 alert('오류가 발생했습니다.');
             }
             else {
-                //검색 결과 보여주기
+                setSearching(true);
+                setRows(res.data);
             }
         }
     }
