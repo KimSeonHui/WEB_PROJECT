@@ -23,7 +23,7 @@ function WindowTop({setClick}) {
                 company
             </Typography>
             
-            <IconButton onClick={closeWindow}>
+            <IconButton id="btnClose" onClick={closeWindow}>
                 <CloseIcon />
             </IconButton >
         </div>

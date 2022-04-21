@@ -1,6 +1,7 @@
 import { Paper, TableContainer , Table, TableHead } from "@mui/material";
 import { TableRow, TableBody, styled, Typography, Button  } from "@mui/material";
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -65,17 +66,48 @@ function WindowTable({rows, setSearching}) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.length !== undefined ? rows.map((row) => (
+                    {rows.length !== 0 ? rows.map((row) => (
                         <StyledTableRow key={row.POSTID}>
                             <TableCell>{row.POSTID}</TableCell>
                             <TableCell>{row.TITLE}</TableCell>
                             <TableCell>{row.CREATER}</TableCell>
                             <TableCell>{row.ADDTIME}</TableCell>
                         </StyledTableRow>
-                    )) : null}
+                    )) 
+                    :  <StyledTableRow sx={{textAlign : 'center'}}>
+                            <TableCell colSpan={4}>검색 결과가 없습니다.</TableCell>
+                        </StyledTableRow>
+                    }
                 </TableBody>
             </Table>
         </TableContainer>
+
+        <Button 
+            variant="contained"
+            href="#btnClose"
+            style={{
+                width : '30%',
+                borderRadius : '0.5rem',
+                border : '0.125rem solid transparent',
+                backgroundColor : '#0186d3',
+                borderColor : '#0186d3',
+                color : '#fff',
+                fontWeight : 400,
+                marginLeft : 'auto'
+
+            }}
+        >
+             <ArrowDropUpIcon style=
+                {{
+                    width : '30%', 
+                    fontSize : 20, 
+                    ml : 0.5, 
+                    verticalAlign : 'middle',
+                    color : '#fff'
+                }} 
+                color='inherit'
+            />
+        </Button>
     </div>
 }
 
