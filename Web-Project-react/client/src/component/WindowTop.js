@@ -2,7 +2,7 @@ import { Typography, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import React from 'react';
 
-function WindowTop({setClick}) {
+function WindowTop({setClick ,session}) {
     const closeWindow = () => {
         setClick(false);
     }
@@ -20,10 +20,10 @@ function WindowTop({setClick}) {
                 variant='h5' 
                 component="div" 
             >
-                company
+                {session !== '' ? session.name : '로그인 해 주세요.'}
             </Typography>
             
-            <IconButton id="btnClose" onClick={closeWindow}>
+            <IconButton id="btnClose" onClick={closeWindow} color='primary'>
                 <CloseIcon />
             </IconButton >
         </div>

@@ -16,7 +16,7 @@ const theme = createTheme({
     },
 });
 
-function Main() {
+function Main({session}) {
     const [isClicked, setClick] = useState(false);
     const [isSearching, setSearching] = useState(false);
     const [rows, setRows] = useState([]);
@@ -46,7 +46,7 @@ function Main() {
 
         <FloatingBtn isClicked={isClicked} setClick={setClick}/>
         <Iframe isClicked={isClicked}>
-            <WindowTop setClick={setClick} />
+            <WindowTop setClick={setClick} session={session}/>
            {isSearching ?  <WindowTable rows={rows} setSearching={setSearching}/> 
            : <WindowSearch setSearching={setSearching} setRows={setRows} />  } 
         </Iframe>

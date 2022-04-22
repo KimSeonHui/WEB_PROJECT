@@ -32,7 +32,7 @@ function MainHome() {
                     <Sidebar category={categories} sx={{width: '250px', height: '100vh'}}/>
                 </Grid>
                 <Grid item xs>
-                    <MainPage />
+                    <MainPage session={session} />
                 </Grid>
         </Grid>    
   </div>
