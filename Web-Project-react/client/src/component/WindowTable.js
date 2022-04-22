@@ -1,4 +1,4 @@
-import { Paper, TableContainer , Table, TableHead } from "@mui/material";
+import { Paper, TableContainer , Table, TableHead, Box } from "@mui/material";
 import { TableRow, TableBody, styled, Typography, Button, Link  } from "@mui/material";
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
@@ -7,10 +7,9 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
         backgroundColor: '#003964',
         color: theme.palette.common.white,
-    },
-    [`&.${tableCellClasses.body}`]: {
-        fontSize: 14,
-    },
+        fontSize : '12px',
+        fontWeight : 300
+    }
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -29,16 +28,14 @@ function WindowTable({rows, setSearching}) {
         window.open(e.target.href, '_blank', 'width=1200, height=800');
     }
    
-    return <div  style=
-        {{
-            width : '100%',
-            marginTop : '8px',
-            marginBottom : '8px',
-            marginRight: 'auto',
-            marginLeft: 'auto'
+    return <Box  
+        component='div'
+        sx={{
+            my : '8px',
         }}>
-            <div style=
-                {{
+            <Box 
+            component='div'
+            sx={{
                     display : 'flex',
                     justifyContent : 'space-between'
                 }}
@@ -55,10 +52,11 @@ function WindowTable({rows, setSearching}) {
                 <Button 
                     variant="contained" 
                     onClick={onClick}
+                    sx={{mb : 2}}
                 >
                     검색창 보기
                 </Button>
-            </div>
+            </Box>
   
             <TableContainer component={Paper} >
             <Table size="medium">
@@ -75,7 +73,17 @@ function WindowTable({rows, setSearching}) {
                         <StyledTableRow key={row.POSTID}>
                             <TableCell>{row.POSTID}</TableCell>
                             <TableCell>
-                                <Link href={`/read/${row.POSTID}`} onClick={openWindow}>
+                                <Link 
+                                    href={`/read/${row.POSTID}`} 
+                                    onClick={openWindow} 
+                                    underline='none' 
+                                    sx={{
+                                        color : '#000',
+                                        fontFamily : '"Roboto","Helvetica","Arial",sans-serif',
+                                        fontWeight : 400,
+                                        fontSize : '0.875rem',
+                                    }}
+                                >
                                     {row.TITLE}
                                 </Link>
                             </TableCell>
@@ -92,32 +100,21 @@ function WindowTable({rows, setSearching}) {
         </TableContainer>
 
         <Button 
+            component='a'
             variant="contained"
             href="#btnClose"
-            style={{
+            sx={{
                 width : '30%',
-                borderRadius : '0.5rem',
-                border : '0.125rem solid transparent',
-                backgroundColor : '#0186d3',
-                borderColor : '#0186d3',
                 color : '#fff',
                 fontWeight : 400,
-                marginLeft : 'auto'
+                ml : 28,
+                mt : 2
 
             }}
         >
-             <ArrowDropUpIcon style=
-                {{
-                    width : '30%', 
-                    fontSize : 20, 
-                    ml : 0.5, 
-                    verticalAlign : 'middle',
-                    color : '#fff'
-                }} 
-                color='inherit'
-            />
+            TOP <ArrowDropUpIcon />
         </Button>
-    </div>
+    </Box>
 }
 
 export default WindowTable;

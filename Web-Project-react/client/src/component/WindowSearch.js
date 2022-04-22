@@ -1,6 +1,7 @@
-import { Typography, InputBase, Button } from '@mui/material';
+import { Typography, InputBase, Button, Box } from '@mui/material';
 import React, { useState } from 'react';
 import axios from 'axios';
+import { padding } from '@mui/system';
 
 function WindowSearch({setSearching, setRows}) {
     const [word, setWord] = useState('');
@@ -27,21 +28,22 @@ function WindowSearch({setSearching, setRows}) {
         }
     }
 
-    return  <div style=
-            {{
+    return  <Box
+            component='div' 
+            sx={{
                 boxShadow : '0 0.5rem 1rem rgba(0, 0, 0, 0.15)', 
                 justifyContent : 'space-between', 
-                width : '100%',
                 borderRadius : '5%',
-                marginTop : '8px',
-                marginBottom : '8px',
-                marginRight: 'auto',
-                marginLeft: 'auto'
+                px : '4px',
+                mt : 2
             }}
         >
             <Typography 
                 variant='h6' 
                 component="div" 
+                sx={{
+                    pt : 2
+                }}
             >
                 검색
             </Typography>
@@ -56,8 +58,10 @@ function WindowSearch({setSearching, setRows}) {
                     border : 1, 
                     borderRadius: '6px', 
                     borderColor : '#d3d3d3',
-                    py : 1.5,
-                    pl : 1
+                    py : 1,
+                    pl : 1,
+                    mt : 1.5,
+                    mb : 2
                 }}
             />
             <Button 
@@ -72,7 +76,7 @@ function WindowSearch({setSearching, setRows}) {
             >
                 Search
             </Button>
-        </div>
+        </Box>
 }
 
 export default WindowSearch;
