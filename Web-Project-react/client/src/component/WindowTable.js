@@ -1,5 +1,5 @@
 import { Paper, TableContainer , Table, TableHead } from "@mui/material";
-import { TableRow, TableBody, styled, Typography, Button  } from "@mui/material";
+import { TableRow, TableBody, styled, Typography, Button, Link  } from "@mui/material";
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 
@@ -22,6 +22,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 function WindowTable({rows, setSearching}) {
     const onClick = () => {
         setSearching(false);
+    }
+
+    const openWindow = (e) => {
+        e.preventDefault();
+        window.open(e.target.href, '_blank', 'width=1200, height=800');
     }
    
     return <div  style=
@@ -69,7 +74,11 @@ function WindowTable({rows, setSearching}) {
                     {rows.length !== 0 ? rows.map((row) => (
                         <StyledTableRow key={row.POSTID}>
                             <TableCell>{row.POSTID}</TableCell>
-                            <TableCell>{row.TITLE}</TableCell>
+                            <TableCell>
+                                <Link href={`/read/${row.POSTID}`} onClick={openWindow}>
+                                    {row.TITLE}
+                                </Link>
+                            </TableCell>
                             <TableCell>{row.CREATER}</TableCell>
                             <TableCell>{row.ADDTIME}</TableCell>
                         </StyledTableRow>
