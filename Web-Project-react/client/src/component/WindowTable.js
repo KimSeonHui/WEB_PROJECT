@@ -27,6 +27,12 @@ function WindowTable({rows, setSearching}) {
         e.preventDefault();
         window.open(e.target.href, '_blank', 'width=1200, height=800');
     }
+
+    const scrollTo = (e) => {
+        e.preventDefault();
+        const frameWindow = document.getElementsByTagName('iframe')[0].contentWindow; 
+        frameWindow.scrollTo({top : 0, left : 0, behavior : 'smooth'});
+    }
    
     return <Box  
         component='div'
@@ -107,10 +113,11 @@ function WindowTable({rows, setSearching}) {
                 width : '30%',
                 color : '#fff',
                 fontWeight : 400,
-                ml : 28,
+                ml : 29,
                 mt : 2
 
             }}
+            onClick={scrollTo}
         >
             TOP <ArrowDropUpIcon />
         </Button>
