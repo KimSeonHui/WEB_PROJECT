@@ -11,6 +11,9 @@ const theme = createTheme({
   });
 
 function ReadPage({ curPost, page }) {
+    const insertDesc = (desc) => {
+        document.getElementById('desc').innerHTML = desc;
+    }
 
     return <Container maxWidth="xl">
         <Box sx={{width : "100%", p : '20px'}}>
@@ -21,7 +24,7 @@ function ReadPage({ curPost, page }) {
                 gutterBottom
                 sx={{color : '#6c757d'}}
             >
-                {curPost !== undefined ? curPost.NAME : ''}
+                {curPost.NAME !== undefined ? curPost.NAME : ''}
             </Typography>
             <Typography 
                 variant='h5' 
@@ -29,7 +32,7 @@ function ReadPage({ curPost, page }) {
                 gutterBottom
                 id='title'
             >
-               {curPost !== undefined ? curPost.TITLE : ''}
+               {curPost.TITLE !== undefined ? curPost.TITLE : ''}
             </Typography>
             <ThemeProvider theme={theme}>
                 <ButtonGroup variant="outlined" >
@@ -51,15 +54,15 @@ function ReadPage({ curPost, page }) {
         </Box>
         <Divider />
 
-        <Box sx={{my : 2, textAlign : 'center'}}>
-            {curPost !== undefined ? curPost.DESCRIPTION : ''}
+        <Box sx={{my : 2}} id='desc'>
+            {curPost.DESCRIPTION !== undefined ? insertDesc(curPost.DESCRIPTION) : ''}
         </Box>
         <Divider />
         <ThemeProvider theme={theme}>
             <ButtonGroup variant="outlined" 
                 sx={{mt : 1, display : 'flex', justifyContent : 'flex-end'}} >
                 <Button 
-                    href={curPost !== undefined && page !== undefined ? `/board/${curPost.BOARDID}/${page}` : ''}
+                    href={curPost.BOARDID !== undefined && page !== undefined ? `/board/${curPost.BOARDID}/${page}` : ''}
                     sx={{mb : 1}}
                 >
                     목록

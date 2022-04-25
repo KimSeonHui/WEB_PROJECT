@@ -11,9 +11,9 @@ import 'bootstrap/dist/css/bootstrap.css';
 //import '../summernoteStyle.scss'
 
 
-function SummernoteEditor() {
+function SummernoteEditor({setDesc}) {
   const onChange = (content) => {
-    console.log("onChange ", content);
+    setDesc(content);
   };
 
     return (

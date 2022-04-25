@@ -3,6 +3,7 @@ dotenv.config();
 const express = require('express');
 const router = express.Router();
 const mysql = require('mysql');
+const sanitizeHtml = require('sanitize-html');
 
 const conn = mysql.createConnection({
     host : 'localhost',
@@ -59,7 +60,7 @@ router.post("/", (req, res) => {
     const description = Desc;
     const title = Title;
     let bid = -1;
-    const searchContent = '';
+    const searchContent = sanitizeHtml(description);
 
     if(categorySmall && (categorySmall !== '')) {
         bid = categorySmall;
@@ -88,11 +89,11 @@ router.post("/", (req, res) => {
 					const postRow = await handleQuery(sql, values).catch(err => {
 						console.log(err);
 						conn.rollback();
-						alert(res, "정보를 불러오지 못했습니다.", "/");
+                        res.send('error');
 					});
 						
 					conn.commit();
-					res.redirect(`/read/${postRow[0].POSTID}`);
+                    res.send(postRow[0]);
 				})
         }
     })

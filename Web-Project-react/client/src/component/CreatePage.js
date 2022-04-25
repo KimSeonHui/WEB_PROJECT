@@ -21,6 +21,7 @@ function CreatePage({category}) {
     const [isLargeSelected, setLargeSelected] = useState(false);
     const [isMidSelected, setMidSelected] = useState(false);
     const [title, setTitle] = useState('');
+    const [desc, setDesc] = useState('');
 
     const handleLarge = (event) => {
         setLarge(event.target.value);
@@ -44,17 +45,26 @@ function CreatePage({category}) {
         setTitle(event.target.value);
     }
 
-    const handleSubmit = (event) => {
-        axios.post('/create', {
+    const handleSubmit =  async (event) => {
+        event.preventDefault();
+
+        const res = await axios.post('/create', {
             categoryLarge : large,
             categoryMedium : medium,
             categorySmall : small,
             Title : title, 
-            Desc : ''
+            Desc : desc
         });
 
-        event.preventDafault();
-        alert('등록!');
+        if(res.statusText === 'OK') {
+            console.log('res.data', res.data);
+            if(res.data === 'error') {
+                alert('정보를 불러오지 못 했습니다.');
+            }
+            else {
+                window.location.href = `./read/${res.data.POSTID}`;
+            }
+        }
     }
 
     return <Container maxWidth="xl">
@@ -122,7 +132,7 @@ function CreatePage({category}) {
         sx={{mb : 2}}
         onChange={onChangeTitle}
     />
-    <SummernoteEditor />
+    <SummernoteEditor setDesc={setDesc}/>
     </Box>
 </Container>
 }
