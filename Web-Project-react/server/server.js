@@ -15,6 +15,7 @@ app.use(cors({
 }));
 
 app.use(cookieParser());
+app.use(express.static('public'));
 app.use(bodyParser.json());
 app.enable('trust proxy');
 
