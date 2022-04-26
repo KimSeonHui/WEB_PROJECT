@@ -18,35 +18,35 @@ function SummernoteEditor({setDesc}) {
   };
 
   const onImageUpload = async (files) => {   
-    for(let i = 0; i < files.length; i++) {
-      const reader = new FileReader();
+    // for(let i = 0; i < files.length; i++) {
+    //   const reader = new FileReader();
       
-      reader.onloadend = () => {
-        ReactSummernote.insertImage(reader.result);
-      }
-      reader.readAsDataURL(files[i]);
-    }
+    //   reader.onloadend = () => {
+    //     ReactSummernote.insertImage(reader.result);
+    //   }
+    //   reader.readAsDataURL(files[i]);
+    // }
     
     //FormData() 사용해 서버에 저장하는 방법 - 서버에 저장한 url로 이미지 불러올 수가 x
-    // const data = new FormData();
-    // data.append('file', fileList[0]);
+    const data = new FormData();
+    data.append('file', files[0]);
 
-    // const res = await axios.post('/upload/images', data, {
-    //   headers: {
-    //     'Content-Type': 'multipart/form-data'
-    //   }
-    // });
+    const res = await axios.post('/upload/images', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
 
-    // if(res.statusText === 'OK') {
-    //   console.log('res.data', res.data.url);
+    if(res.statusText === 'OK') {
+      console.log('res.data', res.data.url);
 
-    //   if(res.data === 'error') {
-    //     alert('오류가 발생 했습니다.');
-    //   }
-    //   else {
-    //     ReactSummernote.insertImage(`../../server/public/${res.data.url}`);
-    //   }
-    // }
+      if(res.data === 'error') {
+        alert('오류가 발생 했습니다.');
+      }
+      else {
+        ReactSummernote.insertImage(`http://localhost:3002/public${res.data.url}`);
+      }
+    }
   }
 
     return (

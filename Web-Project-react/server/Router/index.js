@@ -14,6 +14,7 @@ const category = require('./setting/category/index');
 const post = require('./setting/post/index');
 const settingUser = require('./setting/user/index');
 const search = require('./board/search/index');
+const upload = require('./board/upload/index');
 
 router.use("/main", main);
 router.use("/board", board);
@@ -28,5 +29,6 @@ router.use("/setting/category", category);
 router.use("/setting/post", post);
 router.use("/setting/user", settingUser);
 router.use("/search", search);
+router.use("/upload", upload);
 
 module.exports = router;
