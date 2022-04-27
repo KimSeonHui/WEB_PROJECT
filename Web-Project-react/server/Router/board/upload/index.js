@@ -12,18 +12,20 @@ const img_upload = multer({dest: `public/image/${year}/${month}`});
 
 router.post('/images', img_upload.array('file'), async (req, res) => {
     console.log('upload images', req.files);
-    const response = {};
+    const response = {url : []};
 
     //확장자 처리
-    const ext = path.extname(req.files[0].originalname);
-	fs.rename(`public/image/${year}/${month}/${path.basename(req.files[0].path)}`,
-	`public/image/${year}/${month}/${path.basename(req.files[0].path)}${ext}`, err => {
-		if(err) throw err;
-	});
-
-	const imgname = `/image/${year}/${month}/${path.basename(req.files[0].path)}${ext}`;
-	response.url = imgname;
-	console.log(response.url)
+	for(let i = 0; i < req.files.length; i++) {
+		const ext = path.extname(req.files[i].originalname);
+		fs.rename(`public/image/${year}/${month}/${path.basename(req.files[i].path)}`,
+		`public/image/${year}/${month}/${path.basename(req.files[i].path)}${ext}`, err => {
+			if(err) throw err;
+		});
+	
+		const imgname = `/image/${year}/${month}/${path.basename(req.files[i].path)}${ext}`;
+		response.url.push(imgname);
+		console.log(response.url)
+	}
 	res.json(response);
 
 });

@@ -19,8 +19,12 @@ function SummernoteEditor({setDesc}) {
 
   const onImageUpload = async (files) => {   
     const data = new FormData();
-    data.append('file', files[0]);
 
+    for(let i = 0; i < files.length; i++) {
+      data.append('file', files[i]);
+    }
+
+ 
     const res = await axios.post('/upload/images', data, {
       headers: {
         'Content-Type': 'multipart/form-data'
@@ -34,7 +38,9 @@ function SummernoteEditor({setDesc}) {
         alert('오류가 발생 했습니다.');
       }
       else {
-        ReactSummernote.insertImage(`${res.data.url}`);
+        for(let url of res.data.url) {
+          ReactSummernote.insertImage(`${url}`);
+        }
       }
     }
   }
