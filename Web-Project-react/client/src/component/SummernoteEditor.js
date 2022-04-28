@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactSummernote from 'react-summernote';
 import 'react-summernote/dist/react-summernote.css'; // import styles
 import 'react-summernote/lang/summernote-ko-KR'; // you can import any other locale
 import axios from 'axios';
+import $ from 'jquery';
+import FileModal from './FileModal';
+import CreateNewFolderIcon from '@mui/icons-material/CreateNewFolder';
 
 // Import bootstrap(v3 or v4) dependencies
 import 'bootstrap/js/modal';
@@ -13,6 +16,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 
 function SummernoteEditor({setDesc}) {
+  const [open, setOpen] = useState(false);
+
   const onChange = (content) => {
     setDesc(content);
   };
@@ -45,6 +50,20 @@ function SummernoteEditor({setDesc}) {
     }
   }
 
+  const fileUploadButton = function () {
+    const ui = $.summernote.ui;
+
+    const button = ui.button({
+        contents: '파일',
+        tooltip: '파일 업로드',
+        container: 'body',
+        click: function() {
+          setOpen(true);                                                                      
+        }
+    }); 
+    return button.render();
+  };     
+
     return (
       <div className='use-bootstrap'>
         <ReactSummernote
@@ -59,13 +78,18 @@ function SummernoteEditor({setDesc}) {
               ['fontname', ['fontname']],
               ['para', ['ul', 'ol', 'paragraph']],
               ['table', ['table']],
-              ['insert', ['link', 'picture', 'video']],
+              ['insert', ['link', 'picture', 'video', 'file']],
               ['view', ['fullscreen', 'codeview']]
-            ]
+            ],
+            buttons: {
+              file: fileUploadButton
+            }
           }}
           onChange={onChange}
           onImageUpload={onImageUpload}
         />
+
+          <FileModal open={open}  setOpen={setOpen} />
       </div>  
       );
 
