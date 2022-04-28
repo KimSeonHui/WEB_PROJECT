@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Box, Modal, Typography, IconButton, Divider, InputBase, Button } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import ReactSummernote from 'react-summernote';
+import axios from 'axios';
 
 const style = {
     position: 'absolute',
@@ -14,6 +16,21 @@ const style = {
     p: 2,
   };
 
+const createNode = (url, name) => {
+  const node = document.createElement('a');
+  node.href = url;
+
+  node.style.textDecoration = 'none';
+  node.style.color = '#000';
+  node.style.display = 'block';
+  node.style.marginBottom = '8px';
+
+  node.setAttribute('download', name);
+  node.innerHTML = `<input type="text" style="border: 1 solid #d3d3d3; padding : 6px; cursor:point;" value="${name}" readonly />`
+
+  return node;
+}
+
 function FileModal({open, setOpen}) {
   const [disable, setDisable] = useState(true);
 
@@ -21,8 +38,35 @@ function FileModal({open, setOpen}) {
     setOpen(false);
   }
 
-  const attachFile = () => {
-    console.log('파일 첨부')
+  const attachFile = async () => {
+    console.log('파일 첨부');
+    const input = document.getElementById('fileAttach');
+    const data = new FormData();
+
+    for(let file of input.files) {
+      console.log('file', file);
+      data.append('file', file);
+    }
+
+    const res = await axios.post('/upload/files', data, {
+      headers : {
+        'Content-Type' : 'multipart/form-data'
+      }
+    });
+
+    if(res.statusText === 'OK') {
+      console.log('res.data', res.data);
+    }
+    if(res.data === 'error') {
+      alert('오류가 발생 했습니다.');
+    }
+    else {
+      for(let i = 0; i < res.data.url.length; i++) {
+        const node = createNode(res.data.url[i], res.data.name[i]);
+        console.log('node', node);
+        ReactSummernote.insertNode(node);
+      }
+    }
   }
 
   const handleDisable = (e) => {
