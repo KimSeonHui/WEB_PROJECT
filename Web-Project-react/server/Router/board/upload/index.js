@@ -9,6 +9,7 @@ const year = today.getFullYear();
 const month = today.getMonth() + 1;
 
 const img_upload = multer({dest: `public/image/${year}/${month}`});
+const file_upload = multer({dest: `public/files/${year}/${month}`});
 
 router.post('/images', img_upload.array('file'), async (req, res) => {
     console.log('upload images', req.files);
@@ -28,6 +29,25 @@ router.post('/images', img_upload.array('file'), async (req, res) => {
 	}
 	res.json(response);
 
+});
+
+router.post('/files', file_upload.array('file'), async(req, res) => {
+	console.log('upload files', req.files);
+	const response = {url : [], name : []};
+
+	for(let i = 0; i < req.files.length; i++) {
+		const ext = path.extname(req.files[i].originalname);
+		fs.rename(`public/files/${year}/${month}/${path.basename(req.files[i].path)}`,
+		`public/files/${year}/${month}/${path.basename(req.files[i].path)}${ext}`, err => {
+			if(err) throw err;
+		});
+		
+		const filename = `/files/${year}/${month}/${path.basename(req.files[i].path)}${ext}`;
+		response.url.push(filename);
+		response.name.push(req.files[i].originalname);
+	}
+	console.log(response);
+	res.json(response);
 });
 
 
