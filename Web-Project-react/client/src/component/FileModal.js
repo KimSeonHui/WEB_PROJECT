@@ -17,16 +17,16 @@ const style = {
   };
 
 const createNode = (url, name) => {
-  const node = document.createElement('a');
-  node.href = url;
+  const node = document.createElement('div');
 
-  node.style.textDecoration = 'none';
-  node.style.color = '#000';
-  node.style.display = 'block';
-  node.style.marginBottom = '8px';
-
-  node.setAttribute('download', name);
-  node.innerHTML = `<input type="text" style="border: 1 solid #d3d3d3; padding : 6px; cursor:point;" value="${name}" readonly />`
+  node.innerHTML = `<a href="${url}" class="uploaded"
+    style="color:#6c757d; text-decoration:none; display:inline-block; margin-bottom:8px;  border: 1px solid #d3d3d3; border-radius:2px; cursor:pointer;" 
+    download="${name}"
+    >
+    <input type="text" 
+      style="padding : 6px; border:0px;" value="${name}" readonly />
+  </a>
+`
 
   return node;
 }
@@ -61,6 +61,8 @@ function FileModal({open, setOpen}) {
       alert('오류가 발생 했습니다.');
     }
     else {
+      setOpen(false);
+
       for(let i = 0; i < res.data.url.length; i++) {
         const node = createNode(res.data.url[i], res.data.name[i]);
         console.log('node', node);
@@ -108,12 +110,13 @@ function FileModal({open, setOpen}) {
 
               <Box component='div' id='modalBody' sx={{my : 1.5, width : '100%'}}>
                 <label htmlFor='fileAttach' style={{marginBottom : '4px', fontWeigth : 500}}>파일 선택</label>
-                <InputBase 
+                <input 
                   id='fileAttach'
                   type='file'
                   name='file'
                   onChange={handleDisable}
-                  sx={{width : '100%'}} 
+                  style={{width : '100%'}} 
+                  multiple
                 />
               </Box>
 
