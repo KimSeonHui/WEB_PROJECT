@@ -54,8 +54,10 @@ function ReadPage({ curPost, page }) {
         </Box>
         <Divider />
 
-        <Box sx={{my : 2}} id='desc'>
-            {curPost.DESCRIPTION !== undefined ? insertDesc(curPost.DESCRIPTION) : ''}
+        <Box component='div' sx={{my : 2}}>
+            <Box component='div' id='desc'>
+                {curPost.DESCRIPTION !== undefined ? insertDesc(curPost.DESCRIPTION) : ''}
+            </Box>
         </Box>
         <Divider />
         <ThemeProvider theme={theme}>

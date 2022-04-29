@@ -53,7 +53,6 @@ router.get("/", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-    console.log('req.body', req.body);
     const {categoryLarge, categoryMedium, categorySmall, Title, Desc} = req.body;
     const creater = req.session.passport !== undefined ? req.session.passport.name : '';
     const uid = req.session.passport !== undefined ? req.session.passport.user : '';
