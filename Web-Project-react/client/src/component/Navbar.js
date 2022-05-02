@@ -6,6 +6,7 @@ import SearchIcon from '@mui/icons-material/Search';
 
 
 function Navbar({session}) {
+    const [word, setWord] = useState('');
     const [logined, setLogined] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -48,7 +49,29 @@ function Navbar({session}) {
         if(session.name !== undefined) {
             setLogined(true);
         }
-    }, [session])
+    }, [session]);
+
+    const onChange = (e) => {
+        console.log('e.target.value', e.target.value);
+        setWord(e.target.value);
+    }
+
+    const search = async () => {
+        const res = await axios.get('/search', 
+            {params : {key : word}}
+        );
+
+        if(res.statusText === 'OK') {
+            console.log('res.data', res.data);
+
+            if(res.data === 'error') {
+                alert('오류가 발생했습니다.');
+            }
+            else {
+                console.log('검색 완료');
+            }
+        }
+    }
     
     return <Grid container spacing={2} sx={{bgcolor : '#212529', py : '10px'}}>
     <Grid item sx={{width:'250px'}}>
@@ -62,16 +85,16 @@ function Navbar({session}) {
     </Grid>
     <Grid item xs sx={{pl: 0}}>
         <Paper 
-            component="form"
-            action='/search'
+            component="div"
             sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: "100%" }}
         >
             <InputBase
                 sx={{ ml: 2, flex: 1 }}
                 placeholder="Search"
-                inputProps={{ 'aria-label': 'Search' }}
+                value={word}
+                onChange={onChange}
             />
-            <IconButton variant='outlined' type="submit" aria-label="search">
+            <IconButton variant='outlined' type="button" onClick={search}>
                 <SearchIcon />
             </IconButton>
         </Paper>
