@@ -10,6 +10,8 @@ function Navbar({session}) {
     const [logined, setLogined] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
+    const ul = document.getElementById('searchResult');
+
     const handleClick = (e) => {
         setAnchorEl(e.target);
     }
@@ -67,11 +69,8 @@ function Navbar({session}) {
                 alert('오류가 발생했습니다.');
             }
             else {
-                const ul = document.getElementById('searchResult');
-                ul.style.width = `${ul.previousElementSibling.offsetWidth}px`;
-
+                
                 for(let data of res.data) {
-                    console.log('data', data);
                     const li = document.createElement('li');
                     li.style.display = 'block';
                     li.style.width = '100%';
@@ -80,7 +79,22 @@ function Navbar({session}) {
 
                     ul.appendChild(li);
                 }
+
+                toggleUI();
             }
+        }
+    }
+
+    const toggleUI = () => {
+        if(word === '') {
+            ul.style.display = 'none';
+            while(ul.hasChildNodes()) {
+                ul.removeChild(ul.firstElementChild)
+            }
+        }
+        else {
+            ul.style.display = 'block';
+            ul.style.width = `${ul.previousElementSibling.offsetWidth}px`;
         }
     }
 
@@ -129,6 +143,7 @@ function Navbar({session}) {
         </Paper>
         <ul id="searchResult"
             style={{
+                display : 'none',
                 position : 'absolute',
                 zIndex : 1000,
                 listStyle : 'none',
