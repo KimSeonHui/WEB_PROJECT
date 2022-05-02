@@ -52,8 +52,36 @@ function Navbar({session}) {
     }, [session]);
 
     const onChange = (e) => {
-        console.log('e.target.value', e.target.value);
         setWord(e.target.value);
+    }
+
+    const autoComplete = async (e) => {
+        const res = await axios.get('/search/auto', {
+            params : {key : word}}
+        );
+
+        if(res.statusText === 'OK') {
+            console.log('auto data', res.data);
+
+            if(res.data === 'error') {
+                alert('오류가 발생했습니다.');
+            }
+            else {
+                const ul = document.getElementById('searchResult');
+                ul.style.width = `${ul.previousElementSibling.offsetWidth}px`;
+
+                for(let data of res.data) {
+                    console.log('data', data);
+                    const li = document.createElement('li');
+                    li.style.display = 'block';
+                    li.style.width = '100%';
+                    li.style.padding = '0.5rem 1rem';
+                    li.innerText = data.TITLE;
+
+                    ul.appendChild(li);
+                }
+            }
+        }
     }
 
     const search = async () => {
@@ -93,11 +121,26 @@ function Navbar({session}) {
                 placeholder="Search"
                 value={word}
                 onChange={onChange}
+                onKeyUp={autoComplete}
             />
             <IconButton variant='outlined' type="button" onClick={search}>
                 <SearchIcon />
             </IconButton>
         </Paper>
+        <ul id="searchResult"
+            style={{
+                position : 'absolute',
+                zIndex : 1000,
+                listStyle : 'none',
+                backgroundColor : '#fff',
+                border : '0.125rem solid rgba(0, 0, 0, 0.15)',
+                borderRadius : '0.5rem',
+                color : '#000',
+                fontSize : '1.2rem',
+                padding : '0.5rem 1rem'
+            }}    
+        >
+        </ul>
     </Grid>
     <Grid item xs={1.1}>
         <Button 

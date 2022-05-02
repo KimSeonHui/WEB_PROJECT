@@ -36,6 +36,20 @@ router.get('/', async (req, res) => {
     res.send(rows);
 });
 
+router.get('/auto', async (req, res) => {
+    const key = req.query.key;
+
+    let sql = `SELECT BOARDID, POSTID, TITLE, CREATER, DATE_FORMAT(ADDTIME, '%Y-%m-%d-%H : %i') 
+    as ADDTIME FROM BOARD LEFT JOIN CATEGORY ON BOARD.BOARDID = CATEGORY.CID WHERE BOARD.TITLE LIKE '%${key}%' LIMIT 10;`
+
+    const rows = await handleQuery(sql).catch((err) => {
+        console.log(err);
+        res.send('error');
+    });
+
+    res.send(rows);
+});
+
 router.get('/multi', async (req, res) => {
     const key = req.query.key;
 
