@@ -13,6 +13,9 @@ function Navbar({session}) {
     const ul = document.getElementById('searchResult');
     const html = document.getElementsByTagName('html')[0];
 
+    const [autoData, setAuto] = useState([]);
+    const [targetNum , setNum] = useState(-1);
+
     const handleClick = (e) => {
         setAnchorEl(e.target);
     }
@@ -58,47 +61,48 @@ function Navbar({session}) {
         setWord(e.target.value);
     }
 
+    
     const autoComplete = async (e) => {
-        const res = await axios.get('/search/auto', {
-            params : {key : word}}
-        );
+        console.log('e.key', e.key);
 
-        if(res.statusText === 'OK') {
-            console.log('auto data', res.data);
-
-            if(res.data === 'error') {
-                alert('오류가 발생했습니다.');
+        if(e.key === 'ArrowUp') {
+            if(targetNum === 0) {
+                setNum(ul.children.length - 1);
             }
             else {
-                if(res.data.length > 0) {
-                    createResult(res.data);
-                }
-                else {
-                    createResult([{TITLE : word}])
-                }
-                toggleUI();
-                addClick();
+                setNum((num) => num - 1);
             }
         }
-    }
-
-    const createResult = (data) => {
-        while(ul.hasChildNodes()) {
-            ul.removeChild(ul.firstElementChild);
+        else if(e.key === 'ArrowDown') {
+            if(targetNum === ul.children.length - 1) {
+                setNum(0);
+            }
+            else {
+                setNum((num) => num + 1);
+            }
         }
-        appendResult(data);
-    }
-
-    const appendResult = (data) => {
-        for(let val of data) {
-            const li = document.createElement('li');
-            li.classList.add('autoComplete');
-            li.style.display = 'block';
-            li.style.width = '100%';
-            li.style.padding = '0.5rem 1rem';
-            li.innerText = val.TITLE;
-
-            ul.appendChild(li);
+        else {
+            const res = await axios.get('/search/auto', {
+                params : {key : word}}
+            );
+    
+            if(res.statusText === 'OK') {
+                console.log('auto data', res.data);
+    
+                if(res.data === 'error') {
+                    alert('오류가 발생했습니다.');
+                }
+                else {
+                    if(res.data.length > 0) {
+                        setAuto(res.data);
+                    }
+                    else {
+                        setAuto([{TITLE : word, POSTID : 999999}]);
+                    }
+                    toggleUI();
+                    //addClick();
+                }
+            }
         }
     }
 
@@ -114,9 +118,8 @@ function Navbar({session}) {
     const toggleUI = () => {
         if(word === '') {
             ul.style.display = 'none';
-            while(ul.hasChildNodes()) {
-                ul.removeChild(ul.firstElementChild)
-            }
+            setNum(-1);
+            setAuto([]);
         }
         else {
             ul.style.display = 'block';
@@ -144,10 +147,8 @@ function Navbar({session}) {
     html.addEventListener('click', (e) => {
         if(!e.target.classList.contains('autoComplete')) {
             ul.style.display = 'none';
-            
-            while(ul.hasChildNodes()) {
-                ul.removeChild(ul.firstElementChild);
-            }
+            setNum(-1);
+            setAuto([]);
         }
     })
     
@@ -193,6 +194,25 @@ function Navbar({session}) {
                 padding : '0.5rem 1rem'
             }}    
         >
+            {autoData.length < 0 ? null : autoData.map((data, index) => {
+                const styles = {
+                    display : 'block',
+                    width : '100%',
+                    padding : '0.5rem 1rem'
+                }
+                
+                return <li key={data.POSTID} className="autoComplete"
+                    style={targetNum === index ?{
+                       ...styles,
+                       backgroundColor : '#e9ecef'
+                    } : {
+                        ...styles,
+                        backgroundColor : '#fff'
+                    }}
+                >
+                    {data.TITLE}
+                </li>
+            })}
         </ul>
     </Grid>
     <Grid item xs={1.1}>
