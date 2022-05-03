@@ -11,6 +11,7 @@ function Navbar({session}) {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
     const ul = document.getElementById('searchResult');
+    const html = document.getElementsByTagName('html')[0];
 
     const handleClick = (e) => {
         setAnchorEl(e.target);
@@ -77,8 +78,6 @@ function Navbar({session}) {
                 }
                 toggleUI();
             }
-            
-            
         }
     }
 
@@ -92,6 +91,7 @@ function Navbar({session}) {
     const appendResult = (data) => {
         for(let val of data) {
             const li = document.createElement('li');
+            li.classList.add('autoComplete');
             li.style.display = 'block';
             li.style.width = '100%';
             li.style.padding = '0.5rem 1rem';
@@ -130,6 +130,16 @@ function Navbar({session}) {
             }
         }
     }
+
+    html.addEventListener('click', (e) => {
+        if(!e.target.classList.contains('autoComplete')) {
+            ul.style.display = 'none';
+            
+            while(ul.hasChildNodes()) {
+                ul.removeChild(ul.firstElementChild);
+            }
+        }
+    })
     
     return <Grid container spacing={2} sx={{bgcolor : '#212529', py : '10px'}}>
     <Grid item sx={{width:'250px'}}>
@@ -147,9 +157,11 @@ function Navbar({session}) {
             sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: "100%" }}
         >
             <InputBase
+                className="autoComplete"
                 sx={{ ml: 2, flex: 1 }}
                 placeholder="Search"
                 value={word}
+                inputProps={{className : 'autoComplete'}}
                 onChange={onChange}
                 onKeyUp={autoComplete}
             />
@@ -157,7 +169,7 @@ function Navbar({session}) {
                 <SearchIcon />
             </IconButton>
         </Paper>
-        <ul id="searchResult"
+        <ul id="searchResult" className="autoComplete"
             style={{
                 display : 'none',
                 position : 'absolute',
