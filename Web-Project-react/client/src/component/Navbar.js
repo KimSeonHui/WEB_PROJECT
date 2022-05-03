@@ -69,19 +69,35 @@ function Navbar({session}) {
                 alert('오류가 발생했습니다.');
             }
             else {
-                
-                for(let data of res.data) {
-                    const li = document.createElement('li');
-                    li.style.display = 'block';
-                    li.style.width = '100%';
-                    li.style.padding = '0.5rem 1rem';
-                    li.innerText = data.TITLE;
-
-                    ul.appendChild(li);
+                if(res.data.length > 0) {
+                    createResult(res.data);
                 }
-
+                else {
+                    createResult([{TITLE : word}])
+                }
                 toggleUI();
             }
+            
+            
+        }
+    }
+
+    const createResult = (data) => {
+        while(ul.hasChildNodes()) {
+            ul.removeChild(ul.firstElementChild);
+        }
+        appendResult(data);
+    }
+
+    const appendResult = (data) => {
+        for(let val of data) {
+            const li = document.createElement('li');
+            li.style.display = 'block';
+            li.style.width = '100%';
+            li.style.padding = '0.5rem 1rem';
+            li.innerText = val.TITLE;
+
+            ul.appendChild(li);
         }
     }
 
