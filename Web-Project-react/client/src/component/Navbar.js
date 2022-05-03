@@ -77,6 +77,7 @@ function Navbar({session}) {
                     createResult([{TITLE : word}])
                 }
                 toggleUI();
+                addClick();
             }
         }
     }
@@ -101,6 +102,15 @@ function Navbar({session}) {
         }
     }
 
+    const addClick = () => {
+        for(let li of ul.children) {
+            li.addEventListener('click', (e) => {
+                setWord(e.target.innerText);
+                document.getElementById('submitBtn').click();
+            });
+        }
+    }
+
     const toggleUI = () => {
         if(word === '') {
             ul.style.display = 'none';
@@ -120,7 +130,7 @@ function Navbar({session}) {
         );
 
         if(res.statusText === 'OK') {
-            console.log('res.data', res.data);
+            console.log('search', res.data);
 
             if(res.data === 'error') {
                 alert('오류가 발생했습니다.');
@@ -165,7 +175,7 @@ function Navbar({session}) {
                 onChange={onChange}
                 onKeyUp={autoComplete}
             />
-            <IconButton variant='outlined' type="button" onClick={search}>
+            <IconButton id='submitBtn' variant='outlined' type="button" onClick={search}>
                 <SearchIcon />
             </IconButton>
         </Paper>
