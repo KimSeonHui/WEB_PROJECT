@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect ,useState} from "react";
+import { useEffect ,useState, useRef} from "react";
 import { Grid, Button, InputBase, Paper, IconButton, Typography, Menu, MenuItem, Link } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -12,9 +12,11 @@ function Navbar({session}) {
     const open = Boolean(anchorEl);
     const ul = document.getElementById('searchResult');
     const html = document.getElementsByTagName('html')[0];
+    const submitBtn = useRef(null);
 
     const [autoData, setAuto] = useState([]);
     const [targetNum , setNum] = useState(-1);
+    const [isClicked , setClick] = useState(false);
 
     const handleClick = (e) => {
         setAnchorEl(e.target);
@@ -102,20 +104,23 @@ function Navbar({session}) {
                         setAuto([{TITLE : word, POSTID : 999999}]);
                     }
                     toggleUI();
-                    //addClick();
                 }
             }
         }
     }
 
-    const addClick = () => {
-        for(let li of ul.children) {
-            li.addEventListener('click', (e) => {
-                setWord(e.target.innerText);
-                document.getElementById('submitBtn').click();
-            });
-        }
+    const addClick = (e) => {
+        setWord(e.target.innerText);
+        setClick(true);     
     }
+
+    useEffect(() => {
+        if(isClicked) {
+            submitBtn.current.click();
+        }
+
+        setClick(false);
+    }, [isClicked]);
 
     const toggleUI = () => {
         if(word === '') {
@@ -178,7 +183,7 @@ function Navbar({session}) {
                 onChange={onChange}
                 onKeyUp={autoComplete}
             />
-            <IconButton id='submitBtn' variant='outlined' type="button" onClick={search}>
+            <IconButton variant='outlined' type="button" onClick={search} ref={submitBtn}>
                 <SearchIcon />
             </IconButton>
         </Paper>
@@ -215,6 +220,7 @@ function Navbar({session}) {
                         ...styles,
                         backgroundColor : '#fff'
                     }}
+                    onClick={addClick}
                 >
                     {data.TITLE}
                 </li>
