@@ -82,6 +82,8 @@ function Navbar({session}) {
             }
         }
         else {
+            setNum(-1);
+
             const res = await axios.get('/search/auto', {
                 params : {key : word}}
             );
@@ -200,7 +202,11 @@ function Navbar({session}) {
                     width : '100%',
                     padding : '0.5rem 1rem'
                 }
-                
+
+                if(targetNum === index && word !== data.TITLE) {
+                    setWord(data.TITLE);
+                }
+
                 return <li key={data.POSTID} className="autoComplete"
                     style={targetNum === index ?{
                        ...styles,
