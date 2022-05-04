@@ -4,13 +4,12 @@ import { Grid, Button, InputBase, Paper, IconButton, Typography, Menu, MenuItem,
 import SearchIcon from '@mui/icons-material/Search';
 
 
-
 function Navbar({session}) {
     const [word, setWord] = useState('');
     const [logined, setLogined] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
-    const ul = document.getElementById('searchResult');
+    const ul = useRef(null);
     const html = document.getElementsByTagName('html')[0];
     const submitBtn = useRef(null);
 
@@ -69,14 +68,14 @@ function Navbar({session}) {
 
         if(e.key === 'ArrowUp') {
             if(targetNum === 0) {
-                setNum(ul.children.length - 1);
+                setNum(ul.current.children.length - 1);
             }
             else {
                 setNum((num) => num - 1);
             }
         }
         else if(e.key === 'ArrowDown') {
-            if(targetNum === ul.children.length - 1) {
+            if(targetNum === ul.current.children.length - 1) {
                 setNum(0);
             }
             else {
@@ -124,13 +123,13 @@ function Navbar({session}) {
 
     const toggleUI = () => {
         if(word === '') {
-            ul.style.display = 'none';
+            ul.current.style.display = 'none';
             setNum(-1);
             setAuto([]);
         }
         else {
-            ul.style.display = 'block';
-            ul.style.width = `${ul.previousElementSibling.offsetWidth}px`;
+            ul.current.style.display = 'block';
+            ul.current.style.width = `${ul.current.previousElementSibling.offsetWidth}px`;
         }
     }
 
@@ -153,7 +152,7 @@ function Navbar({session}) {
 
     html.addEventListener('click', (e) => {
         if(!e.target.classList.contains('autoComplete')) {
-            ul.style.display = 'none';
+            ul.current.style.display = 'none';
             setNum(-1);
             setAuto([]);
         }
@@ -187,7 +186,7 @@ function Navbar({session}) {
                 <SearchIcon />
             </IconButton>
         </Paper>
-        <ul id="searchResult" className="autoComplete"
+        <ul  className="autoComplete" ref={ul}
             style={{
                 display : 'none',
                 position : 'absolute',
