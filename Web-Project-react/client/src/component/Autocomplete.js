@@ -20,7 +20,7 @@ const liStyle = {
 }
 
 
-function Autocomplete({isMulti, setKeyword, multiBtn}) {
+function Autocomplete({isMulti, setKeyword, multiBtn, setResult}) {
     const [word, setWord] = useState('');
     const [targetNum , setNum] = useState(-1);
     const [autoData, setAuto] = useState([]);
@@ -127,6 +127,12 @@ function Autocomplete({isMulti, setKeyword, multiBtn}) {
             }
             else {
                 console.log('검색 완료');
+                if(res.data.length === 0) {
+                    alert('검색 결과가 없습니다.');
+                }
+                else {
+                    setResult(res.data);
+                }
             }
         }
     }

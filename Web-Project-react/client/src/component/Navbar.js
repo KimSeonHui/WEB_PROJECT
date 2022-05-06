@@ -4,7 +4,7 @@ import { Grid, Button, Menu, MenuItem, Link } from '@mui/material';
 import Autocomplete from "./Autocomplete";
 
 
-function Navbar({session}) {
+function Navbar({session , setResult}) {
     const [logined, setLogined] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
@@ -63,7 +63,7 @@ function Navbar({session}) {
         </Link>
     </Grid>
     <Grid item xs sx={{pl: 0}}>
-        <Autocomplete isMulti={false}/>
+        <Autocomplete isMulti={false} setResult={setResult}/>
     </Grid>
     <Grid item xs={1.1}>
         <Button 
