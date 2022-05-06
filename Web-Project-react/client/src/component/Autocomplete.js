@@ -151,7 +151,6 @@ function Autocomplete({isMulti, setKeyword, multiBtn, setResult}, ref) {
             }}
         >
             <InputBase
-                className="autoComplete"
                 sx={{ml: 2, flex: 1}}
                 placeholder="Search"
                 value={word}
@@ -166,7 +165,7 @@ function Autocomplete({isMulti, setKeyword, multiBtn, setResult}, ref) {
             }
         
         </Paper>
-        <ul  className="autoComplete" ref={ul}
+        <ul ref={ul}
             style={!isMulti ? {
                 ...ulStyles,
                 fontSize : '1.2rem',
@@ -188,7 +187,7 @@ function Autocomplete({isMulti, setKeyword, multiBtn, setResult}, ref) {
                     setWord(data.TITLE);
                 }
 
-                return <li key={data.POSTID} className="autoComplete"
+                return <li key={data.POSTID}
                     style={targetNum === index ? {
                        ...liStyle,
                        backgroundColor : '#e9ecef'
