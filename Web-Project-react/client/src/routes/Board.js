@@ -4,6 +4,7 @@ import Grid from '@mui/material/Grid';
 import Navbar from "../component/Navbar";
 import Sidebar from "../component/Sidebar";
 import BoardPage from "../component/BoardPage";
+import SearchTable from "../component/SearchTable";
 import { useParams } from "react-router-dom";
 
 
@@ -12,6 +13,7 @@ function Board() {
     const [categories, setCategory] = useState({});
     const [posts, setPosts] = useState({});
     const [session, setSession] = useState({});
+    const [results, setResult] = useState([]);
     const { cid, page } = useParams();
 
     const callApi = async () => {
@@ -30,13 +32,15 @@ function Board() {
 
 
     return <div>
-        <Navbar session={session}/>
+        <Navbar session={session} setResult={setResult}/>
         <Grid container>
             <Grid item>
                 <Sidebar category={categories}  sx={{width: '250px', height: '100vh'}}/>
             </Grid>
             <Grid item xs>
+            {results.length > 0 ? <SearchTable results={results}/> : 
                 <BoardPage category={categories} post={posts} cid={cid} page={page}/>
+            } 
             </Grid>
     </Grid>    
 </div>

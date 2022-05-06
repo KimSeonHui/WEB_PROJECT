@@ -5,6 +5,7 @@ import Navbar from "../component/Navbar";
 import Sidebar from "../component/Sidebar";
 import ReadPage from "../component/ReadPage";
 import { useParams } from "react-router-dom";
+import SearchTable from "../component/SearchTable";
 
 
 
@@ -13,6 +14,7 @@ function Read() {
     const [session, setSession] = useState({});
     const [post, setPost] = useState({});
     const [page, setPage] = useState(0);
+    const [results, setResult] = useState([]);
     const { postId } = useParams();
 
     const callApi = async () => {
@@ -31,13 +33,13 @@ function Read() {
     }, []);
 
     return <div>
-        <Navbar session={session}/>
+        <Navbar session={session} setResult={setResult}/>
         <Grid container>
             <Grid item>
                 <Sidebar category={categories}  sx={{width: '250px', height: '100vh'}}/>
             </Grid>
             <Grid item xs>
-                <ReadPage curPost={post} page={page}/>
+                {results.length > 0 ? <SearchTable results={results}/> : <ReadPage curPost={post} page={page}/>} 
             </Grid>
     </Grid>    
 </div>
