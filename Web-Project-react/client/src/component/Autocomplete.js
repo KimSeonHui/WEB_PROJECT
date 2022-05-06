@@ -3,7 +3,24 @@ import { useEffect ,useState, useRef} from "react";
 import {  InputBase, Paper, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
-function Autocomplete() {
+const ulStyles = {
+    display : 'none',
+    position : 'absolute',
+    zIndex : 1000,
+    listStyle : 'none',
+    backgroundColor : '#fff',
+    border : '1px solid rgba(0, 0, 0, 0.15)',
+    borderRadius : '0.5rem',
+    color : '#000',
+}
+
+const liStyle = {
+    display : 'block',
+    padding : '0.5rem 1rem'
+}
+
+
+function Autocomplete({isMulti}) {
     const [word, setWord] = useState('');
     const [targetNum , setNum] = useState(-1);
     const [autoData, setAuto] = useState([]);
@@ -107,40 +124,48 @@ function Autocomplete() {
     return <div>
         <Paper 
             component="div"
-            sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: "100%" }}
+            sx={{ 
+                p: '2px 4px', 
+                display: 'flex',
+                alignItems: 'center', 
+                border : 1, 
+                borderRadius: '6px', 
+                borderColor : '#d3d3d3',
+                boxShadow : 0
+            }}
         >
             <InputBase
                 className="autoComplete"
-                sx={{ ml: 2, flex: 1 }}
+                sx={{ml: 2, flex: 1}}
                 placeholder="Search"
                 value={word}
                 inputProps={{className : 'autoComplete'}}
                 onChange={onChange}
                 onKeyUp={autoComplete}
             />
-            <IconButton variant='outlined' type="button" onClick={search} ref={submitBtn}>
-                <SearchIcon />
-            </IconButton>
+            {isMulti ? null : 
+                <IconButton variant='outlined' type="button" onClick={search} ref={submitBtn}>
+                    <SearchIcon />
+                </IconButton>
+            }
+        
         </Paper>
         <ul  className="autoComplete" ref={ul}
-            style={{
-                display : 'none',
-                position : 'absolute',
-                zIndex : 1000,
-                listStyle : 'none',
-                backgroundColor : '#fff',
-                border : '0.125rem solid rgba(0, 0, 0, 0.15)',
-                borderRadius : '0.5rem',
-                color : '#000',
+            style={!isMulti ? {
+                ...ulStyles,
                 fontSize : '1.2rem',
                 padding : '0.5rem 1rem'
+            } : {
+                ...ulStyles,
+                fontSize : '0.7rem',
+                padding : '0.25rem 0rem',
+                marginTop : '0px'
             }}    
         >
             {autoData.length < 0 ? null : autoData.map((data, index) => {
-                const styles = {
-                    display : 'block',
-                    width : '100%',
-                    padding : '0.5rem 1rem'
+
+                if(isMulti) {
+                    liStyle.padding = '0.25rem 1rem';
                 }
 
                 if(targetNum === index && word !== data.TITLE) {
@@ -148,11 +173,11 @@ function Autocomplete() {
                 }
 
                 return <li key={data.POSTID} className="autoComplete"
-                    style={targetNum === index ?{
-                       ...styles,
+                    style={targetNum === index ? {
+                       ...liStyle,
                        backgroundColor : '#e9ecef'
                     } : {
-                        ...styles,
+                        ...liStyle,
                         backgroundColor : '#fff'
                     }}
                     onClick={addClick}

@@ -1,7 +1,7 @@
 import { Typography, InputBase, Button, Box } from '@mui/material';
 import React, { useState } from 'react';
 import axios from 'axios';
-import { padding } from '@mui/system';
+import Autocomplete from './Autocomplete';
 
 function WindowSearch({setSearching, setRows}) {
     const [word, setWord] = useState('');
@@ -47,8 +47,8 @@ function WindowSearch({setSearching, setRows}) {
             >
                 검색
             </Typography>
-            
-            <InputBase 
+                <Autocomplete isMulti={true}/>
+            {/* <InputBase 
                 name="key"
                 placeholder='Search'
                 value={word}
@@ -63,14 +63,14 @@ function WindowSearch({setSearching, setRows}) {
                     mt : 1.5,
                     mb : 2
                 }}
-            />
+            /> */}
             <Button 
                 variant='contained'
                 type='submit'
                 onClick={search}
                 sx={{
                     width : '100%',
-                    mb : 2,
+                    my : 2,
                     backgroundColor : '#003565'
                 }}
             >

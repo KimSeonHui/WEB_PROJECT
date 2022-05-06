@@ -63,7 +63,7 @@ function Navbar({session}) {
         </Link>
     </Grid>
     <Grid item xs sx={{pl: 0}}>
-        <Autocomplete />
+        <Autocomplete isMulti={false}/>
     </Grid>
     <Grid item xs={1.1}>
         <Button 
