@@ -20,7 +20,7 @@ const liStyle = {
 }
 
 
-function Autocomplete({isMulti}) {
+function Autocomplete({isMulti, setKeyword, multiBtn}) {
     const [word, setWord] = useState('');
     const [targetNum , setNum] = useState(-1);
     const [autoData, setAuto] = useState([]);
@@ -30,6 +30,9 @@ function Autocomplete({isMulti}) {
     const submitBtn = useRef(null);
 
     const onChange = (e) => {
+        if(isMulti) {
+            setKeyword(e.target.value);
+        }
         setWord(e.target.value);
     }
 
@@ -91,13 +94,21 @@ function Autocomplete({isMulti}) {
     }
 
     const addClick = (e) => {
-        setWord(e.target.innerText);
+        if(!isMulti) {
+            setWord(e.target.innerText);
+        }
+        else {
+            setKeyword(e.target.innerText);
+        }        
         setClick(true);     
     }
 
     useEffect(() => {
-        if(isClicked) {
+        if(isClicked && !isMulti) {
             submitBtn.current.click();
+        }
+        else if(isClicked && isMulti) {
+            multiBtn.current.click();
         }
 
         setClick(false);

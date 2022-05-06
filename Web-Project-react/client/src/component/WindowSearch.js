@@ -1,18 +1,16 @@
-import { Typography, InputBase, Button, Box } from '@mui/material';
-import React, { useState } from 'react';
+import { Typography, Button, Box } from '@mui/material';
+import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import Autocomplete from './Autocomplete';
 
 function WindowSearch({setSearching, setRows}) {
-    const [word, setWord] = useState('');
-    const onChange = (e) => {
-        setWord(e.target.value)
-    }
+    const [keyword, setKeyword] = useState('');
+    const multiBtn = useRef(null);
 
     const search = async () => {
         console.log('submit')
         const res = await axios.get('/search/multi', 
-            {params : {key : word}}
+            {params : {key : keyword}}
         );
 
         if(res.statusText === 'OK') {
@@ -47,24 +45,9 @@ function WindowSearch({setSearching, setRows}) {
             >
                 검색
             </Typography>
-                <Autocomplete isMulti={true}/>
-            {/* <InputBase 
-                name="key"
-                placeholder='Search'
-                value={word}
-                onChange={onChange}
-                sx={{
-                    width : '100%',
-                    border : 1, 
-                    borderRadius: '6px', 
-                    borderColor : '#d3d3d3',
-                    py : 1,
-                    pl : 1,
-                    mt : 1.5,
-                    mb : 2
-                }}
-            /> */}
+                <Autocomplete isMulti={true} setKeyword={setKeyword} multiBtn={multiBtn}/>
             <Button 
+                ref={multiBtn}
                 variant='contained'
                 type='submit'
                 onClick={search}
