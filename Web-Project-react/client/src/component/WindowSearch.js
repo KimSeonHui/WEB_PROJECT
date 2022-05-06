@@ -1,11 +1,12 @@
 import { Typography, Button, Box } from '@mui/material';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import Autocomplete from './Autocomplete';
 
 function WindowSearch({setSearching, setRows}) {
     const [keyword, setKeyword] = useState('');
     const multiBtn = useRef(null);
+    const autoRef = useRef(null);
 
     const search = async () => {
         console.log('submit')
@@ -26,6 +27,22 @@ function WindowSearch({setSearching, setRows}) {
         }
     }
 
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if(autoRef.current && !autoRef.current.contains(e.target)) {
+                autoRef.current.children[1].style.display = 'none';
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside);
+        window.frames[0].document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            window.frames[0].document.removeEventListener('mousedown', handleClickOutside);
+        }
+
+    },[autoRef]);
+
     return  <Box
             component='div' 
             sx={{
@@ -45,7 +62,12 @@ function WindowSearch({setSearching, setRows}) {
             >
                 검색
             </Typography>
-                <Autocomplete isMulti={true} setKeyword={setKeyword} multiBtn={multiBtn}/>
+                <Autocomplete 
+                    isMulti={true} 
+                    setKeyword={setKeyword} 
+                    multiBtn={multiBtn} 
+                    ref={autoRef}
+                />
             <Button 
                 ref={multiBtn}
                 variant='contained'

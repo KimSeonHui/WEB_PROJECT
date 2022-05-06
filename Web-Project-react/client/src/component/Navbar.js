@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect ,useState} from "react";
+import { useEffect ,useState, useRef} from "react";
 import { Grid, Button, Menu, MenuItem, Link } from '@mui/material';
 import Autocomplete from "./Autocomplete";
 
@@ -8,6 +8,7 @@ function Navbar({session , setResult}) {
     const [logined, setLogined] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
+    const autoRef = useRef(null);
 
 
     const handleClick = (e) => {
@@ -51,6 +52,21 @@ function Navbar({session , setResult}) {
         }
     }, [session]);
 
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if(autoRef.current && !autoRef.current.contains(e.target)) {
+                autoRef.current.children[1].style.display = 'none';
+            }
+        }
+        
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        }
+
+    },[autoRef]);
+
     
     return <Grid container spacing={2} sx={{bgcolor : '#212529', py : '10px'}}>
     <Grid item sx={{width:'250px'}}>
@@ -63,7 +79,7 @@ function Navbar({session , setResult}) {
         </Link>
     </Grid>
     <Grid item xs sx={{pl: 0}}>
-        <Autocomplete isMulti={false} setResult={setResult}/>
+        <Autocomplete isMulti={false} setResult={setResult} ref={autoRef}/>
     </Grid>
     <Grid item xs={1.1}>
         <Button 

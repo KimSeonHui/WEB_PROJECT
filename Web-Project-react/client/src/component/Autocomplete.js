@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect ,useState, useRef} from "react";
+import { useEffect ,useState, useRef, forwardRef} from "react";
 import {  InputBase, Paper, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -20,7 +20,7 @@ const liStyle = {
 }
 
 
-function Autocomplete({isMulti, setKeyword, multiBtn, setResult}) {
+function Autocomplete({isMulti, setKeyword, multiBtn, setResult}, ref) {
     const [word, setWord] = useState('');
     const [targetNum , setNum] = useState(-1);
     const [autoData, setAuto] = useState([]);
@@ -137,8 +137,7 @@ function Autocomplete({isMulti, setKeyword, multiBtn, setResult}) {
         }
     }
 
-
-    return <div>
+    return <div ref={ref}>
         <Paper 
             component="div"
             sx={{ 
@@ -206,4 +205,4 @@ function Autocomplete({isMulti, setKeyword, multiBtn, setResult}) {
     </div>
 }
 
-export default Autocomplete;
+export default forwardRef(Autocomplete);
