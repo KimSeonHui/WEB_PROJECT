@@ -16,6 +16,7 @@ const settingUser = require('./setting/user/index');
 const search = require('./board/search/index');
 const upload = require('./board/upload/index');
 const delete_process = require('./board/delete/index');
+const update = require('./board/update/index');
 
 router.use("/main", main);
 router.use("/board", board);
@@ -32,5 +33,6 @@ router.use("/setting/user", settingUser);
 router.use("/search", search);
 router.use("/upload", upload);
 router.use("/delete", delete_process);
+router.use("/update", update);
 
 module.exports = router;

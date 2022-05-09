@@ -11,6 +11,7 @@ import SettingManager from "./routes/SettingManager";
 import SettingPost from "./routes/SettingPost";
 import SettingUser from "./routes/SettingUser";
 import SettingCategory from "./routes/SettingCategory";
+import Update from "./routes/Update";
 
 import {
   BrowserRouter as Router,
@@ -45,6 +46,9 @@ function App() {
         </Route>
         <Route path="/create">
           <Create />
+        </Route>
+        <Route path="/update/:pid">
+          <Update />
         </Route>
          <Route path="/setting/category">
           <SettingCategory />

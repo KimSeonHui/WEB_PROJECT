@@ -12,7 +12,6 @@ const theme = createTheme({
   });
 
 function ReadPage({ curPost, page }) {
-    console.log('curPost', curPost);
     const insertDesc = (desc) => {
         document.getElementById('desc').innerHTML = desc;
     }
@@ -69,7 +68,7 @@ function ReadPage({ curPost, page }) {
             <ThemeProvider theme={theme}>
                 <ButtonGroup variant="outlined" >
                     <Button 
-                        href="/update"
+                        href={`/update/${curPost.POSTID}`}
                         sx={{mb : 1}}
                     >
                         수정
