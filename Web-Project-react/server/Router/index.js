@@ -15,6 +15,7 @@ const post = require('./setting/post/index');
 const settingUser = require('./setting/user/index');
 const search = require('./board/search/index');
 const upload = require('./board/upload/index');
+const delete_process = require('./board/delete/index');
 
 router.use("/main", main);
 router.use("/board", board);
@@ -30,5 +31,6 @@ router.use("/setting/post", post);
 router.use("/setting/user", settingUser);
 router.use("/search", search);
 router.use("/upload", upload);
+router.use("/delete", delete_process);
 
 module.exports = router;

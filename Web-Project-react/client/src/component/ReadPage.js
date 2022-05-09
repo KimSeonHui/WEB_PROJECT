@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { Box, Typography, Divider, Container, Button, ButtonGroup  } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
@@ -11,8 +12,39 @@ const theme = createTheme({
   });
 
 function ReadPage({ curPost, page }) {
+    console.log('curPost', curPost);
     const insertDesc = (desc) => {
         document.getElementById('desc').innerHTML = desc;
+    }
+
+    const deletePost = async () => {
+        if(window.confirm('글을 삭제하시겠습니까?')) {
+            const res = await axios.post('/delete', {
+                postid : curPost.POSTID,
+                bid : curPost.BOARDID,
+                uid : curPost.UID
+            });
+    
+            if(res.statusText === 'OK') {
+                console.log('res.data', res.data);
+
+                if(res.data === 'delete') {
+                    alert('게시글을 삭제했습니다.');
+                    window.location.href = `../board/${curPost.BOARDID}/1`;
+                }
+                else if(res.data === 'notLogined') {
+                    alert('로그인 후 이용해 주세요');
+                    window.location.href = `../user/login`
+                }
+                else if(res.data === 'fail')  alert('게시글 삭제에 실패했습니다.');
+                else if(res.data === 'infoFail') alert('정보를 불러오지 못했습니다.');
+                else alert('권한이 없습니다.');
+            }
+        }
+        else {
+            return false;
+        }
+
     }
 
     return <Container maxWidth="xl">
@@ -43,7 +75,7 @@ function ReadPage({ curPost, page }) {
                         수정
                     </Button>
                     <Button 
-                        href="#"
+                        onClick={deletePost}
                         sx={{mb : 1}}
                     >
                         삭제

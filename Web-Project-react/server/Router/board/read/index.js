@@ -33,7 +33,7 @@ router.get("/:postId", async (req, res) => {
         console.log(err);
     })
 
-    sql = `SELECT BOARDID, POSTID, TITLE, DESCRIPTION, NAME
+    sql = `SELECT BOARDID, POSTID, TITLE, DESCRIPTION, NAME, UID
          FROM BOARD LEFT JOIN CATEGORY ON BOARD.BOARDID = CATEGORY.CID
          WHERE POSTID = ?;`
     const postRows = await handleQuery(sql, postId).catch(err => {
