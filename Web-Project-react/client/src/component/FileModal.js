@@ -16,27 +16,60 @@ const style = {
     p: 2,
   };
 
-const createNode = (url, name) => {
-  const node = document.createElement('div');
-
-  node.innerHTML = `<a href="${url}" class="uploaded"
-    style="color:#6c757d; text-decoration:none; display:inline-block; margin-bottom:8px;  border: 1px solid #d3d3d3; border-radius:2px; cursor:pointer;" 
-    download="${name}"
-    >
-    <input type="text" 
-      style="padding : 6px; border:0px;" value="${name}" readonly />
-  </a>
-`
-
-  return node;
-}
 
 function FileModal({open, setOpen}) {
   const [disable, setDisable] = useState(true);
-
+  
   const handleClose = () => {
     setOpen(false);
   }
+
+  
+  const download = function(url, name) {
+    console.log('download', this);
+    fetch(url)
+      .then(res => res.blob())
+      .then(blob => {
+          console.log('blob', blob);
+          const blobURL = URL.createObjectURL(blob);
+
+          console.log('blobURL', blobURL)
+
+          const down = document.createElement('a');
+          down.download = name;
+          down.href = blobURL;
+          down.style.display = 'none';
+          down.click();
+          down.remove();
+          URL.revokeObjectURL(blobURL);
+    });                
+
+  }
+
+  const createNode = (url, name) => {
+    const node = document.createElement('div');
+    node.style.color = '#6c757d';
+    node.style.display = 'inline-block';
+    node.style.marginBottom = '8px';
+    node.style.border = '1px solid #d3d3d3';
+    node.style.borderRadius = '2px';
+    node.innerHTML = `<input 
+      class='file'
+      type="text" 
+      style="padding : 6px; border:0px;" 
+      value="${name}" 
+      readonly />
+      `;
+
+    const btn = document.createElement('button');
+    btn.id = 'downloadBtn'
+    btn.innerText = 'download';
+    btn.onclick = function() {download(url, name)};
+    node.appendChild(btn);
+
+    return node;
+  }
+
 
   const attachFile = async () => {
     console.log('파일 첨부');
@@ -79,7 +112,6 @@ function FileModal({open, setOpen}) {
       setDisable(false);
     }
   }  
-    
 
     return (
         <Modal
