@@ -28,6 +28,11 @@ function Update() {
             setSession(res.data.session);
             setContent(res.data.content);
             setPostCate(res.data.postCategory);
+
+            if(res.data === 'notLogined') {
+                alert('로그인 후 이용해 주세요.');
+                window.location.href = '../user/login';
+            }
         }
     };
 

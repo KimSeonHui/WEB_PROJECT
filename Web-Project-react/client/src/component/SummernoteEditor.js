@@ -15,7 +15,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 //import '../summernoteStyle.scss'
 
 
-function SummernoteEditor({setDesc}) {
+function SummernoteEditor({setDesc, desc}) {
   const [open, setOpen] = useState(false);
 
   const onChange = (content) => {
@@ -67,7 +67,7 @@ function SummernoteEditor({setDesc}) {
     return (
       <div className='use-bootstrap'>
         <ReactSummernote
-          value="내용을 입력해 주세요"
+          value={desc !== '' ? desc : ''}
           options={{
             lang: 'ko-KR',
             height: 350,
