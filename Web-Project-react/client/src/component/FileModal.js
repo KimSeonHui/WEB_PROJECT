@@ -60,12 +60,7 @@ function FileModal({open, setOpen}) {
       value="${name}" 
       readonly />
       `;
-
-    const btn = document.createElement('button');
-    btn.id = 'downloadBtn'
-    btn.innerText = 'download';
-    btn.onclick = function() {download(url, name)};
-    node.appendChild(btn);
+    node.onclick = function() {download(url, name)}
 
     return node;
   }
